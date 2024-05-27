@@ -1,0 +1,50 @@
+# source files.
+SRC = \
+../../../UnitTestFiles/SourceFiles/EcoGPIO1.c \
+
+# include directories
+INCLUDES = \
+-I ../../../HeaderFiles \
+-I ../../../SharedFiles \
+-I $(ECO_FRAMEWORK)/Eco.Core1/SharedFiles \
+-I $(ECO_FRAMEWORK)/Eco.InterfaceBus1/SharedFiles \
+-I $(ECO_FRAMEWORK)/Eco.MemoryManager1/SharedFiles
+
+# libraries directories
+LIB_DIR = \
+-L ../../../BuildFiles/STM32 \
+-L$(ECO_FRAMEWORK)/Eco.InterfaceBus1/BuildFiles/STM32 \
+-L$(ECO_FRAMEWORK)/Eco.FileSystemManagement1/BuildFiles/STM32 \
+-L$(ECO_FRAMEWORK)/Eco.MemoryManager1/BuildFiles/STM32 \
+-L$(ECO_FRAMEWORK)/Eco.System1/BuildFiles/STM32
+
+OBJ = $(SRC:.c=.o)
+
+OUT_ELF = EcoGPIO1UnitTest.elf
+OUT_DIR = ../../../BuildFiles/STM32F427
+
+# C++ compiler flags (-g -O2 -Wall)
+CCFLAGS = -Wall -O3 -Wno-missing-braces -mtune=cortex-m4 -DECO_LIB -DECO_STM32 -DUGUID_UTILITY -mfloat-abi=hard -msoft-float -mfpu=vfp -specs=nosys.specs
+
+# compiler
+CC = arm-none-eabi-gcc
+
+# library paths
+LIBS = $(LIB_DIR) -lA70A4C2E9C9645BD91367754D01F101F -lc -lm -lgcc
+
+# linker
+LINKERFILE = ./STM32F427VITX_FLASH.ld
+
+# compile flags
+LDFLAGS = -g $(LIBS) -mcpu=cortex-m4 -fno-common -ffunction-sections -fdata-sections -fstrict-volatile-bitfields
+.SUFFIXES: .c
+
+.c.o:
+	$(GNU)$(CC) $(INCLUDES) $(CCFLAGS) -c $< -o $@ 
+
+$(OUT_ELF): $(OBJ)
+	$(CC) ${LDFLAGS} -T $(LINKERFILE) -o $(OUT_DIR)\$(OUT_ELF) $(OBJ) ./Startup/startup_stm32f427vitx.s $(LDFLAGS)
+
+clean:
+	rm $(OBJ) $(OUT_DIR)\$(OUT_ELF)
+
