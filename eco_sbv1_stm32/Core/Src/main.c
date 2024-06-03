@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -128,32 +129,42 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_RTC_Init();
-  MX_ADC2_Init();
-  MX_TIM3_Init();
-  MX_ADC1_Init();
-  MX_ADC3_Init();
-  MX_CAN1_Init();
-  MX_I2C1_Init();
-  MX_I2C2_Init();
-  MX_I2C3_Init();
-  MX_SPI1_Init();
-  MX_SPI3_Init();
-  MX_UART4_Init();
-  MX_UART5_Init();
-  MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
-  MX_USART3_UART_Init();
-  MX_USART6_UART_Init();
-  MX_CRC_Init();
+  // MX_RTC_Init();
+  // MX_ADC2_Init();
+  // MX_TIM3_Init();
+  // MX_ADC1_Init();
+  // MX_ADC3_Init();
+  // MX_CAN1_Init();
+  // MX_I2C1_Init();
+  // MX_I2C2_Init();
+  // MX_I2C3_Init();
+  // MX_SPI1_Init();
+  // MX_SPI3_Init();
+  // MX_UART4_Init();
+  // MX_UART5_Init();
+  // MX_USART1_UART_Init();
+  // MX_USART2_UART_Init();
+  // MX_USART3_UART_Init();
+  // MX_USART6_UART_Init();
+  // MX_CRC_Init();
   /* USER CODE BEGIN 2 */
-  v_test_init();
+  // v_test_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint32_t counter = 0;
   while (1)
   {
+    if (counter % 1000000 == 0)
+    {
+
+
+      HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_0);
+    }
+    ++counter;
+
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -1046,6 +1057,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(CHRING_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PD4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
