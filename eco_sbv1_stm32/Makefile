@@ -1,4 +1,5 @@
-LD_SCRIPT = ./STM32F427VITX_FLASH.ld
+LD_SCRIPT = ./STM32F427VITX_RAM.ld
+
 
 OUT_DIR = ./out
 OUT = $(OUT_DIR)/blink.elf
@@ -34,7 +35,7 @@ INCLUDES = \
 -I./Drivers/CMSIS/Device/ST/STM32F4xx/Include 
 
 
-FLAGS = -T $(LD_SCRIPT) -o $(OUT) -mcpu=cortex-m4 -mthumb -specs=nosys.specs
+FLAGS = -Wl,-Map,kernel.map,-T $(LD_SCRIPT) -o $(OUT) -mcpu=cortex-m4 -mthumb -specs=nosys.specs -ggdb
 
 all: $(OUT)
 
