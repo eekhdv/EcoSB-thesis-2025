@@ -1,0 +1,2 @@
+"C:\toolchain\qemu_8_1\qemu-system-riscv64.exe"  -M virt -m 256M  -cpu thead-c906 -serial stdio -bios "C:\Dev\VBL\ECO\Solutions\Eco.Framework\Eco.UART1\AssemblyFiles\EcoOS\gcc_riscv64_8_2_0\boot0_spl.bin"
+rem pause
