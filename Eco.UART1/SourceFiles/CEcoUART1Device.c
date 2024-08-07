@@ -135,6 +135,12 @@ unsigned char serial_sendc(unsigned char a_data) {
 byte_t startBeep2[10] = { 0x06, 0x00, 0x00, 0x00, 0x80, 0x03, 0x0B, 0x02, 0xF4, 0x01 };
 byte_t startBeep[17] = { 0x0f, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x94, 0x01, 0x81, 0x01, 0x82, 0x0b, 0x02, 0x82, 0xf4, 0x01};
 
+#elif ECO_LINUX
+#include <asm-generic/ioctls.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
 #endif
 
 CEcoUART1Device_025F3EF0 g_xB40E129B56624BD7B5F8339C025F3EF0UART1Device[3] = {0};
@@ -201,6 +207,8 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_QueryInterface(/* in */ struct IE
         *ppv = &pCMe->m_pVTblICCUConfig;
         pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
     }
+#elif ECO_LINUX
+
 #elif ECO_STM32
     else if ( IsEqualUGUID(riid, &IID_IEcoUART1STM32F4Config) ) {
         *ppv = &pCMe->m_pVTblIUARTConfig;
@@ -292,6 +300,8 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
     uint32_t uart_clk;
     uint32_t indx;
     uint32_t reg;
+#elif ECO_LINUX
+    int16_t ptsNum = -1;
 #elif ECO_STM32
 #endif
     /* Проверка указателей */
@@ -410,6 +420,13 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
     //#define   DLEN         3 
     *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->LCR) = ((0&0x03)<<3) | ((0&0x01)<<2) | (3&0x03);
     *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->Offset0x0008.FCR) = 0x7;
+#elif ECO_LINUX
+    pCMe->m_Fd = open("/dev/ptmx", O_RDWR | O_NOCTTY);
+    ioctl(pCMe->m_Fd, TIOCSBRK, &config->BaudRate); // Set baudrate
+    ioctl(pCMe->m_Fd, TIOCSPTLCK, &(int){0}); // Unlock pt
+    ioctl(pCMe->m_Fd, TIOCGPTN, &ptsNum); // get pts number
+    snprintf(pCMe->m_UARTConfig->devName, pCMe->m_UARTConfig->devNameLen, "/dev/pts/%d", ptsNum); // Set up pts name
+  
 #elif ECO_STM32
     /* RCC_APB2ENR_USART1EN = (0x1UL << 4U) */
     *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->APB2ENR) |= (0x1UL << 4U);
@@ -444,6 +461,8 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Disconnect(/* in */ struct IEcoUA
     CloseHandle(pCMe->m_Device);
 #elif ECO_RISCV64
     pCMe->m_UARTConfig->Register.Map = 0;
+#elif ECO_LINUX
+    close(pCMe->m_Fd);
 #elif ECO_STM32
     pCMe->m_UARTConfig->Register.Map->CR1 &= ~(0x1UL << 13U);
     pCMe->m_UARTConfig->Register.Map->APB2ENR &= ~(0x1UL << 4U);
@@ -492,6 +511,8 @@ do{asm volatile("nop");}while(*((volatile uint32_t*)&pCMe->m_UARTConfig->Registe
     while( (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->LSR)&(1<< 6)) == 0);
 
     *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->Offset0x0000.THR) = data;
+#elif ECO_LINUX
+    write(pCMe->m_Fd, &data, 1);
 #elif ECO_STM32
     /* USART_SR_TXE =  (0x1UL << 7U)*/
     while( (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->SR)&(0x1UL << 7U)) == 0);
@@ -541,6 +562,9 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Receive(/* in */ struct IEcoUART1
 //char SerialBuffer[256];//Buffer for storing Rxed Data
     DWORD NoBytesRead = 0;
     DWORD dwCommEvent;
+#elif ECO_LINUX
+    char_t TempChar = 0; //Temporary character used for reading
+    int16_t NoBytesRead = 0;
 #endif
 
     /* Проверка указателей */
@@ -553,7 +577,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Receive(/* in */ struct IEcoUART1
         return -1;
     }
     for ( ; ; ) {
-        if (WaitCommEvent(pCMe->m_Device, &dwCommEvent, NULL)) {
+        if (WaitCommEvent(pcme->m_device, &dwCommEvent, NULL)) {
             if (ReadFile(pCMe->m_Device, &TempChar, sizeof(TempChar), &NoBytesRead, NULL)) {
                 *data = TempChar;
             }
@@ -575,6 +599,9 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Receive(/* in */ struct IEcoUART1
 #elif ECO_RISCV64
     while( (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->LSR)&0x01) == 0);
     *data = *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->Offset0x0000.RBR);
+#elif ECO_LINUX
+    NoBytesRead = read(pCMe->m_Fd, &TempChar, sizeof(TempChar));
+    *data = TempChar;
 #elif ECO_STM32
     /* USART_SR_RXNE = (0x1UL << 5U)  */
     while( (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->SR)&(0x1UL << 5U)) == 0);
@@ -583,6 +610,9 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Receive(/* in */ struct IEcoUART1
     return 0;
 }
 
+
+#ifdef ECO_LINUX
+#else
 /*
  *
  * <сводка>
@@ -793,8 +823,10 @@ ECO_UART_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoUART1Device_025F3EF0_Config_get_Co
 
     return pCMe->m_UARTConfig;
 }
+#endif
 
 #ifdef ECO_WIN32
+#elif ECO_LINUX
 #elif ECO_STM32
 #else
 /*
@@ -1048,6 +1080,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/
 #endif
 
 #ifdef ECO_WIN32
+#elif ECO_LINUX
 #elif ECO_STM32
 #else
 /*
@@ -1111,6 +1144,12 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_CCUConfig_QueryInterface(/* in */
         *ppv = &pCMe->m_pVTblICCUConfig;
         pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
     }
+#elif ECO_LINUX
+    else if ( IsEqualUGUID(riid, &IID_IEcoUART1LinuxConfig) ) {
+        *ppv = &pCMe->m_pVTblIConfig;
+        pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
+    }
+
 #endif
     else {
         *ppv = 0;
@@ -1289,6 +1328,7 @@ IEcoCCU1RISCV64D1ConfigVTbl g_xED0950291B1049CCA09349F7CA6B61E0VTbl_025F3EF0 = {
     CEcoUART1Device_025F3EF0_CCUConfig_set_ConfigDescriptor,
     CEcoUART1Device_025F3EF0_CCUConfig_get_ConfigDescriptor
 };
+
 #elif ECO_STM32
 IEcoUART1STM32F4ConfigVTbl g_x45B766B1B8364345BFF269BF659FD3DCVTbl_025F3EF0 = {
     CEcoUART1Device_025F3EF0_Config_QueryInterface,

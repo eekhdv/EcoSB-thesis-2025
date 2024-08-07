@@ -37,6 +37,8 @@
 //#include "IEcoCCU1RISCV64D1Config.h"
 #include "IEcoCCU1RISCV64D1Config.h"
 #endif
+#elif ECO_LINUX
+#include "IEcoUART1LinuxConfig.h"
 #elif ECO_STM32
 #include "IEcoUART1STM32F4Config.h"
 #endif
@@ -58,6 +60,8 @@ typedef struct CEcoUART1Device_025F3EF0 {
     IEcoUART1RISCV64D1ConfigVTbl* m_pVTblIUARTConfig;
     IEcoGPIO1RISCV64D1ConfigVTbl* m_pVTblIGPIOConfig;
     IEcoCCU1RISCV64D1ConfigVTbl* m_pVTblICCUConfig;
+#elif ECO_LINUX
+    IEcoUART1LinuxConfigVTbl* m_pVTblIUARTConfig;
 #elif ECO_STM32
     IEcoUART1STM32F4ConfigVTbl* m_pVTblIUARTConfig;
 #endif
@@ -81,6 +85,8 @@ typedef struct CEcoUART1Device_025F3EF0 {
 #elif ECO_RISCV64
     ECO_GPIO_CONFIG_DESCRIPTOR* m_GPIOConfig;
     ECO_CCU_CONFIG_DESCRIPTOR* m_CCUConfig;
+#elif ECO_LINUX
+    int16_t m_Fd;
 #endif
 
 } CEcoUART1Device_025F3EF0, *CEcoUART1Device_025F3EF0Ptr;
