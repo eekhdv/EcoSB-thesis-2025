@@ -81,6 +81,7 @@ typedef struct ECO_UART_CONFIG_DESCRIPTOR {
 } ECO_UART_CONFIG_DESCRIPTOR;
 
 typedef struct IEcoUART1STM32F4Config* IEcoUART1STM32F4ConfigPtr_t;
+typedef struct IEcoGPIO1STM32F4Config* IEcoGPIO1STM32F4ConfigPtr_t;
 
 typedef struct IEcoUART1STM32F4ConfigVTbl {
 

@@ -39,6 +39,8 @@
 #endif
 #elif ECO_STM32
 #include "IEcoUART1STM32F4Config.h"
+#include "IEcoGPIO1STM32Config.h"
+#define ECO_GPIO_CONFIG_DESCRIPTOR GPIO_CONFIG_DESCRIPTOR
 #endif
 
 typedef struct CEcoUART1Device_025F3EF0 {
@@ -60,6 +62,7 @@ typedef struct CEcoUART1Device_025F3EF0 {
     IEcoCCU1RISCV64D1ConfigVTbl* m_pVTblICCUConfig;
 #elif ECO_STM32
     IEcoUART1STM32F4ConfigVTbl* m_pVTblIUARTConfig;
+    IEcoGPIO1STM32ConfigVTbl* m_pVTblIGPIOConfig;
 #endif
 
     /* Счетчик ссылок */
@@ -81,6 +84,8 @@ typedef struct CEcoUART1Device_025F3EF0 {
 #elif ECO_RISCV64
     ECO_GPIO_CONFIG_DESCRIPTOR* m_GPIOConfig;
     ECO_CCU_CONFIG_DESCRIPTOR* m_CCUConfig;
+#elif ECO_STM32
+    ECO_GPIO_CONFIG_DESCRIPTOR* m_GPIOConfig;
 #endif
 
 } CEcoUART1Device_025F3EF0, *CEcoUART1Device_025F3EF0Ptr;
