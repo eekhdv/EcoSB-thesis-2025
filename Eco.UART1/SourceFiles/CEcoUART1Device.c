@@ -214,6 +214,10 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_QueryInterface(/* in */ struct IE
         *ppv = &pCMe->m_pVTblIUARTConfig;
         pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
     }
+    else if ( IsEqualUGUID(riid, &IID_IEcoGPIO1STM32Config) ) {
+        *ppv = &pCMe->m_pVTblIGPIOConfig;
+        pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
+    }
 #endif
 
     else {
@@ -687,6 +691,10 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Config_QueryInterface(/* in */ IE
         *ppv = &pCMe->m_pVTblIUARTConfig;
         pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
     }
+    else if ( IsEqualUGUID(riid, &IID_IEcoGPIO1STM32Config) ) {
+        *ppv = &pCMe->m_pVTblIGPIOConfig;
+        pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
+    }
 #endif
     else {
         *ppv = 0;
@@ -828,6 +836,7 @@ ECO_UART_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoUART1Device_025F3EF0_Config_get_Co
 #ifdef ECO_WIN32
 #elif ECO_LINUX
 #elif ECO_STM32
+
 #else
 /*
  *
@@ -903,6 +912,10 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_QueryInterface(/* in *
         *ppv = &pCMe->m_pVTblIUARTConfig;
         pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
     }
+    else if ( IsEqualUGUID(riid, &IID_IEcoGPIO1STM32Config) ) {
+        *ppv = &pCMe->m_pVTblIGPIOConfig;
+        pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
+    }
 #endif
     else {
         *ppv = 0;
@@ -928,6 +941,8 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_AddRef(/* in */ struc
 uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_AddRef(/* in */ struct IEcoGPIO1RISCV64D1Config* me) {
 #elif ECO_AVR8
 uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_AddRef(/* in */ struct IEcoGPIO1RISCV64D1Config* me) {
+#elif ECO_STM32
+uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_AddRef(/* in */ struct IEcoGPIO1STM32Config* me) {
 #endif
     CEcoUART1Device_025F3EF0* pCMe = (CEcoUART1Device_025F3EF0*)((uint64_t)me - (sizeof(struct IEcoUnknown*)*2));
 
@@ -955,6 +970,8 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_AddRef(/* in */ struc
 uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_Release(/* in */ struct IEcoGPIO1BCM283xConfig* me) {
 #elif ECO_RISCV64
 uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_Release(/* in */ struct IEcoGPIO1RISCV64D1Config* me) {
+#elif ECO_STM32
+uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_Release(/* in */ struct IEcoGPIO1STM32Config* me) {
 #endif
     CEcoUART1Device_025F3EF0* pCMe = (CEcoUART1Device_025F3EF0*)((uint64_t)me - (sizeof(struct IEcoUnknown*)*2));
 
@@ -990,6 +1007,8 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_Release(/* in */ stru
 int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
 #elif ECO_RISCV64
 int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/* in */ struct IEcoGPIO1RISCV64D1Config* me, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
+#elif ECO_STM32
+int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
 #endif
     CEcoUART1Device_025F3EF0* pCMe = (CEcoUART1Device_025F3EF0*)((uint64_t)me - (sizeof(struct IEcoUnknown*)*2));
 
@@ -1019,6 +1038,8 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/
 ECO_GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_get_ConfigDescriptor(/* in */ struct IEcoGPIO1BCM283xConfig* me) {
 #elif ECO_RISCV64
 ECO_GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_get_ConfigDescriptor(/* in */ struct IEcoGPIO1RISCV64D1Config* me) {
+#elif ECO_STM32
+ECO_GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me) {
 #endif
     CEcoUART1Device_025F3EF0* pCMe = (CEcoUART1Device_025F3EF0*)((uint64_t)me - (sizeof(struct IEcoUnknown*)*2));
 
@@ -1045,6 +1066,8 @@ ECO_GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_ge
 int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber) {
 #elif ECO_RISCV64
 int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/* in */ struct IEcoGPIO1RISCV64D1Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber) {
+#elif ECO_STM32
+int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber) {
 #endif
     CEcoUART1Device_025F3EF0* pCMe = (CEcoUART1Device_025F3EF0*)((uint64_t)me - (sizeof(struct IEcoUnknown*)*2));
 
@@ -1337,6 +1360,14 @@ IEcoUART1STM32F4ConfigVTbl g_x45B766B1B8364345BFF269BF659FD3DCVTbl_025F3EF0 = {
     CEcoUART1Device_025F3EF0_Config_set_ConfigDescriptor,
     CEcoUART1Device_025F3EF0_Config_get_ConfigDescriptor
 };
+IEcoGPIO1STM32ConfigVTbl g_xD9671208DCAD444890AA5F4825055DFAVTbl_025F3EF0 = {
+    CEcoUART1Device_025F3EF0_GPIOConfig_QueryInterface,
+    CEcoUART1Device_025F3EF0_GPIOConfig_AddRef,
+    CEcoUART1Device_025F3EF0_GPIOConfig_Release,
+    CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor,
+    CEcoUART1Device_025F3EF0_GPIOConfig_get_ConfigDescriptor,
+    CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber
+};
 
 #endif
 
@@ -1391,6 +1422,7 @@ int16_t ECOCALLMETHOD createCEcoUART1Device_025F3EF0(/* in */ IEcoUnknown* pIUnk
     pCMe->m_pVTblICCUConfig = &g_xED0950291B1049CCA09349F7CA6B61E0VTbl_025F3EF0;
 #elif ECO_STM32
     pCMe->m_pVTblIUARTConfig = &g_x45B766B1B8364345BFF269BF659FD3DCVTbl_025F3EF0;
+    pCMe->m_pVTblIGPIOConfig = &g_xD9671208DCAD444890AA5F4825055DFAVTbl_025F3EF0;
 #endif
 
     /* Инициализация данных */
