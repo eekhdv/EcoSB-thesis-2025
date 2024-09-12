@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="StaticDebug|Win32">
+      <Configuration>StaticDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticRelease|Win32">
+      <Configuration>StaticRelease</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticDebug|AVR8">
+      <Configuration>StaticDebug</Configuration>
+      <Platform>AVR8</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticRelease|AVR8">
+      <Configuration>StaticRelease</Configuration>
+      <Platform>AVR8</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticDebug|AARCH32">
+      <Configuration>StaticDebug</Configuration>
+      <Platform>AARCH32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticRelease|AARCH32">
+      <Configuration>StaticRelease</Configuration>
+      <Platform>AARCH32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticDebug|AARCH64">
+      <Configuration>StaticDebug</Configuration>
+      <Platform>AARCH64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticRelease|AARCH64">
+      <Configuration>StaticRelease</Configuration>
+      <Platform>AARCH64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticDebug|RISCV32">
+      <Configuration>StaticDebug</Configuration>
+      <Platform>RISCV32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticRelease|RISCV32">
+      <Configuration>StaticRelease</Configuration>
+      <Platform>RISCV32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticDebug|RISCV64">
+      <Configuration>StaticDebug</Configuration>
+      <Platform>RISCV64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="StaticRelease|RISCV64">
+      <Configuration>StaticRelease</Configuration>
+      <Platform>RISCV64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Eco.DateTime1\SharedFiles\IEcoCCU1RISCV64D1Config.h" />
+    <ClInclude Include="..\..\..\..\Eco.GPIO1\SharedFiles\IEcoGPIO1RISCV64D1Config.h" />
+    <ClInclude Include="..\..\..\HeaderFiles\CEcoUART1.h" />
+    <ClInclude Include="..\..\..\HeaderFiles\CEcoUART1Device.h" />
+    <ClInclude Include="..\..\..\HeaderFiles\CEcoUART1Factory.h" />
+    <ClInclude Include="..\..\..\SharedFiles\IdEcoUART1.h" />
+    <ClInclude Include="..\..\..\SharedFiles\IEcoUART1.h" />
+    <ClInclude Include="..\..\..\SharedFiles\IEcoUART1AVR8Config.h" />
+    <ClInclude Include="..\..\..\SharedFiles\IEcoUART1RISCV64D1Config.h" />
+    <ClInclude Include="..\..\..\SharedFiles\IEcoUART1STM32Config.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\SourceFiles\CEcoUART1.c" />
+    <ClCompile Include="..\..\..\SourceFiles\CEcoUART1Device.c" />
+    <ClCompile Include="..\..\..\SourceFiles\CEcoUART1Factory.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build.bat" />
+    <None Include="build.sh" />
+    <None Include="Makefile" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C2CD69F2-E939-4681-8C93-B30788655C7F}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AVR8'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AVR8'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AARCH32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AARCH32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AARCH64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AARCH64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|RISCV32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|RISCV32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|RISCV64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|RISCV64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticDebug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticRelease|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AVR8'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AVR8'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AARCH32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AARCH32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AARCH64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AARCH64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticDebug|RISCV32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticRelease|RISCV32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticDebug|RISCV64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='StaticRelease|RISCV64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|Win32'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=1 ARCHITECTURE=ECO_AVR8 DEVICE=atmega328p</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;_DEBUG;ECO_AVR8;ECO_OS;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.DateTime1\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|Win32'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;NDEBUG;ECO_RISCV64;ECO_OS;ECO_DEVICE_D1;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AVR8'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;_DEBUG;ECO_RISCV64;ECO_OS;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.DateTime1\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AVR8'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;NDEBUG;ECO_RISCV64;ECO_OS;ECO_DEVICE_D1;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AARCH32'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;_DEBUG;ECO_RISCV64;ECO_OS;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.DateTime1\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AARCH32'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;NDEBUG;ECO_RISCV64;ECO_OS;ECO_DEVICE_D1;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|AARCH64'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;_DEBUG;ECO_RISCV64;ECO_OS;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.DateTime1\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|AARCH64'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;NDEBUG;ECO_RISCV64;ECO_OS;ECO_DEVICE_D1;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|RISCV32'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;_DEBUG;ECO_RISCV64;ECO_OS;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.DateTime1\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|RISCV32'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;NDEBUG;ECO_RISCV64;ECO_OS;ECO_DEVICE_D1;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|RISCV64'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;_DEBUG;ECO_RISCV64;ECO_OS;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.DateTime1\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|RISCV64'">
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=0 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;NDEBUG;ECO_RISCV64;ECO_OS;ECO_DEVICE_D1;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

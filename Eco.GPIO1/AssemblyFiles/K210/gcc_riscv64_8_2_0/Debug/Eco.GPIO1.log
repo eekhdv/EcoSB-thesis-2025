@@ -1,0 +1,641 @@
+﻿Build started 3/6/2023 4:31:22 PM.
+     1>Project "C:\Dev\VBL\ECO\Solutions\Eco.Framework\Eco.GPIO1\AssemblyFiles\K210\gcc_riscv64_8_2_0\Eco.GPIO1.vcxproj" on node 2 (build target(s)).
+     1>Build:
+         make
+         C:\toolchain/gcc-riscv64-8.2.0/bin/riscv64-unknown-elf-gcc -I ..\..\..\HeaderFiles -I ..\..\..\SharedFiles -I ..\..\..\..\Eco.Core1\SharedFiles -I ..\..\..\..\Eco.InterfaceBus1\SharedFiles -I ..\..\..\..\Eco.MemoryManager1\SharedFiles -Wall -O3 -Wno-missing-braces -mcmodel=medany -mabi=lp64f -march=rv64imafc -mstrict-align -fno-tree-loop-vectorize -fno-tree-slp-vectorize -DECO_LIB -DECO_K210 -DUGUID_UTILITY -c ..\..\..\SourceFiles\CEcoGPIO1.c -o ..\..\..\SourceFiles\CEcoGPIO1.o
+         In file included from ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:26,
+                          from ..\..\..\SourceFiles\CEcoGPIO1.c:22:
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:78:61: warning: 'struct IEcoUnknown' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoUnknown* me, /* in */ const UGUID* riid, /* out */ void** ppv);
+                                                                      ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:79:54: warning: 'struct IEcoUnknown' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoUnknown* me);
+                                                               ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:80:55: warning: 'struct IEcoUnknown' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoUnknown* me);
+                                                                ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:96:61: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoComponentFactory* me, /* in */ const UGUID* riid, /* out */ void** ppv);
+                                                                      ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:97:54: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoComponentFactory* me);
+                                                               ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:98:55: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoComponentFactory* me);
+                                                                ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:100:52: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *Alloc)(/* in */ struct IEcoComponentFactory* me, /* in */ struct IEcoUnknown* pISystem, /* in */ struct IEcoUnknown* pIUnknownOuter, /* in */ const UGUID* riid, /* out */ void** ppv);
+                                                             ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:101:51: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *Init)(/* in */ struct IEcoComponentFactory* me, /* in */ struct IEcoUnknown* pISystem, /* in */ void* pv);
+                                                            ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:102:55: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              char_t* (ECOCALLMETHOD *get_Name)(/* in */ struct IEcoComponentFactory* me);
+                                                                ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:103:58: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              char_t* (ECOCALLMETHOD *get_Version)(/* in */ struct IEcoComponentFactory* me);
+                                                                   ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:104:63: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              char_t* (ECOCALLMETHOD *get_Manufacturer)(/* in */ struct IEcoComponentFactory* me);
+                                                                        ^~~~~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\SourceFiles\CEcoGPIO1.c:22:
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:36:61: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoSystem1* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:37:54: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoSystem1* me);
+                                                               ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:38:55: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoSystem1* me);
+                                                                ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:41:52: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              void (ECOCALLMETHOD *set_Data)(/* in */ struct IEcoSystem1* me, /* in */ void *pv);
+                                                             ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:42:53: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *get_Data)(/* in */ struct IEcoSystem1* me);
+                                                              ^~~~~~~~~~~
+         In file included from ..\..\..\SourceFiles\CEcoGPIO1.c:23:
+         ..\..\..\..\Eco.InterfaceBus1\SharedFiles/IEcoInterfaceBus1.h:33:62: warning: 'struct IEcoInterfaceBus1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface )(/* in */ struct IEcoInterfaceBus1* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                       ^~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.InterfaceBus1\SharedFiles/IEcoInterfaceBus1.h:34:55: warning: 'struct IEcoInterfaceBus1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef )(/* in */ struct IEcoInterfaceBus1* me);
+                                                                ^~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.InterfaceBus1\SharedFiles/IEcoInterfaceBus1.h:35:56: warning: 'struct IEcoInterfaceBus1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release )(/* in */ struct IEcoInterfaceBus1* me);
+                                                                 ^~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.InterfaceBus1\SharedFiles/IEcoInterfaceBus1.h:46:49: warning: 'struct IEcoInterfaceBus1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *Init)(/*in*/ struct IEcoInterfaceBus1* me);
+                                                          ^~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.InterfaceBus1\SharedFiles/IEcoInterfaceBus1.h:55:53: warning: 'struct IEcoInterfaceBus1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *InitWith)(/*in*/ struct IEcoInterfaceBus1* me, /*in*/ void* heapStartAddress, /*in*/ uint32_t size);
+                                                              ^~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.InterfaceBus1\SharedFiles/IEcoInterfaceBus1.h:64:63: warning: 'struct IEcoInterfaceBus1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *RegisterComponent) (/*in*/ struct IEcoInterfaceBus1* me, /*in*/ const UGUID* rcid, /*in*/ struct IEcoUnknown* pIFactory);
+                                                                        ^~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.InterfaceBus1\SharedFiles/IEcoInterfaceBus1.h:73:65: warning: 'struct IEcoInterfaceBus1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *UnRegisterComponent) (/*in*/ struct IEcoInterfaceBus1* me, /*in*/ const UGUID* rcid);
+                                                                          ^~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.InterfaceBus1\SharedFiles/IEcoInterfaceBus1.h:82:60: warning: 'struct IEcoInterfaceBus1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryComponent) (/*in*/ struct IEcoInterfaceBus1* me, /*in*/ const UGUID* rcid, /*in*/ struct IEcoUnknown* pIUnkOuter, /*in*/ const UGUID* riid, /*out*/ void** ppv);
+                                                                     ^~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:23,
+                          from ..\..\..\SourceFiles\CEcoGPIO1.c:24:
+         ..\..\..\SharedFiles/IEcoGPIO1.h:40:61: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoGPIO1* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:41:54: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoGPIO1* me);
+                                                               ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:42:55: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoGPIO1* me);
+                                                                ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:45:55: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_Mode)(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in */ uint8_t mode);
+                                                                ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:46:55: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_Data)(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in */ uint8_t Value);
+                                                                ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:47:55: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *get_Data)(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in | out */ uint8_t *pValue);
+                                                                ^~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:34,
+                          from ..\..\..\SourceFiles\CEcoGPIO1.c:24:
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:72:61: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoFPIOA1K210Config* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:73:54: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoFPIOA1K210Config* me);
+                                                               ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:74:55: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoFPIOA1K210Config* me);
+                                                                ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:77:67: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ struct IEcoFPIOA1K210Config* me, /* in */ ECO_FPIOA_CONFIG_DESCRIPTOR* config);
+                                                                            ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:78:88: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              ECO_FPIOA_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ struct IEcoFPIOA1K210Config* me);
+                                                                                                 ^~~~~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:35,
+                          from ..\..\..\SourceFiles\CEcoGPIO1.c:24:
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:63:61: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoGPIO1K210Config* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:64:54: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoGPIO1K210Config* me);
+                                                               ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:65:55: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoGPIO1K210Config* me);
+                                                                ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:68:67: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ struct IEcoGPIO1K210Config* me, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config);
+                                                                            ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:69:87: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              ECO_GPIO_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ struct IEcoGPIO1K210Config* me);
+                                                                                                ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:70:67: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_LogicalPinNumber)(/* in */ struct IEcoGPIO1K210Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber);
+                                                                            ^~~~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:36,
+                          from ..\..\..\SourceFiles\CEcoGPIO1.c:24:
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:136:61: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoSYSCTL1K210Config* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:137:54: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoSYSCTL1K210Config* me);
+                                                               ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:138:55: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoSYSCTL1K210Config* me);
+                                                                ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:141:67: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ struct IEcoSYSCTL1K210Config* me, /* in */ ECO_SYSCTL_CONFIG_DESCRIPTOR* config);
+                                                                            ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:142:89: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              ECO_SYSCTL_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ struct IEcoSYSCTL1K210Config* me);
+                                                                                                  ^~~~~~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:39,
+                          from ..\..\..\SourceFiles\CEcoGPIO1.c:24:
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:33:53: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface )(struct IEcoMemoryAllocator1* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                              ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:34:46: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef )(struct IEcoMemoryAllocator1* me);
+                                                       ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:35:47: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release )(struct IEcoMemoryAllocator1* me);
+                                                        ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:38:50: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *Alloc)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ uint32_t size);
+                                                           ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:39:48: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void (ECOCALLMETHOD *Free)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pv);
+                                                         ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:40:52: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *Realloc)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pv, /* in */ uint32_t size);
+                                                             ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:41:49: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *Copy)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pvDst, /* in */ void *pvSrc, /* in */ uint32_t size);
+                                                          ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:42:49: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *Fill)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pvDst, /* in */ char_t Fill, /* in */ uint32_t size);
+                                                          ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:43:54: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *Compare)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pv1, /* in */ void *pv2, /* in */ uint32_t size);
+                                                               ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:44:60: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *RetrieveSize)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pv);
+                                                                     ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:27: warning: "IsEqualUGUID" redefined
+          #define IsEqualUGUID(rguid1, rguid2) IsEqualUGUID_A70A4C2E9C9645BD91367754D01F101F(rguid1, rguid2)
+          
+         In file included from ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:26,
+                          from ..\..\..\SourceFiles\CEcoGPIO1.c:22:
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:48: note: this is the location of the previous definition
+          #define IsEqualUGUID(rguid1, rguid2)  \
+          
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'CEcoGPIO1_QueryInterface':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:51:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:51:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:75:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:75:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:79:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:79:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:83:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:83:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:88:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:88:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'CEcoGPIO1_set_Mode':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:166:13: warning: unused variable 'indexPin' [-Wunused-variable]
+              uint8_t indexPin = 0;
+                      ^~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:165:13: warning: unused variable 'indexPort' [-Wunused-variable]
+              uint8_t indexPort = 0;
+                      ^~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:164:33: warning: unused variable 'pDescriptor' [-Wunused-variable]
+              ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
+                                          ^~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:163:16: warning: unused variable 'pCMe' [-Wunused-variable]
+              CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
+                         ^~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'CEcoGPIO1_set_Data':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:210:13: warning: unused variable 'result' [-Wunused-variable]
+              int16_t result = -1;
+                      ^~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:208:13: warning: unused variable 'indexPort' [-Wunused-variable]
+              uint8_t indexPort = 0;
+                      ^~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'CEcoGPIO1_get_Data':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:341:14: warning: unused variable 'value2' [-Wunused-variable]
+              uint16_t value2 = 0;
+                       ^~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:340:14: warning: unused variable 'value' [-Wunused-variable]
+              uint16_t value = 0;
+                       ^~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:339:13: warning: unused variable 'result' [-Wunused-variable]
+              int16_t result = -1;
+                      ^~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:338:13: warning: unused variable 'indexPin' [-Wunused-variable]
+              uint8_t indexPin = 0;
+                      ^~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:337:13: warning: unused variable 'indexPort' [-Wunused-variable]
+              uint8_t indexPort = 0;
+                      ^~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:336:33: warning: unused variable 'pDescriptor' [-Wunused-variable]
+              ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
+                                          ^~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:335:16: warning: unused variable 'pCMe' [-Wunused-variable]
+              CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
+                         ^~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'CEcoGPIO1_K210Config_QueryInterface':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1138:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1138:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1142:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1142:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1146:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1146:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'CEcoFPIOA1_K210Config_QueryInterface':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1320:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1320:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1324:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1324:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1328:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1328:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1332:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1332:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1336:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1336:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'CEcoSYSCTL1_K210Config_QueryInterface':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1468:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1468:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1472:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1472:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1476:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1476:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1480:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1480:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1484:36: warning: passing argument 1 of 'pCMe->m_pVTblIGPIO->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+                  pCMe->m_pVTblIGPIO->AddRef((IEcoGPIO1*)pCMe);
+                                             ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1484:36: note: expected 'struct IEcoGPIO1 *' but argument is of type 'IEcoGPIO1 *' {aka 'struct IEcoGPIO1 *'}
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'initCEcoGPIO1':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1607:16: warning: unused variable 'pCMe' [-Wunused-variable]
+              CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
+                         ^~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c: At top level:
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1622:5: warning: initialization of 'int16_t (*)(struct IEcoGPIO1 *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoGPIO1 *, const struct UGUID *, void **)'} from incompatible pointer type 'int16_t (*)(struct IEcoGPIO1 *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoGPIO1 *, const struct UGUID *, void **)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_QueryInterface,
+              ^~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1622:5: note: (near initialization for 'g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl.QueryInterface')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1623:5: warning: initialization of 'uint32_t (*)(struct IEcoGPIO1 *)' {aka 'unsigned int (*)(struct IEcoGPIO1 *)'} from incompatible pointer type 'uint32_t (*)(struct IEcoGPIO1 *)' {aka 'unsigned int (*)(struct IEcoGPIO1 *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_AddRef,
+              ^~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1623:5: note: (near initialization for 'g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl.AddRef')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1624:5: warning: initialization of 'uint32_t (*)(struct IEcoGPIO1 *)' {aka 'unsigned int (*)(struct IEcoGPIO1 *)'} from incompatible pointer type 'uint32_t (*)(struct IEcoGPIO1 *)' {aka 'unsigned int (*)(struct IEcoGPIO1 *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_Release,
+              ^~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1624:5: note: (near initialization for 'g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl.Release')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1625:5: warning: initialization of 'int16_t (*)(struct IEcoGPIO1 *, uint16_t,  uint8_t)' {aka 'short int (*)(struct IEcoGPIO1 *, short unsigned int,  unsigned char)'} from incompatible pointer type 'int16_t (*)(struct IEcoGPIO1 *, uint16_t,  uint8_t)' {aka 'short int (*)(struct IEcoGPIO1 *, short unsigned int,  unsigned char)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_set_Mode,
+              ^~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1625:5: note: (near initialization for 'g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl.set_Mode')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1626:5: warning: initialization of 'int16_t (*)(struct IEcoGPIO1 *, uint16_t,  uint8_t)' {aka 'short int (*)(struct IEcoGPIO1 *, short unsigned int,  unsigned char)'} from incompatible pointer type 'int16_t (*)(struct IEcoGPIO1 *, uint16_t,  uint8_t)' {aka 'short int (*)(struct IEcoGPIO1 *, short unsigned int,  unsigned char)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_set_Data,
+              ^~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1626:5: note: (near initialization for 'g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl.set_Data')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1627:5: warning: initialization of 'int16_t (*)(struct IEcoGPIO1 *, uint16_t,  uint8_t *)' {aka 'short int (*)(struct IEcoGPIO1 *, short unsigned int,  unsigned char *)'} from incompatible pointer type 'int16_t (*)(struct IEcoGPIO1 *, uint16_t,  uint8_t *)' {aka 'short int (*)(struct IEcoGPIO1 *, short unsigned int,  unsigned char *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_get_Data
+              ^~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1627:5: note: (near initialization for 'g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl.get_Data')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1701:5: warning: initialization of 'int16_t (*)(struct IEcoGPIO1K210Config *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoGPIO1K210Config *, const struct UGUID *, void **)'} from incompatible pointer type 'int16_t (*)(struct IEcoGPIO1K210Config *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoGPIO1K210Config *, const struct UGUID *, void **)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_K210Config_QueryInterface,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1701:5: note: (near initialization for 'g_3E002B7BB389408D9EDEB288C5DC2F30VTbl.QueryInterface')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1702:5: warning: initialization of 'uint32_t (*)(struct IEcoGPIO1K210Config *)' {aka 'unsigned int (*)(struct IEcoGPIO1K210Config *)'} from incompatible pointer type 'uint32_t (*)(struct IEcoGPIO1K210Config *)' {aka 'unsigned int (*)(struct IEcoGPIO1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_K210Config_AddRef,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1702:5: note: (near initialization for 'g_3E002B7BB389408D9EDEB288C5DC2F30VTbl.AddRef')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1703:5: warning: initialization of 'uint32_t (*)(struct IEcoGPIO1K210Config *)' {aka 'unsigned int (*)(struct IEcoGPIO1K210Config *)'} from incompatible pointer type 'uint32_t (*)(struct IEcoGPIO1K210Config *)' {aka 'unsigned int (*)(struct IEcoGPIO1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_K210Config_Release,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1703:5: note: (near initialization for 'g_3E002B7BB389408D9EDEB288C5DC2F30VTbl.Release')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1704:5: warning: initialization of 'int16_t (*)(struct IEcoGPIO1K210Config *, ECO_GPIO_CONFIG_DESCRIPTOR *)' {aka 'short int (*)(struct IEcoGPIO1K210Config *, struct ECO_GPIO_CONFIG_DESCRIPTOR *)'} from incompatible pointer type 'int16_t (*)(struct IEcoGPIO1K210Config *, ECO_GPIO_CONFIG_DESCRIPTOR *)' {aka 'short int (*)(struct IEcoGPIO1K210Config *, struct ECO_GPIO_CONFIG_DESCRIPTOR *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_K210Config_set_ConfigDescriptor,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1704:5: note: (near initialization for 'g_3E002B7BB389408D9EDEB288C5DC2F30VTbl.set_ConfigDescriptor')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1705:5: warning: initialization of 'ECO_GPIO_CONFIG_DESCRIPTOR * (*)(struct IEcoGPIO1K210Config *)' {aka 'struct ECO_GPIO_CONFIG_DESCRIPTOR * (*)(struct IEcoGPIO1K210Config *)'} from incompatible pointer type 'ECO_GPIO_CONFIG_DESCRIPTOR * (*)(struct IEcoGPIO1K210Config *)' {aka 'struct ECO_GPIO_CONFIG_DESCRIPTOR * (*)(struct IEcoGPIO1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_K210Config_get_ConfigDescriptor,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1705:5: note: (near initialization for 'g_3E002B7BB389408D9EDEB288C5DC2F30VTbl.get_ConfigDescriptor')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1706:5: warning: initialization of 'int16_t (*)(struct IEcoGPIO1K210Config *, uint8_t,  uint8_t,  uint32_t)' {aka 'short int (*)(struct IEcoGPIO1K210Config *, unsigned char,  unsigned char,  unsigned int)'} from incompatible pointer type 'int16_t (*)(struct IEcoGPIO1K210Config *, uint8_t,  uint8_t,  uint32_t)' {aka 'short int (*)(struct IEcoGPIO1K210Config *, unsigned char,  unsigned char,  unsigned int)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1_K210Config_set_LogicalPinNumber
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1706:5: note: (near initialization for 'g_3E002B7BB389408D9EDEB288C5DC2F30VTbl.set_LogicalPinNumber')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1710:5: warning: initialization of 'int16_t (*)(struct IEcoFPIOA1K210Config *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoFPIOA1K210Config *, const struct UGUID *, void **)'} from incompatible pointer type 'int16_t (*)(struct IEcoFPIOA1K210Config *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoFPIOA1K210Config *, const struct UGUID *, void **)'} [-Wincompatible-pointer-types]
+              CEcoFPIOA1_K210Config_QueryInterface,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1710:5: note: (near initialization for 'g_D74C3896D5184D92B47AAD510B216A6BVTbl.QueryInterface')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1711:5: warning: initialization of 'uint32_t (*)(struct IEcoFPIOA1K210Config *)' {aka 'unsigned int (*)(struct IEcoFPIOA1K210Config *)'} from incompatible pointer type 'uint32_t (*)(struct IEcoFPIOA1K210Config *)' {aka 'unsigned int (*)(struct IEcoFPIOA1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoFPIOA1_K210Config_AddRef,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1711:5: note: (near initialization for 'g_D74C3896D5184D92B47AAD510B216A6BVTbl.AddRef')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1712:5: warning: initialization of 'uint32_t (*)(struct IEcoFPIOA1K210Config *)' {aka 'unsigned int (*)(struct IEcoFPIOA1K210Config *)'} from incompatible pointer type 'uint32_t (*)(struct IEcoFPIOA1K210Config *)' {aka 'unsigned int (*)(struct IEcoFPIOA1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoFPIOA1_K210Config_Release,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1712:5: note: (near initialization for 'g_D74C3896D5184D92B47AAD510B216A6BVTbl.Release')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1713:5: warning: initialization of 'int16_t (*)(struct IEcoFPIOA1K210Config *, ECO_FPIOA_CONFIG_DESCRIPTOR *)' {aka 'short int (*)(struct IEcoFPIOA1K210Config *, struct ECO_FPIOA_CONFIG_DESCRIPTOR *)'} from incompatible pointer type 'int16_t (*)(struct IEcoFPIOA1K210Config *, ECO_FPIOA_CONFIG_DESCRIPTOR *)' {aka 'short int (*)(struct IEcoFPIOA1K210Config *, struct ECO_FPIOA_CONFIG_DESCRIPTOR *)'} [-Wincompatible-pointer-types]
+              CEcoFPIOA1_K210Config_set_ConfigDescriptor,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1713:5: note: (near initialization for 'g_D74C3896D5184D92B47AAD510B216A6BVTbl.set_ConfigDescriptor')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1714:5: warning: initialization of 'ECO_FPIOA_CONFIG_DESCRIPTOR * (*)(struct IEcoFPIOA1K210Config *)' {aka 'struct ECO_FPIOA_CONFIG_DESCRIPTOR * (*)(struct IEcoFPIOA1K210Config *)'} from incompatible pointer type 'ECO_FPIOA_CONFIG_DESCRIPTOR * (*)(struct IEcoFPIOA1K210Config *)' {aka 'struct ECO_FPIOA_CONFIG_DESCRIPTOR * (*)(struct IEcoFPIOA1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoFPIOA1_K210Config_get_ConfigDescriptor,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1714:5: note: (near initialization for 'g_D74C3896D5184D92B47AAD510B216A6BVTbl.get_ConfigDescriptor')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1718:5: warning: initialization of 'int16_t (*)(struct IEcoSYSCTL1K210Config *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoSYSCTL1K210Config *, const struct UGUID *, void **)'} from incompatible pointer type 'int16_t (*)(struct IEcoSYSCTL1K210Config *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoSYSCTL1K210Config *, const struct UGUID *, void **)'} [-Wincompatible-pointer-types]
+              CEcoSYSCTL1_K210Config_QueryInterface,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1718:5: note: (near initialization for 'g_BEADA64ACF0443ED836D39A5CDEEF7C0VTbl.QueryInterface')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1719:5: warning: initialization of 'uint32_t (*)(struct IEcoSYSCTL1K210Config *)' {aka 'unsigned int (*)(struct IEcoSYSCTL1K210Config *)'} from incompatible pointer type 'uint32_t (*)(struct IEcoSYSCTL1K210Config *)' {aka 'unsigned int (*)(struct IEcoSYSCTL1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoSYSCTL1_K210Config_AddRef,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1719:5: note: (near initialization for 'g_BEADA64ACF0443ED836D39A5CDEEF7C0VTbl.AddRef')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1720:5: warning: initialization of 'uint32_t (*)(struct IEcoSYSCTL1K210Config *)' {aka 'unsigned int (*)(struct IEcoSYSCTL1K210Config *)'} from incompatible pointer type 'uint32_t (*)(struct IEcoSYSCTL1K210Config *)' {aka 'unsigned int (*)(struct IEcoSYSCTL1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoSYSCTL1_K210Config_Release,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1720:5: note: (near initialization for 'g_BEADA64ACF0443ED836D39A5CDEEF7C0VTbl.Release')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1721:5: warning: initialization of 'int16_t (*)(struct IEcoSYSCTL1K210Config *, ECO_SYSCTL_CONFIG_DESCRIPTOR *)' {aka 'short int (*)(struct IEcoSYSCTL1K210Config *, struct ECO_SYSCTL_CONFIG_DESCRIPTOR *)'} from incompatible pointer type 'int16_t (*)(struct IEcoSYSCTL1K210Config *, ECO_SYSCTL_CONFIG_DESCRIPTOR *)' {aka 'short int (*)(struct IEcoSYSCTL1K210Config *, struct ECO_SYSCTL_CONFIG_DESCRIPTOR *)'} [-Wincompatible-pointer-types]
+              CEcoSYSCTL1_K210Config_set_ConfigDescriptor,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1721:5: note: (near initialization for 'g_BEADA64ACF0443ED836D39A5CDEEF7C0VTbl.set_ConfigDescriptor')
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1722:5: warning: initialization of 'ECO_SYSCTL_CONFIG_DESCRIPTOR * (*)(struct IEcoSYSCTL1K210Config *)' {aka 'struct ECO_SYSCTL_CONFIG_DESCRIPTOR * (*)(struct IEcoSYSCTL1K210Config *)'} from incompatible pointer type 'ECO_SYSCTL_CONFIG_DESCRIPTOR * (*)(struct IEcoSYSCTL1K210Config *)' {aka 'struct ECO_SYSCTL_CONFIG_DESCRIPTOR * (*)(struct IEcoSYSCTL1K210Config *)'} [-Wincompatible-pointer-types]
+              CEcoSYSCTL1_K210Config_get_ConfigDescriptor,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1722:5: note: (near initialization for 'g_BEADA64ACF0443ED836D39A5CDEEF7C0VTbl.get_ConfigDescriptor')
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'createCEcoGPIO1':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1754:27: warning: unused variable 'pIMem' [-Wunused-variable]
+              IEcoMemoryAllocator1* pIMem = 0;
+                                    ^~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1753:24: warning: unused variable 'pIBus' [-Wunused-variable]
+              IEcoInterfaceBus1* pIBus = 0;
+                                 ^~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1752:18: warning: unused variable 'pISys' [-Wunused-variable]
+              IEcoSystem1* pISys = 0;
+                           ^~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1.c: In function 'deleteCEcoGPIO1':
+         ..\..\..\SourceFiles\CEcoGPIO1.c:1791:16: warning: unused variable 'pCMe' [-Wunused-variable]
+              CEcoGPIO1* pCMe = (CEcoGPIO1*)pIGPIO;
+                         ^~~~
+         C:\toolchain/gcc-riscv64-8.2.0/bin/riscv64-unknown-elf-gcc -I ..\..\..\HeaderFiles -I ..\..\..\SharedFiles -I ..\..\..\..\Eco.Core1\SharedFiles -I ..\..\..\..\Eco.InterfaceBus1\SharedFiles -I ..\..\..\..\Eco.MemoryManager1\SharedFiles -Wall -O3 -Wno-missing-braces -mcmodel=medany -mabi=lp64f -march=rv64imafc -mstrict-align -fno-tree-loop-vectorize -fno-tree-slp-vectorize -DECO_LIB -DECO_K210 -DUGUID_UTILITY -c ..\..\..\SourceFiles\CEcoGPIO1Factory.c -o ..\..\..\SourceFiles\CEcoGPIO1Factory.o
+         In file included from ..\..\..\SharedFiles/IEcoGPIO1.h:25,
+                          from ..\..\..\SourceFiles\CEcoGPIO1Factory.c:20:
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:78:61: warning: 'struct IEcoUnknown' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoUnknown* me, /* in */ const UGUID* riid, /* out */ void** ppv);
+                                                                      ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:79:54: warning: 'struct IEcoUnknown' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoUnknown* me);
+                                                               ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:80:55: warning: 'struct IEcoUnknown' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoUnknown* me);
+                                                                ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:96:61: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoComponentFactory* me, /* in */ const UGUID* riid, /* out */ void** ppv);
+                                                                      ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:97:54: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoComponentFactory* me);
+                                                               ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:98:55: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoComponentFactory* me);
+                                                                ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:100:52: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *Alloc)(/* in */ struct IEcoComponentFactory* me, /* in */ struct IEcoUnknown* pISystem, /* in */ struct IEcoUnknown* pIUnknownOuter, /* in */ const UGUID* riid, /* out */ void** ppv);
+                                                             ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:101:51: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *Init)(/* in */ struct IEcoComponentFactory* me, /* in */ struct IEcoUnknown* pISystem, /* in */ void* pv);
+                                                            ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:102:55: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              char_t* (ECOCALLMETHOD *get_Name)(/* in */ struct IEcoComponentFactory* me);
+                                                                ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:103:58: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              char_t* (ECOCALLMETHOD *get_Version)(/* in */ struct IEcoComponentFactory* me);
+                                                                   ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:104:63: warning: 'struct IEcoComponentFactory' declared inside parameter list will not be visible outside of this definition or declaration
+              char_t* (ECOCALLMETHOD *get_Manufacturer)(/* in */ struct IEcoComponentFactory* me);
+                                                                        ^~~~~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\SourceFiles\CEcoGPIO1Factory.c:20:
+         ..\..\..\SharedFiles/IEcoGPIO1.h:40:61: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoGPIO1* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:41:54: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoGPIO1* me);
+                                                               ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:42:55: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoGPIO1* me);
+                                                                ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:45:55: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_Mode)(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in */ uint8_t mode);
+                                                                ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:46:55: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_Data)(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in */ uint8_t Value);
+                                                                ^~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1.h:47:55: warning: 'struct IEcoGPIO1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *get_Data)(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in | out */ uint8_t *pValue);
+                                                                ^~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1Factory.h:24,
+                          from ..\..\..\SourceFiles\CEcoGPIO1Factory.c:21:
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:36:61: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoSystem1* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:37:54: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoSystem1* me);
+                                                               ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:38:55: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoSystem1* me);
+                                                                ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:41:52: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              void (ECOCALLMETHOD *set_Data)(/* in */ struct IEcoSystem1* me, /* in */ void *pv);
+                                                             ^~~~~~~~~~~
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoSystem1.h:42:53: warning: 'struct IEcoSystem1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *get_Data)(/* in */ struct IEcoSystem1* me);
+                                                              ^~~~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:34,
+                          from ..\..\..\SourceFiles\CEcoGPIO1Factory.c:22:
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:72:61: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoFPIOA1K210Config* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:73:54: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoFPIOA1K210Config* me);
+                                                               ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:74:55: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoFPIOA1K210Config* me);
+                                                                ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:77:67: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ struct IEcoFPIOA1K210Config* me, /* in */ ECO_FPIOA_CONFIG_DESCRIPTOR* config);
+                                                                            ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoFPIOA1K210Config.h:78:88: warning: 'struct IEcoFPIOA1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              ECO_FPIOA_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ struct IEcoFPIOA1K210Config* me);
+                                                                                                 ^~~~~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:35,
+                          from ..\..\..\SourceFiles\CEcoGPIO1Factory.c:22:
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:63:61: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoGPIO1K210Config* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:64:54: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoGPIO1K210Config* me);
+                                                               ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:65:55: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoGPIO1K210Config* me);
+                                                                ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:68:67: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ struct IEcoGPIO1K210Config* me, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config);
+                                                                            ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:69:87: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              ECO_GPIO_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ struct IEcoGPIO1K210Config* me);
+                                                                                                ^~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoGPIO1K210Config.h:70:67: warning: 'struct IEcoGPIO1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_LogicalPinNumber)(/* in */ struct IEcoGPIO1K210Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber);
+                                                                            ^~~~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:36,
+                          from ..\..\..\SourceFiles\CEcoGPIO1Factory.c:22:
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:136:61: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoSYSCTL1K210Config* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                                      ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:137:54: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoSYSCTL1K210Config* me);
+                                                               ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:138:55: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoSYSCTL1K210Config* me);
+                                                                ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:141:67: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ struct IEcoSYSCTL1K210Config* me, /* in */ ECO_SYSCTL_CONFIG_DESCRIPTOR* config);
+                                                                            ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SharedFiles/IEcoSYSCTL1K210Config.h:142:89: warning: 'struct IEcoSYSCTL1K210Config' declared inside parameter list will not be visible outside of this definition or declaration
+              ECO_SYSCTL_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ struct IEcoSYSCTL1K210Config* me);
+                                                                                                  ^~~~~~~~~~~~~~~~~~~~~
+         In file included from ..\..\..\HeaderFiles/CEcoGPIO1.h:39,
+                          from ..\..\..\SourceFiles\CEcoGPIO1Factory.c:22:
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:33:53: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *QueryInterface )(struct IEcoMemoryAllocator1* me, /* in */ const UGUID* riid, /* out */ void **ppv);
+                                                              ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:34:46: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *AddRef )(struct IEcoMemoryAllocator1* me);
+                                                       ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:35:47: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *Release )(struct IEcoMemoryAllocator1* me);
+                                                        ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:38:50: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *Alloc)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ uint32_t size);
+                                                           ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:39:48: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void (ECOCALLMETHOD *Free)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pv);
+                                                         ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:40:52: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *Realloc)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pv, /* in */ uint32_t size);
+                                                             ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:41:49: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *Copy)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pvDst, /* in */ void *pvSrc, /* in */ uint32_t size);
+                                                          ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:42:49: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              void* (ECOCALLMETHOD *Fill)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pvDst, /* in */ char_t Fill, /* in */ uint32_t size);
+                                                          ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:43:54: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              int16_t (ECOCALLMETHOD *Compare)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pv1, /* in */ void *pv2, /* in */ uint32_t size);
+                                                               ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\..\Eco.MemoryManager1\SharedFiles/IEcoMemoryAllocator1.h:44:60: warning: 'struct IEcoMemoryAllocator1' declared inside parameter list will not be visible outside of this definition or declaration
+              uint32_t (ECOCALLMETHOD *RetrieveSize)(/* in */ struct IEcoMemoryAllocator1* me, /* in */ void *pv);
+                                                                     ^~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:39: warning: "IsEqualUGUID" redefined
+          #define IsEqualUGUID(rguid1, rguid2) IsEqualUGUID_A70A4C2E9C9645BD91367754D01F101F(rguid1, rguid2)
+          
+         In file included from ..\..\..\SharedFiles/IEcoGPIO1.h:25,
+                          from ..\..\..\SourceFiles\CEcoGPIO1Factory.c:20:
+         ..\..\..\..\Eco.Core1\SharedFiles/IEcoBase1.h:48: note: this is the location of the previous definition
+          #define IsEqualUGUID(rguid1, rguid2)  \
+          
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c: In function 'CEcoGPIO1Factory_QueryInterface':
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:60:43: warning: passing argument 1 of '((IEcoUnknown *)*ppv)->pVTbl->AddRef' from incompatible pointer type [-Wincompatible-pointer-types]
+              ((IEcoUnknown*)(*ppv))->pVTbl->AddRef((IEcoUnknown*)*ppv);
+                                                    ^~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:60:43: note: expected 'struct IEcoUnknown *' but argument is of type 'IEcoUnknown *' {aka 'struct IEcoUnknown *'}
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c: In function 'CEcoGPIO1Factory_Alloc':
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:173:43: warning: passing argument 1 of 'pIUnk->pVTbl->QueryInterface' from incompatible pointer type [-Wincompatible-pointer-types]
+              result = pIUnk->pVTbl->QueryInterface(pIUnk, riid, ppv);
+                                                    ^~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:173:43: note: expected 'struct IEcoUnknown *' but argument is of type 'IEcoUnknown *' {aka 'struct IEcoUnknown *'}
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:176:27: warning: passing argument 1 of 'pIUnk->pVTbl->Release' from incompatible pointer type [-Wincompatible-pointer-types]
+              pIUnk->pVTbl->Release(pIUnk);
+                                    ^~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:176:27: note: expected 'struct IEcoUnknown *' but argument is of type 'IEcoUnknown *' {aka 'struct IEcoUnknown *'}
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c: At top level:
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:247:5: warning: initialization of 'int16_t (*)(struct IEcoComponentFactory *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoComponentFactory *, const struct UGUID *, void **)'} from incompatible pointer type 'int16_t (*)(IEcoComponentFactory *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoComponentFactory *, const struct UGUID *, void **)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1Factory_QueryInterface,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:247:5: note: (near initialization for 'g_xA70A4C2E9C9645BD91367754D01F101FFactoryVTbl.QueryInterface')
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:248:5: warning: initialization of 'uint32_t (*)(struct IEcoComponentFactory *)' {aka 'unsigned int (*)(struct IEcoComponentFactory *)'} from incompatible pointer type 'uint32_t (*)(IEcoComponentFactory *)' {aka 'unsigned int (*)(struct IEcoComponentFactory *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1Factory_AddRef,
+              ^~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:248:5: note: (near initialization for 'g_xA70A4C2E9C9645BD91367754D01F101FFactoryVTbl.AddRef')
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:249:5: warning: initialization of 'uint32_t (*)(struct IEcoComponentFactory *)' {aka 'unsigned int (*)(struct IEcoComponentFactory *)'} from incompatible pointer type 'uint32_t (*)(IEcoComponentFactory *)' {aka 'unsigned int (*)(struct IEcoComponentFactory *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1Factory_Release,
+              ^~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:249:5: note: (near initialization for 'g_xA70A4C2E9C9645BD91367754D01F101FFactoryVTbl.Release')
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:250:5: warning: initialization of 'int16_t (*)(struct IEcoComponentFactory *, struct IEcoUnknown *, struct IEcoUnknown *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoComponentFactory *, struct IEcoUnknown *, struct IEcoUnknown *, const struct UGUID *, void **)'} from incompatible pointer type 'int16_t (*)(struct IEcoComponentFactory *, struct IEcoUnknown *, struct IEcoUnknown *, const UGUID *, void **)' {aka 'short int (*)(struct IEcoComponentFactory *, struct IEcoUnknown *, struct IEcoUnknown *, const struct UGUID *, void **)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1Factory_Alloc,
+              ^~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:250:5: note: (near initialization for 'g_xA70A4C2E9C9645BD91367754D01F101FFactoryVTbl.Alloc')
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:251:5: warning: initialization of 'int16_t (*)(struct IEcoComponentFactory *, struct IEcoUnknown *, void *)' {aka 'short int (*)(struct IEcoComponentFactory *, struct IEcoUnknown *, void *)'} from incompatible pointer type 'int16_t (*)(struct IEcoComponentFactory *, struct IEcoUnknown *, void *)' {aka 'short int (*)(struct IEcoComponentFactory *, struct IEcoUnknown *, void *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1Factory_Init,
+              ^~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:251:5: note: (near initialization for 'g_xA70A4C2E9C9645BD91367754D01F101FFactoryVTbl.Init')
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:252:5: warning: initialization of 'char_t * (*)(struct IEcoComponentFactory *)' {aka 'char * (*)(struct IEcoComponentFactory *)'} from incompatible pointer type 'char_t * (*)(struct IEcoComponentFactory *)' {aka 'char * (*)(struct IEcoComponentFactory *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1Factory_get_Name,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:252:5: note: (near initialization for 'g_xA70A4C2E9C9645BD91367754D01F101FFactoryVTbl.get_Name')
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:253:5: warning: initialization of 'char_t * (*)(struct IEcoComponentFactory *)' {aka 'char * (*)(struct IEcoComponentFactory *)'} from incompatible pointer type 'char_t * (*)(struct IEcoComponentFactory *)' {aka 'char * (*)(struct IEcoComponentFactory *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1Factory_get_Version,
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:253:5: note: (near initialization for 'g_xA70A4C2E9C9645BD91367754D01F101FFactoryVTbl.get_Version')
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:254:5: warning: initialization of 'char_t * (*)(struct IEcoComponentFactory *)' {aka 'char * (*)(struct IEcoComponentFactory *)'} from incompatible pointer type 'char_t * (*)(struct IEcoComponentFactory *)' {aka 'char * (*)(struct IEcoComponentFactory *)'} [-Wincompatible-pointer-types]
+              CEcoGPIO1Factory_get_Manufacturer
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         ..\..\..\SourceFiles\CEcoGPIO1Factory.c:254:5: note: (near initialization for 'g_xA70A4C2E9C9645BD91367754D01F101FFactoryVTbl.get_Manufacturer')
+         if not exist ..\..\..\BuildFiles\K210 mkdir ..\..\..\BuildFiles\K210
+         C:\toolchain/gcc-riscv64-8.2.0/bin/riscv64-unknown-elf-ar rcs ..\..\..\BuildFiles\K210\libA70A4C2E9C9645BD91367754D01F101F.a ..\..\..\SourceFiles\CEcoGPIO1.o ..\..\..\SourceFiles\CEcoGPIO1Factory.o
+         del /q /f ..\..\..\SourceFiles\CEcoGPIO1.o ..\..\..\SourceFiles\CEcoGPIO1Factory.o
+     1>Done Building Project "C:\Dev\VBL\ECO\Solutions\Eco.Framework\Eco.GPIO1\AssemblyFiles\K210\gcc_riscv64_8_2_0\Eco.GPIO1.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.76

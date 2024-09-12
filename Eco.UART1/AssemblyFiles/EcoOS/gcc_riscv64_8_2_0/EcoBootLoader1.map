@@ -1,0 +1,426 @@
+Archive member included to satisfy reference by file (symbol)
+
+..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                              ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o (GetIEcoComponentFactoryPtr_B40E129B56624BD7B5F8339C025F3EF0)
+..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+                              ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o) (initCEcoUART1_025F3EF0)
+..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                              ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o) (createCEcoUART1Device_025F3EF0)
+
+Discarded input sections
+
+ .text          0x0000000000000000        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+ .data          0x0000000000000000        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+ .bss           0x0000000000000000        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+ .data          0x0000000000000000        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+ .bss           0x0000000000000000        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+ .text          0x0000000000000000        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+ .data          0x0000000000000000        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+ .bss           0x0000000000000000        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+ .text.mdelay   0x0000000000000000       0x10 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+ .text          0x0000000000000000        0x0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+ .bss           0x0000000000000000        0x0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+ .text          0x0000000000000000        0x0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+ .bss           0x0000000000000000        0x0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+ .text.deleteCEcoUART1_025F3EF0
+                0x0000000000000000        0x2 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+ .text          0x0000000000000000        0x0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+ .text.deleteCEcoUART1Device_025F3EF0
+                0x0000000000000000        0x2 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a
+                0x0000000000020000                . = 0x20000
+                0x0000000000020000                . = ALIGN (0x4)
+
+.head           0x0000000000020000      0x3c8
+ ../../../UnitTestFiles/SourceFiles/RISCV64/EcoHead.o(.rodata)
+ .rodata        0x0000000000020000      0x3c8 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+                0x0000000000020000                BT0_head
+                0x00000000000203c8                . = ALIGN (0x1)
+
+.text           0x00000000000203c8       0x42
+ ../../../UnitTestFiles/SourceFiles/RISCV64/EcoEntry.o(.text)
+ .text          0x00000000000203c8       0x42 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+                0x00000000000203c8                _start
+ *(.text)
+
+.text.timer_get_us
+                0x000000000002040a        0xe
+ .text.timer_get_us
+                0x000000000002040a        0xe ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+                0x000000000002040a                timer_get_us
+
+.text.udelay    0x0000000000020418       0x2c
+ .text.udelay   0x0000000000020418       0x2c ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+                0x0000000000020418                udelay
+
+.text.startup.main
+                0x0000000000020444      0x110
+ .text.startup.main
+                0x0000000000020444      0x110 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+                0x0000000000020444                main
+
+.text.CEcoUART1Factory_025F3EF0_QueryInterface
+                0x0000000000020554       0x60
+ .text.CEcoUART1Factory_025F3EF0_QueryInterface
+                0x0000000000020554       0x60 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x0000000000020554                CEcoUART1Factory_025F3EF0_QueryInterface
+
+.text.CEcoUART1Factory_025F3EF0_AddRef
+                0x00000000000205b4       0x12
+ .text.CEcoUART1Factory_025F3EF0_AddRef
+                0x00000000000205b4       0x12 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x00000000000205b4                CEcoUART1Factory_025F3EF0_AddRef
+
+.text.CEcoUART1Factory_025F3EF0_Release
+                0x00000000000205c6       0x12
+ .text.CEcoUART1Factory_025F3EF0_Release
+                0x00000000000205c6       0x12 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x00000000000205c6                CEcoUART1Factory_025F3EF0_Release
+
+.text.CEcoUART1Factory_025F3EF0_Init
+                0x00000000000205d8        0xe
+ .text.CEcoUART1Factory_025F3EF0_Init
+                0x00000000000205d8        0xe ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x00000000000205d8                CEcoUART1Factory_025F3EF0_Init
+
+.text.CEcoUART1Factory_025F3EF0_Alloc
+                0x00000000000205e6       0x8e
+ .text.CEcoUART1Factory_025F3EF0_Alloc
+                0x00000000000205e6       0x8e ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x00000000000205e6                CEcoUART1Factory_025F3EF0_Alloc
+
+.text.CEcoUART1Factory_025F3EF0_get_Name
+                0x0000000000020674        0xc
+ .text.CEcoUART1Factory_025F3EF0_get_Name
+                0x0000000000020674        0xc ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x0000000000020674                CEcoUART1Factory_025F3EF0_get_Name
+
+.text.CEcoUART1Factory_025F3EF0_get_Version
+                0x0000000000020680        0xc
+ .text.CEcoUART1Factory_025F3EF0_get_Version
+                0x0000000000020680        0xc ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x0000000000020680                CEcoUART1Factory_025F3EF0_get_Version
+
+.text.CEcoUART1Factory_025F3EF0_get_Manufacturer
+                0x000000000002068c        0xc
+ .text.CEcoUART1Factory_025F3EF0_get_Manufacturer
+                0x000000000002068c        0xc ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x000000000002068c                CEcoUART1Factory_025F3EF0_get_Manufacturer
+
+.text.IsEqualUGUIDB40E129B56624BD7B5F8339C025F3EF0
+                0x0000000000020698       0x20
+ .text.IsEqualUGUIDB40E129B56624BD7B5F8339C025F3EF0
+                0x0000000000020698       0x20 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x0000000000020698                IsEqualUGUIDB40E129B56624BD7B5F8339C025F3EF0
+
+.text.CEcoUART1_025F3EF0_AddRef
+                0x00000000000206b8       0x12
+ .text.CEcoUART1_025F3EF0_AddRef
+                0x00000000000206b8       0x12 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+                0x00000000000206b8                CEcoUART1_025F3EF0_AddRef
+
+.text.CEcoUART1_025F3EF0_Release
+                0x00000000000206ca       0x12
+ .text.CEcoUART1_025F3EF0_Release
+                0x00000000000206ca       0x12 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+                0x00000000000206ca                CEcoUART1_025F3EF0_Release
+
+.text.CEcoUART1_025F3EF0_new_Device
+                0x00000000000206dc        0xe
+ .text.CEcoUART1_025F3EF0_new_Device
+                0x00000000000206dc        0xe ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+                0x00000000000206dc                CEcoUART1_025F3EF0_new_Device
+
+.text.CEcoUART1_025F3EF0_QueryInterface
+                0x00000000000206ea       0x60
+ .text.CEcoUART1_025F3EF0_QueryInterface
+                0x00000000000206ea       0x60 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+                0x00000000000206ea                CEcoUART1_025F3EF0_QueryInterface
+
+.text.initCEcoUART1_025F3EF0
+                0x000000000002074a        0xc
+ .text.initCEcoUART1_025F3EF0
+                0x000000000002074a        0xc ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+                0x000000000002074a                initCEcoUART1_025F3EF0
+
+.text.createCEcoUART1_025F3EF0
+                0x0000000000020756       0x18
+ .text.createCEcoUART1_025F3EF0
+                0x0000000000020756       0x18 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+                0x0000000000020756                createCEcoUART1_025F3EF0
+
+.text.CEcoUART1Device_025F3EF0_AddRef
+                0x000000000002076e       0x12
+ .text.CEcoUART1Device_025F3EF0_AddRef
+                0x000000000002076e       0x12 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x000000000002076e                CEcoUART1Device_025F3EF0_AddRef
+
+.text.CEcoUART1Device_025F3EF0_Release
+                0x0000000000020780       0x12
+ .text.CEcoUART1Device_025F3EF0_Release
+                0x0000000000020780       0x12 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020780                CEcoUART1Device_025F3EF0_Release
+
+.text.CEcoUART1Device_025F3EF0_Connect
+                0x0000000000020792       0xa0
+ .text.CEcoUART1Device_025F3EF0_Connect
+                0x0000000000020792       0xa0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020792                CEcoUART1Device_025F3EF0_Connect
+
+.text.CEcoUART1Device_025F3EF0_Disconnect
+                0x0000000000020832       0x10
+ .text.CEcoUART1Device_025F3EF0_Disconnect
+                0x0000000000020832       0x10 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020832                CEcoUART1Device_025F3EF0_Disconnect
+
+.text.CEcoUART1Device_025F3EF0_Config_AddRef
+                0x0000000000020842       0x14
+ .text.CEcoUART1Device_025F3EF0_Config_AddRef
+                0x0000000000020842       0x14 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020842                CEcoUART1Device_025F3EF0_Config_AddRef
+
+.text.CEcoUART1Device_025F3EF0_Config_Release
+                0x0000000000020856       0x14
+ .text.CEcoUART1Device_025F3EF0_Config_Release
+                0x0000000000020856       0x14 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020856                CEcoUART1Device_025F3EF0_Config_Release
+
+.text.CEcoUART1Device_025F3EF0_Config_set_ConfigDescriptor
+                0x000000000002086a        0xe
+ .text.CEcoUART1Device_025F3EF0_Config_set_ConfigDescriptor
+                0x000000000002086a        0xe ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x000000000002086a                CEcoUART1Device_025F3EF0_Config_set_ConfigDescriptor
+
+.text.CEcoUART1Device_025F3EF0_Config_get_ConfigDescriptor
+                0x0000000000020878        0xa
+ .text.CEcoUART1Device_025F3EF0_Config_get_ConfigDescriptor
+                0x0000000000020878        0xa ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020878                CEcoUART1Device_025F3EF0_Config_get_ConfigDescriptor
+
+.text.CEcoUART1Device_025F3EF0_GPIOConfig_AddRef
+                0x0000000000020882       0x14
+ .text.CEcoUART1Device_025F3EF0_GPIOConfig_AddRef
+                0x0000000000020882       0x14 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020882                CEcoUART1Device_025F3EF0_GPIOConfig_AddRef
+
+.text.CEcoUART1Device_025F3EF0_GPIOConfig_Release
+                0x0000000000020896       0x14
+ .text.CEcoUART1Device_025F3EF0_GPIOConfig_Release
+                0x0000000000020896       0x14 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020896                CEcoUART1Device_025F3EF0_GPIOConfig_Release
+
+.text.CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor
+                0x00000000000208aa        0xe
+ .text.CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor
+                0x00000000000208aa        0xe ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x00000000000208aa                CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor
+
+.text.CEcoUART1Device_025F3EF0_GPIOConfig_get_ConfigDescriptor
+                0x00000000000208b8        0xa
+ .text.CEcoUART1Device_025F3EF0_GPIOConfig_get_ConfigDescriptor
+                0x00000000000208b8        0xa ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x00000000000208b8                CEcoUART1Device_025F3EF0_GPIOConfig_get_ConfigDescriptor
+
+.text.CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber
+                0x00000000000208c2       0x54
+ .text.CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber
+                0x00000000000208c2       0x54 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x00000000000208c2                CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber
+
+.text.CEcoUART1Device_025F3EF0_CCUConfig_AddRef
+                0x0000000000020916       0x14
+ .text.CEcoUART1Device_025F3EF0_CCUConfig_AddRef
+                0x0000000000020916       0x14 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020916                CEcoUART1Device_025F3EF0_CCUConfig_AddRef
+
+.text.CEcoUART1Device_025F3EF0_CCUConfig_Release
+                0x000000000002092a       0x14
+ .text.CEcoUART1Device_025F3EF0_CCUConfig_Release
+                0x000000000002092a       0x14 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x000000000002092a                CEcoUART1Device_025F3EF0_CCUConfig_Release
+
+.text.CEcoUART1Device_025F3EF0_CCUConfig_set_ConfigDescriptor
+                0x000000000002093e        0xe
+ .text.CEcoUART1Device_025F3EF0_CCUConfig_set_ConfigDescriptor
+                0x000000000002093e        0xe ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x000000000002093e                CEcoUART1Device_025F3EF0_CCUConfig_set_ConfigDescriptor
+
+.text.CEcoUART1Device_025F3EF0_CCUConfig_get_ConfigDescriptor
+                0x000000000002094c        0xa
+ .text.CEcoUART1Device_025F3EF0_CCUConfig_get_ConfigDescriptor
+                0x000000000002094c        0xa ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x000000000002094c                CEcoUART1Device_025F3EF0_CCUConfig_get_ConfigDescriptor
+
+.text.CEcoUART1Device_025F3EF0_Config_QueryInterface
+                0x0000000000020956       0xa4
+ .text.CEcoUART1Device_025F3EF0_Config_QueryInterface
+                0x0000000000020956       0xa4 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020956                CEcoUART1Device_025F3EF0_Config_QueryInterface
+
+.text.CEcoUART1Device_025F3EF0_GPIOConfig_QueryInterface
+                0x00000000000209fa       0xa4
+ .text.CEcoUART1Device_025F3EF0_GPIOConfig_QueryInterface
+                0x00000000000209fa       0xa4 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x00000000000209fa                CEcoUART1Device_025F3EF0_GPIOConfig_QueryInterface
+
+.text.CEcoUART1Device_025F3EF0_CCUConfig_QueryInterface
+                0x0000000000020a9e       0xa4
+ .text.CEcoUART1Device_025F3EF0_CCUConfig_QueryInterface
+                0x0000000000020a9e       0xa4 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020a9e                CEcoUART1Device_025F3EF0_CCUConfig_QueryInterface
+
+.text.CEcoUART1Device_025F3EF0_Transmit
+                0x0000000000020b42       0x1a
+ .text.CEcoUART1Device_025F3EF0_Transmit
+                0x0000000000020b42       0x1a ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020b42                CEcoUART1Device_025F3EF0_Transmit
+
+.text.CEcoUART1Device_025F3EF0_Receive
+                0x0000000000020b5c       0x1a
+ .text.CEcoUART1Device_025F3EF0_Receive
+                0x0000000000020b5c       0x1a ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020b5c                CEcoUART1Device_025F3EF0_Receive
+
+.text.CEcoUART1Device_025F3EF0_QueryInterface
+                0x0000000000020b76       0x98
+ .text.CEcoUART1Device_025F3EF0_QueryInterface
+                0x0000000000020b76       0x98 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020b76                CEcoUART1Device_025F3EF0_QueryInterface
+
+.text.createCEcoUART1Device_025F3EF0
+                0x0000000000020c0e       0x54
+ .text.createCEcoUART1Device_025F3EF0
+                0x0000000000020c0e       0x54 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020c0e                createCEcoUART1Device_025F3EF0
+                0x0000000000020c70                . = ALIGN (0x10)
+
+.rodata         0x0000000000020c70      0x132
+ *(.rodata)
+ .rodata        0x0000000000020c70       0x5a ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+ *fill*         0x0000000000020cca        0x6 
+ .rodata        0x0000000000020cd0       0x2a ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+ *fill*         0x0000000000020cfa        0x6 
+ .rodata        0x0000000000020d00       0x2a ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+ *fill*         0x0000000000020d2a        0x6 
+ .rodata        0x0000000000020d30       0x72 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+
+.rodata.str1.8  0x0000000000020da8       0x25
+ .rodata.str1.8
+                0x0000000000020da8       0x25 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+
+.rela.dyn       0x0000000000020dd0        0x0
+ .rela.text     0x0000000000020dd0        0x0 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+                0x0000000000020dd0                . = ALIGN (0x10)
+
+.data           0x0000000000020dd0      0x1f8
+ *(.data)
+ .data          0x0000000000020dd0       0xf0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x0000000000020dd0                g_xB40E129B56624BD7B5F8339C025F3EF0Factory
+                0x0000000000020e80                g_xB40E129B56624BD7B5F8339C025F3EF0FactoryVTbl
+ .data          0x0000000000020ec0       0x48 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+                0x0000000000020ec0                g_xB40E129B56624BD7B5F8339C025F3EF0UART1
+                0x0000000000020ee8                g_xB40E129B56624BD7B5F8339C025F3EF0VTbl_025F3EF0
+ .data          0x0000000000020f08       0xc0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020f08                g_x6B754B247D03435BB5E22165A2041862VTbl_025F3EF0
+                0x0000000000020f40                g_xBCF99D0D02594AE99368D8805C95DB09VTbl_025F3EF0
+                0x0000000000020f68                g_x2C25EC2943B44E4583B43375FC35C4D6VTbl_025F3EF0
+                0x0000000000020f98                g_xED0950291B1049CCA09349F7CA6B61E0VTbl_025F3EF0
+
+.sdata          0x0000000000020fc8        0x8
+ .sdata         0x0000000000020fc8        0x8 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+                0x0000000000020fc8                GetIEcoComponentFactoryPtr_B40E129B56624BD7B5F8339C025F3EF0
+                0x0000000000020fd0                . = ALIGN (0x4)
+
+.bss            0x0000000000020fd0       0xf0
+                0x0000000000020fd0                __bss_start = .
+ *(.bss)
+ .bss           0x0000000000020fd0       0xf0 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+                0x0000000000020fd0                g_xB40E129B56624BD7B5F8339C025F3EF0UART1Device
+                0x00000000000210c0                . = ALIGN (0x4)
+                0x00000000000210c0                __bss_end = .
+                0x00000000000210c0                _end = .
+                0x0000000000000001                ASSERT ((. <= 0x40000), boot0 image has exceeded its limit.)
+LOAD ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+LOAD ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+LOAD ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+LOAD ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a
+OUTPUT(..\..\..\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\EcoBootLoader1.elf elf64-littleriscv)
+
+.sbss           0x00000000000210c0        0x8
+ .sbss          0x00000000000210c0        0x8 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+                0x00000000000210c0                pIDevice1
+
+.debug_info     0x0000000000000000     0x2a84
+ .debug_info    0x0000000000000000      0x4bb ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+ .debug_info    0x00000000000004bb       0x2e ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+ .debug_info    0x00000000000004e9     0x259b ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+
+.debug_abbrev   0x0000000000000000      0x3ed
+ .debug_abbrev  0x0000000000000000       0xe3 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+ .debug_abbrev  0x00000000000000e3       0x14 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+ .debug_abbrev  0x00000000000000f7      0x2f6 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+
+.debug_aranges  0x0000000000000000       0xb0
+ .debug_aranges
+                0x0000000000000000       0x20 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+ .debug_aranges
+                0x0000000000000020       0x30 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+ .debug_aranges
+                0x0000000000000050       0x60 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+
+.debug_line     0x0000000000000000      0x67d
+ .debug_line    0x0000000000000000       0xeb ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+ .debug_line    0x00000000000000eb       0xbe ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+ .debug_line    0x00000000000001a9      0x4d4 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+
+.debug_str      0x0000000000000000     0x1853
+ .debug_str     0x0000000000000000     0x1853 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+                                        0x4af (size before relaxing)
+ .debug_str     0x0000000000001853       0x9c ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoEntry.o
+ .debug_str     0x0000000000001853     0x1832 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+
+.comment        0x0000000000000000       0x56
+ .comment       0x0000000000000000       0x56 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoHead.o
+                                         0x12 (size before relaxing)
+ .comment       0x0000000000000056       0x34 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+ .comment       0x0000000000000056       0x13 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+ .comment       0x0000000000000056       0x13 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+ .comment       0x0000000000000056       0x13 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+
+.riscv.attributes
+                0x0000000000000000       0x57
+ .riscv.attributes
+                0x0000000000000000       0x57 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+ .riscv.attributes
+                0x0000000000000057       0x35 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Factory.o)
+ .riscv.attributes
+                0x000000000000008c       0x35 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1.o)
+ .riscv.attributes
+                0x00000000000000c1       0x35 ..\..\..\..\Eco.UART1\BuildFiles\EcoOS\rv64gc\D1\StaticRelease\libB40E129B56624BD7B5F8339C025F3EF0.a(CEcoUART1Device.o)
+
+.debug_loclists
+                0x0000000000000000      0x12b
+ .debug_loclists
+                0x0000000000000000      0x12b ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+
+.debug_rnglists
+                0x0000000000000000       0x6c
+ .debug_rnglists
+                0x0000000000000000       0x6c ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+
+.debug_line_str
+                0x0000000000000000      0x21b
+ .debug_line_str
+                0x0000000000000000      0x21b ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o
+                                        0x294 (size before relaxing)
+
+.debug_frame    0x0000000000000000       0x90
+ .debug_frame   0x0000000000000000       0x90 ..\..\..\UnitTestFiles\SourceFiles\RISCV64\EcoBootLoader1.o

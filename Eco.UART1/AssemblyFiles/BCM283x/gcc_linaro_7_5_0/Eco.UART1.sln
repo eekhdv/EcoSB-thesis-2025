@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eco.UART1", "Eco.UART1.vcxproj", "{C2CD69F2-E939-4681-8C93-B30788655C7F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eco.UART1UnitTest", "Eco.UART1UnitTest.vcxproj", "{2BB1B15C-983C-4732-9E1F-F20D454B00AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2CD69F2-E939-4681-8C93-B30788655C7F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C2CD69F2-E939-4681-8C93-B30788655C7F}.Debug|Win32.Build.0 = Debug|Win32
+		{C2CD69F2-E939-4681-8C93-B30788655C7F}.Release|Win32.ActiveCfg = Release|Win32
+		{C2CD69F2-E939-4681-8C93-B30788655C7F}.Release|Win32.Build.0 = Release|Win32
+		{2BB1B15C-983C-4732-9E1F-F20D454B00AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2BB1B15C-983C-4732-9E1F-F20D454B00AA}.Debug|Win32.Build.0 = Debug|Win32
+		{2BB1B15C-983C-4732-9E1F-F20D454B00AA}.Release|Win32.ActiveCfg = Release|Win32
+		{2BB1B15C-983C-4732-9E1F-F20D454B00AA}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

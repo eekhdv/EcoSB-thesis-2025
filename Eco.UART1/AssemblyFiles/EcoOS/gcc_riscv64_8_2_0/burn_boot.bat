@@ -1,0 +1,1 @@
+dd if=C:\Dev\VBL\ECO\Solutions\Eco.Framework\Eco.BootLoader1\AssemblyFiles\RISCV64\gcc_riscv64_8_2_0\boot0_ECO_OS.bin.bin of=\\.\Volume{c4610d9c-265d-11ee-bc94-e450ebbadf62} bs=512 seek=16
