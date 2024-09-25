@@ -218,7 +218,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_QueryInterface(/* in */ struct IE
 
     else {
         *ppv = 0;
-        return -1;
+        return 0xffed;
     }
     return 0;
 }
@@ -239,7 +239,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_AddRef(/* in */ struct IEcoUART1
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     return ++pCMe->m_cRef;
@@ -261,7 +261,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Release(/* in */ struct IEcoUART
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     /* Уменьшение счетчика ссылок на компонент */
@@ -306,13 +306,13 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
 #endif
     /* Проверка указателей */
     if (me == 0) {
-        return -1;
+        return 0xffee;
     }
 
 #ifdef ECO_WIN32
     pCMe->m_Device = CreateFileA(pCMe->m_config->lpszName, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
     if (pCMe->m_Device == INVALID_HANDLE_VALUE) {
-        return -1;
+        return 0xffff;
     }
 
     if (pCMe->m_config->lpCC == 0) {
@@ -422,6 +422,9 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
     *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->Offset0x0008.FCR) = 0x7;
 #elif ECO_LINUX
     pCMe->m_Fd = open("/dev/ptmx", O_RDWR | O_NOCTTY);
+    if (pCMe->m_Fd == -1) {
+      return 0xffee;
+    }
     ioctl(pCMe->m_Fd, TIOCSBRK, &config->BaudRate); // Set baudrate
     ioctl(pCMe->m_Fd, TIOCSPTLCK, &(int){0}); // Unlock pt
     ioctl(pCMe->m_Fd, TIOCGPTN, &ptsNum); // get pts number
@@ -455,7 +458,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Disconnect(/* in */ struct IEcoUA
 
     /* Проверка указателей */
     if (me == 0) {
-        return -1;
+        return 0xffee;
     }
 #ifdef ECO_WIN32
     CloseHandle(pCMe->m_Device);
@@ -493,7 +496,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Transmit(/* in */ struct IEcoUART
 
     /* Проверка указателей */
     if (me == 0) {
-        return -1;
+        return 0xffee;
     }
 
 #ifdef ECO_WIN32
@@ -569,12 +572,12 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Receive(/* in */ struct IEcoUART1
 
     /* Проверка указателей */
     if (me == 0) {
-        return -1;
+        return 0xffee;
     }
 
 #ifdef ECO_WIN32
     if (!SetCommMask(pCMe->m_Device, EV_RXCHAR)) {
-        return -1;
+        return 0xffff;
     }
     for ( ; ; ) {
         if (WaitCommEvent(pcme->m_device, &dwCommEvent, NULL)) {
@@ -690,7 +693,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Config_QueryInterface(/* in */ IE
 #endif
     else {
         *ppv = 0;
-        return -1;
+        return 0xffed;
     }
     return 0;
 }
@@ -719,7 +722,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Config_AddRef(/* in */ IEcoUART1
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     return ++pCMe->m_cRef;
@@ -749,7 +752,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Config_Release(/* in */ IEcoUART
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     /* Уменьшение счетчика ссылок на компонент */
@@ -787,7 +790,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Config_set_ConfigDescriptor(/* in
 
     /* Проверка указателей */
     if (me == 0 || config == 0) {
-        return -1;
+        return 0xffee;
     }
 
     pCMe->m_UARTConfig = config;
@@ -906,7 +909,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_QueryInterface(/* in *
 #endif
     else {
         *ppv = 0;
-        return -1;
+        return 0xffed;
     }
     return 0;
 }
@@ -933,7 +936,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_AddRef(/* in */ struc
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     return ++pCMe->m_cRef;
@@ -960,7 +963,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_Release(/* in */ stru
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     /* Уменьшение счетчика ссылок на компонент */
@@ -995,7 +998,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/
 
     /* Проверка указателя */
     if (me == 0 || config == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     pCMe->m_GPIOConfig = config;
@@ -1054,7 +1057,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     pDescriptor = (ECO_GPIO_CONFIG_DESCRIPTOR*)pCMe->m_GPIOConfig;
@@ -1153,7 +1156,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_CCUConfig_QueryInterface(/* in */
 #endif
     else {
         *ppv = 0;
-        return -1;
+        return 0xffee;
     }
     return 0;
 }
@@ -1174,7 +1177,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_CCUConfig_AddRef(/* in */ struct
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     return ++pCMe->m_cRef;
@@ -1197,7 +1200,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_CCUConfig_Release(/* in */ struc
 
     /* Проверка указателя */
     if (me == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     /* Уменьшение счетчика ссылок на компонент */
@@ -1228,7 +1231,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_CCUConfig_set_ConfigDescriptor(/*
 
     /* Проверка указателя */
     if (me == 0 || config == 0 ) {
-        return -1;
+        return 0xffee;
     }
 
     pCMe->m_CCUConfig = config;
