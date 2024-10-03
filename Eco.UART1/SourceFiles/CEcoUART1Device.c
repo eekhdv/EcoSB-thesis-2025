@@ -423,7 +423,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
 #elif ECO_LINUX
     pCMe->m_Fd = open("/dev/ptmx", O_RDWR | O_NOCTTY);
     if (pCMe->m_Fd == -1) {
-      return 0xffee;
+      return 0xffff;
     }
     ioctl(pCMe->m_Fd, TIOCSBRK, &config->BaudRate); // Set baudrate
     ioctl(pCMe->m_Fd, TIOCSPTLCK, &(int){0}); // Unlock pt
