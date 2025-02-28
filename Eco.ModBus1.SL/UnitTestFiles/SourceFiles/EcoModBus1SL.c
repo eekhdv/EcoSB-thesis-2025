@@ -51,7 +51,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
     /* Проверка и создание системного интрефейса */
     if (pISys == 0) {
-        result = pIUnk->pVTbl->QueryInterface(pIUnk, &GID_IEcoSystem1, (void **)&pISys);
+        result = pIUnk->pVTbl->QueryInterface(pIUnk, &GID_IEcoSystem, (void **)&pISys);
         if (result != 0 && pISys == 0) {
         /* Освобождение системного интерфейса в случае ошибки */
             goto Release;

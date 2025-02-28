@@ -17,10 +17,12 @@
  *
  */
 
+#include "ErrEcoCodes.h"
 #include "IEcoSystem1.h"
 #include "IEcoInterfaceBus1.h"
 #include "IEcoInterfaceBus1MemExt.h"
 #include "CEcoModBus1.h"
+
 
 /*
  *
@@ -109,42 +111,195 @@ static uint32_t ECOCALLMETHOD CEcoModBus1_A10E8757_Release(/* in */ IEcoModBus1P
     return pCMe->m_cRef;
 }
 
+
 /*
  *
  * <сводка>
- *   Функция MyFunction
+ *   Функция EncodePDU
  * </сводка>
  *
  * <описание>
- *   Функция
+ *   Функция упаковки (кодирования) PDU
  * </описание>
  *
  */
-static int16_t ECOCALLMETHOD CEcoModBus1_A10E8757_MyFunction(/* in */ IEcoModBus1Ptr_t me, /* in */ char_t* Name, /* out */ char_t** copyName) {
+static int16_t CEcoModBus1_A10E8757_EncodePDU(/* in */  IEcoModBus1Ptr_t me,
+                                              /* in */  uint8_t functionCode,
+                                              /* in */  uint16_t subCode,
+                                              /* in */  byte_t* Data,
+                                              /* in */  uint32_t dataLength,
+                                              /* out */ byte_t** PDU,
+                                              /* out */ uint32_t* pduLength)
+{
     CEcoModBus1_A10E8757* pCMe = (CEcoModBus1_A10E8757*)me;
-    int16_t index = 0;
 
     /* Проверка указателей */
-    if (me == 0 || Name == 0 || copyName == 0) {
+    if (me == 0 || Data == 0 || PDU == 0 || pduLength == 0) {
         return ERR_ECO_POINTER;
     }
+    uint32_t length = sizeof(functionCode) + dataLength;
 
-    /* Копирование строки */
-    while(Name[index] != 0) {
-        index++;
+    switch (functionCode) {
+        case ECO_MB_FC_DIAGNOSTIC:
+        case ECO_MB_FC_READ_DEVICE_IDENTIFICATION:
+        //case ECO_MB_FC_ENCAPSULATED_INTERFACE_TRANSPORT:
+        //case ECO_MB_FC_CANOPEN_GENERAL_REFERENCE:
+            length += sizeof(subCode);
+            break;
+        default:
+          if (subCode > 0)
+            return ERR_ECO_UNEXPECTED;
+          break;
     }
-    pCMe->m_Name = (char_t*)pCMe->m_pIMem->pVTbl->Alloc(pCMe->m_pIMem, index + 1);
-    index = 0;
-    while(Name[index] != 0) {
-        pCMe->m_Name[index] = Name[index];
-        index++;
-    }
-    *copyName = pCMe->m_Name;
+    
+    /* Result PDU length */
+    *pduLength = length;
+
+    /* Fill PDU */
+    byte_t* LocalPDU = (byte_t*)pCMe->m_pIMem->pVTbl->Alloc(pCMe->m_pIMem, length);
+
+    LocalPDU[0] = functionCode;
+
+    if (subCode > 0)
+        *(uint16_t*)(LocalPDU + ECO_MB_FUNCTION_CODE_LENGTH) = subCode;
+
+    pCMe->m_pIMem->pVTbl->Copy(pCMe->m_pIMem, LocalPDU + ECO_MB_FUNCTION_CODE_LENGTH + (subCode > 0 ? ECO_MB_SUBCODE_LENGTH : 0), Data, dataLength);
+
+    *PDU = LocalPDU;
 
     return ERR_ECO_SUCCESES;
 }
 
 
+/*
+ *
+ * <сводка>
+ *   Функция DecodePDU
+ * </сводка>
+ *
+ * <описание>
+ *   Функция декодирования PDU
+ * </описание>
+ *
+ */
+static int16_t CEcoModBus1_A10E8757_DecodePDU(/* in */  IEcoModBus1Ptr_t me,
+                                              /* in */  byte_t* PDU,
+                                              /* in */  uint32_t pduLength,
+                                              /* out */ uint8_t* functionCode,
+                                              /* out */ uint16_t* subCode,
+                                              /* out */ byte_t** Data,
+                                              /* out */ uint32_t* dataLength)
+{
+    union ResultCode res;
+    CEcoModBus1_A10E8757* pCMe = (CEcoModBus1_A10E8757*)me;
+
+    uint8_t N, bytes;
+
+    /* Проверка указателей */
+    if (PDU == 0 || functionCode == 0 || Data == 0 || dataLength == 0) {
+        return ERR_ECO_POINTER;
+    }
+    
+    *functionCode = PDU[0];
+
+    switch (*functionCode) {
+        case ECO_MB_FC_READ_COILS:
+            *dataLength = sizeof(uint16_t) * 2;
+            break;
+        case ECO_MB_FC_READ_DISCRETE_INPUTS:
+            *dataLength = sizeof(uint16_t) * 2;
+            break;
+        case ECO_MB_FC_WRITE_SINGLE_COIL:
+            *dataLength = sizeof(uint16_t) * 2;
+            break;
+        case ECO_MB_FC_WRITE_MULTIPLE_COILS:
+            /* 2 Bytes - Starting Address    
+             * 2 Bytes - Quantity of Outputs 
+             * 1 Byte  - Byte Count */
+            N = PDU[2 + 2 + 1];
+            N = (N / 8) + (N % 8 != 0); /* N = PDU[4] / 8, если остаток не равен 0 => N = N+1 */
+            *dataLength = sizeof(uint16_t) * 2 + sizeof(uint8_t) + N;
+            break;
+        case ECO_MB_FC_READ_INPUT_REGISTER:
+            *dataLength = sizeof(uint16_t) * 2;
+            break;
+        case ECO_MB_FC_READ_HOLDING_REGISTERS:
+            *dataLength = sizeof(uint16_t) * 2;
+            break;
+        case ECO_MB_FC_WRITE_SINGLE_REGISTER:
+            *dataLength = sizeof(uint16_t) * 2;
+            break;
+        case ECO_MB_FC_WRITE_MULTIPLE_REGISTERS:
+            /* 2 Bytes - Starting Address     
+             * 2 Bytes - Quantity of Registers
+             * 1 Bytes - Byte Count */
+            N = PDU[2 * 2 + 1]; /* N = PDU[4] (количество регистров) */
+            *dataLength = sizeof(uint16_t) * 2 + sizeof(uint8_t) + sizeof(uint16_t) * N; /* тип регистров - uint16_t */
+            break;
+        case ECO_MB_FC_READ_WRITE_MULTIPLE_REGISTERS:
+            /* 2 Bytes - Read Starting Address  
+             * 2 Bytes - Quantity to Read       
+             * 2 Bytes - Write Starting Address 
+             * 2 Bytes - Quantity to Write      
+             * 1 Bytes - Write Byte Count       */
+            bytes = PDU[2 * 4 + 1]; /* the number of bytes to follow in the write data field. */
+            *dataLength = sizeof(uint16_t) * 4 + sizeof(uint8_t) + bytes; 
+            break;
+        case ECO_MB_FC_MASK_WRITE_REGISTER:
+            *dataLength = sizeof(uint16_t) * 3;
+            break;
+        case ECO_MB_FC_READ_FIFO_QUEUE:
+            *dataLength = sizeof(uint16_t);
+            break;
+        case ECO_MB_FC_READ_FILE_RECORD:
+            /* 1 Byte  - Byte Count */
+            bytes = PDU[1]; /* is the total combined count of bytes in all ‘sub-responses’ */
+            *dataLength = sizeof(uint8_t) + bytes; 
+            break;
+        case ECO_MB_FC_WRITE_FILE_RECORD:
+            /* 1 Byte  - Request data length */
+            bytes = PDU[1]; /*  in terms of number of bytes */
+            *dataLength = sizeof(uint8_t) + bytes; 
+            break;
+        case ECO_MB_FC_READ_DEVICE_IDENTIFICATION:
+            *dataLength = sizeof(uint8_t) * 3;
+            break;
+        case ECO_MB_FC_READ_EXCEPTION_STATUS: /* Serial Only */
+            *dataLength = 0;
+            return ERR_ECO_SUCCESES;
+        case ECO_MB_FC_GET_COM_EVENT_COUNTER: /* Serial Only */
+            *dataLength = 0;
+            return ERR_ECO_SUCCESES;
+        case ECO_MB_FC_GET_COM_EVENT_LOG:     /* Serial Only */
+            *dataLength = 0;
+            return ERR_ECO_SUCCESES;
+        case ECO_MB_FC_REPORT_SERVER_ID:      /* Serial Only */
+            *dataLength = 0;
+            return ERR_ECO_SUCCESES;
+        case ECO_MB_FC_DIAGNOSTIC:
+            *subCode    = *(uint16_t*)(PDU + 1);
+            *dataLength = 0;    /* TODO for serial */
+            return ERR_ECO_SUCCESES;
+        //case ECO_MB_FC_CANOPEN_GENERAL_REFERENCE:
+        //    if (subCode == 0) return ECO_MB_EC_ILLEGAL_DATA_VALUE;
+        //    *subCode    = *(uint16_t*)(PDU + 1);
+        //    *dataLength = 0;
+        //    return ERR_ECO_SUCCESES;
+        //case ECO_MB_FC_ENCAPSULATED_INTERFACE_TRANSPORT:
+        //    /* TODO: For special modbus interface */
+        //    *dataLength = 1;
+        //    break;
+        default:
+            res.except_rsp_pdu_t.ErrorCode     = *functionCode + 0x80;
+            res.except_rsp_pdu_t.ExceptionCode = ECO_MB_EC_ILLEGAL_FUNCTION;
+            return res.result;
+    }
+    *Data = (byte_t*)pCMe->m_pIMem->pVTbl->Alloc(pCMe->m_pIMem, *dataLength);
+
+    pCMe->m_pIMem->pVTbl->Copy(pCMe->m_pIMem, *Data, (PDU + ECO_MB_FUNCTION_CODE_LENGTH), *dataLength);
+
+    return ERR_ECO_SUCCESES;
+}
 
 
 /*
@@ -195,11 +350,9 @@ IEcoModBus1VTbl g_x74AB8CD0056F4D048F855D2FC8A9F3D0VTbl_A10E8757 = {
     CEcoModBus1_A10E8757_QueryInterface,
     CEcoModBus1_A10E8757_AddRef,
     CEcoModBus1_A10E8757_Release,
-    CEcoModBus1_A10E8757_MyFunction
+    CEcoModBus1_A10E8757_EncodePDU,
+    CEcoModBus1_A10E8757_DecodePDU
 };
-
-
-
 
 /*
  *
@@ -279,9 +432,6 @@ int16_t ECOCALLMETHOD createCEcoModBus1_A10E8757(/* in */ IEcoUnknownPtr_t pIUnk
     /* Создание таблицы функций интерфейса IEcoModBus1 */
     pCMe->m_pVTblIEcoModBus1 = &g_x74AB8CD0056F4D048F855D2FC8A9F3D0VTbl_A10E8757;
 
-    /* Инициализация данных */
-    pCMe->m_Name = 0;
-
     /* Возврат указателя на интерфейс */
     *ppIEcoModBus1 = (IEcoModBus1*)pCMe;
 
@@ -308,10 +458,6 @@ void ECOCALLMETHOD deleteCEcoModBus1_A10E8757(/* in */ IEcoModBus1Ptr_t pIEcoMod
 
     if (pIEcoModBus1 != 0 ) {
         pIMem = pCMe->m_pIMem;
-        /* Освобождение */
-        if ( pCMe->m_Name != 0 ) {
-            pIMem->pVTbl->Free(pIMem, pCMe->m_Name);
-        }
         if ( pCMe->m_pISys != 0 ) {
             pCMe->m_pISys->pVTbl->Release(pCMe->m_pISys);
         }

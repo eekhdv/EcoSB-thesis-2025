@@ -39,9 +39,6 @@ typedef struct CEcoModBus1_A10E8757 {
     /* Системный интерфейс */
     IEcoSystem1* m_pISys;
 
-    /* Данные экземпляра */
-    char_t* m_Name;
-
 } CEcoModBus1_A10E8757, *CEcoModBus1_A10E8757Ptr;
 
 /* Инициализация экземпляра */

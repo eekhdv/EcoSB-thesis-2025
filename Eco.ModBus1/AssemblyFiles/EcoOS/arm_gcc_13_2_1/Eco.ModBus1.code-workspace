@@ -1,4 +1,4 @@
-﻿{
+{
 	"folders": [
 		{
 			"path": "."
@@ -29,7 +29,35 @@
 		],
 		"C_Cpp.default.cStandard": "c89",
 		"C_Cpp.default.defines": [
-			"ECO_OS"
+			"ECO_OS",
+			"ECO_LIB",
+			"ECO_STM32",
+			"ECO_AARCH32"
+		],
+		"files.associations": {
+			"IEcoBase1.h": "c"
+		},
+		"makefile.configurations": [
+			{
+				"name": "StaticDebug",
+				"makeArgs": ["TARGET=1", "DEBUG=1"],
+				"makefilePath": "Makefile"
+			},
+			{
+				"name": "StaticRelease",
+				"makeArgs": ["TARGET=1", "DEBUG=0"],
+				"makefilePath": "Makefile"
+			},
+			{
+				"name": "DynamicDebug",
+				"makeArgs": ["TARGET=0", "DEBUG=1"],
+				"makefilePath": "Makefile"
+			},
+			{
+				"name": "DynamicRelease",
+				"makeArgs": ["TARGET=0", "DEBUG=0"],
+				"makefilePath": "Makefile"
+			}
 		]
 	}
 }
