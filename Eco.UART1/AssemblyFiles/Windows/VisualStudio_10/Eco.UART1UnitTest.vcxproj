@@ -56,7 +56,7 @@
       <AdditionalIncludeDirectories>..\..\..\SharedFiles;..\..\..\UnitTestFiles\HeaderFiles;..\..\..\HeaderFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.List1\SharedFiles;..\..\..\..\Eco.FSM1\SharedFiles;..\..\..\..\Eco.Data1\SharedFiles;..\..\..\..\Eco.Stack1\SharedFiles;..\..\..\..\Eco.String1\SharedFiles;..\..\..\..\Eco.Log1\SharedFiles;..\..\..\..\Eco.Observer1\SharedFiles;..\..\..\..\Eco.Dictionary1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.TaskScheduler1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsC</CompileAs>
-      <PreprocessorDefinitions>ECO_WINDOWS;ECO_WIN32;_DEBUG;_CONSOLE;ECO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ECO_WINDOWS;ECO_X86_32;_DEBUG;_CONSOLE;ECO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
@@ -77,7 +77,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsC</CompileAs>
       <AdditionalIncludeDirectories>..\..\..\SharedFiles;..\..\..\UnitTestFiles\HeaderFiles;..\..\..\HeaderFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.List1\SharedFiles;..\..\..\..\Eco.FSM1\SharedFiles;..\..\..\..\Eco.Data1\SharedFiles;..\..\..\..\Eco.Stack1\SharedFiles;..\..\..\..\Eco.String1\SharedFiles;..\..\..\..\Eco.Log1\SharedFiles;..\..\..\..\Eco.Observer1\SharedFiles;..\..\..\..\Eco.Dictionary1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.TaskScheduler1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ECO_WINDOWS;ECO_WIN32;NDEBUG;_CONSOLE;ECO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ECO_WINDOWS;ECO_X86_32;NDEBUG;_CONSOLE;ECO_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>

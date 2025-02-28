@@ -60,12 +60,12 @@ typedef struct RCC_REGISTER_MAP {
     uint32_t DCKCFGR;       /* RCC Dedicated Clocks configuration register,                 Address offset: 0x8C */
 } RCC_REGISTER_MAP;
 
-typedef struct RCC_CONFIG_DESCRIPTOR {
+typedef struct ECO_RCC_CONFIG_DESCRIPTOR {
     union {
         uint32_t BaseAddress;
         struct RCC_REGISTER_MAP* Map;
     } Register;
-} RCC_CONFIG_DESCRIPTOR;
+} ECO_RCC_CONFIG_DESCRIPTOR;
 
 
 /* IEcoRCC1STM32Config IID = {21F17A28-6226-4966-A6CE-B207CDB6CB1C} */
@@ -73,16 +73,18 @@ typedef struct RCC_CONFIG_DESCRIPTOR {
 static const UGUID IID_IEcoRCC1STM32Config = { 0x01, 0x10, 0x21, 0xF1, 0x7A, 0x28, 0x62, 0x26, 0x49, 0x66, 0xA6, 0xCE, 0xB2, 0x07, 0xCD, 0xB6, 0xCB, 0x1C };
 #endif /* __IID_IEcoRCC1STM32Config */
 
+typedef struct IEcoRCC1STM32Config* IEcoRCC1STM32ConfigPtr_t;
+
 typedef struct IEcoRCC1STM32ConfigVTbl {
 
     /* IEcoUnknown */
-    int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoRCC1STM32Config* me, /* in */ const UGUID* riid, /* out */ void **ppv);
-    uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoRCC1STM32Config* me);
-    uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoRCC1STM32Config* me);
+    int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ IEcoRCC1STM32ConfigPtr_t me, /* in */ const UGUID* riid, /* out */ void **ppv);
+    uint32_t (ECOCALLMETHOD *AddRef)(/* in */ IEcoRCC1STM32ConfigPtr_t me);
+    uint32_t (ECOCALLMETHOD *Release)(/* in */ IEcoRCC1STM32ConfigPtr_t me);
 
     /* IEcoRCC1STM32Config */
-    int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ struct IEcoRCC1STM32Config* me, /* in */ RCC_CONFIG_DESCRIPTOR* config);
-    RCC_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ struct IEcoRCC1STM32Config* me);
+    int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ IEcoRCC1STM32ConfigPtr_t me, /* in */ ECO_RCC_CONFIG_DESCRIPTOR* config);
+    ECO_RCC_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ IEcoRCC1STM32ConfigPtr_t me);
 
 } IEcoRCC1STM32ConfigVTbl, *IEcoRCC1STM32ConfigVTblPtr;
 

@@ -34,6 +34,8 @@
 #include "IEcoFPIOA1K210Config.h"
 #include "IEcoGPIO1K210Config.h"
 #include "IEcoSYSCTL1K210Config.h"
+#elif ECO_RISCV64
+#include "IEcoGPIO1RISCV64D1Config.h"
 #endif
 #include "IEcoSystem1.h"
 #include "IEcoMemoryAllocator1.h"
@@ -61,6 +63,9 @@ typedef struct CEcoGPIO1 {
     IEcoFPIOA1K210ConfigVTbl* m_pVTblIFPIOAConfig;
     /* Таблица функций интерфейса IEcoSYSCTL1K210Config */
     IEcoSYSCTL1K210ConfigVTbl* m_pVTblISYSCTLConfig;
+#elif ECO_RISCV64
+    /* Таблица функций интерфейса IEcoGPIO1RISCV64D1ConfigConfig */
+    IEcoGPIO1RISCV64D1ConfigVTbl* m_pVTblIGPIOConfig;
 #endif
     /* Счетчик ссылок */
     uint32_t m_cRef;
@@ -81,15 +86,17 @@ typedef struct CEcoGPIO1 {
     void* m_GPIOConfig;
     void* m_FPIOAConfig;
     void* m_SYSCTLConfig;
+#elif ECO_RISCV64
+    void* m_GPIOConfig;
 #endif
 
 } CEcoGPIO1, *CEcoGPIO1Ptr;
 
 /* Инициализация экземпляра */
-int16_t initCEcoGPIO1(/*in*/ struct IEcoGPIO1* me, /* in */ IEcoUnknown *pIUnkSystem);
+int16_t ECOCALLMETHOD initCEcoGPIO1(/*in*/ struct IEcoGPIO1* me, /* in */ IEcoUnknown *pIUnkSystem);
 /* Создание экземпляра */
-int16_t createCEcoGPIO1(/* in */ IEcoUnknown* pIUnkSystem, /* in */ IEcoUnknown* pIUnkOuter, /* out */ IEcoGPIO1** ppIGPIO);
+int16_t ECOCALLMETHOD createCEcoGPIO1(/* in */ IEcoUnknown* pIUnkSystem, /* in */ IEcoUnknown* pIUnkOuter, /* out */ IEcoGPIO1** ppIGPIO);
 /* Удаление */
-void deleteCEcoGPIO1(/* in */ IEcoGPIO1* pIGPIO);
+void ECOCALLMETHOD deleteCEcoGPIO1(/* in */ IEcoGPIO1* pIGPIO);
 
 #endif /* __C_ECO_GPIO_1_H__ */

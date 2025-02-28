@@ -182,7 +182,7 @@ int main() {
     ECO_SYSCTL_CONFIG_DESCRIPTOR xSYSCTL = {0};
 
 #endif
-    GPIO_CONFIG_DESCRIPTOR xGPIOB = {0};
+    ECO_GPIO_CONFIG_DESCRIPTOR xGPIOB = {0};
     uint8_t iValue = 0;
 
     /* Создание экземпляра для работы с GPIO */
@@ -250,7 +250,7 @@ int main() {
     pIGPIOConfig->pVTbl->get_ConfigDescriptor(pIGPIOConfig, 'B')->Register.Map->MODER  |=  (0x1 << (ECO_GPIO_LPN_13*2));
     pIGPIOConfig->pVTbl->get_ConfigDescriptor(pIGPIOConfig, 'B')->Register.Map->OTYPER &= ~(1 << ECO_GPIO_LPN_13);
     pIGPIOConfig->pVTbl->get_ConfigDescriptor(pIGPIOConfig, 'B')->Register.Map->OSPEEDR = 0300;
-    pIGPIOConfig->pVTbl->Release(pIGPIOConfig);
+    //pIGPIOConfig->pVTbl->Release(pIGPIOConfig);
 
 #elif ECO_BCM283X
     /* Запрос интерфейса GPIO конфигурации */
@@ -336,16 +336,21 @@ int main() {
 #endif
 
     /* Устанавливаем режим вывода по логический номеру контакта */
-    result = pIGPIO->pVTbl->set_Mode(pIGPIO, 13, GPIO_MODE_OUTPUT);
-
+    //result = pIGPIO->pVTbl->set_Mode(pIGPIO, 13, GPIO_MODE_OUTPUT);
+    xGPIOB.Register.Map->MODER = GPIO_MODE_OUTPUT;
     /* Пример 1: Цикл установки и сброса уровня на логическом контакте */
     while (1) {
-        result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_13, ECO_GPIO_LOW);
+      //  result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_13, ECO_GPIO_LOW);
+      //  Delay(2000);
+       // result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_13, ECO_GPIO_HIGHT);
+       // Delay(2000);
+
+
+    	xGPIOB.Register.Map->BSRR = (uint32_t) (0x2000);
         Delay(2000);
-        result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_13, ECO_GPIO_HIGHT);
+       // xGPIOB.Register.Map->BSRR = (uint32_t) (0x2000 << 16U);
         Delay(2000);
     }
-
 
     /* Пример 2: Установка или сброса уровня на логическом контакте при чтении  */
     //while (1) {
