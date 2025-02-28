@@ -1,4 +1,4 @@
-﻿ifeq ($(OS), Windows_NT)
+ifeq ($(OS), Windows_NT)
 	#WINDOWS USE THESE DEFINITIONS
 	RM = -rm -f
 	SLASH = \\
@@ -58,8 +58,8 @@ INC = \
 
 # source files.
 SRC = \
-..$(SLASH)..$(SLASH)..$(SLASH)SourceFiles$(SLASH)CEcoEcoModBus1.c \
-..$(SLASH)..$(SLASH)..$(SLASH)SourceFiles$(SLASH)CEcoEcoModBus1Factory.c
+..$(SLASH)..$(SLASH)..$(SLASH)SourceFiles$(SLASH)CEcoModBus1.c \
+..$(SLASH)..$(SLASH)..$(SLASH)SourceFiles$(SLASH)CEcoModBus1Factory.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -68,7 +68,7 @@ OUT_DIR = ..$(SLASH)..$(SLASH)..$(SLASH)BuildFiles$(SLASH)EcoOS$(SLASH)$(ARCH_TA
 
  
 # C++ compiler flags (-g -O2 -Wall)
-CCFLAGS = $(CCFLAGS_TARGET) -Wall -Wno-missing-braces -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -DECO_OS -DECO_STM32 -DUGUID_UTILITY
+CCFLAGS = $(CCFLAGS_TARGET) -Wall -Wno-missing-braces -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -fno-builtin -DECO_OS -DECO_STM32 -DECO_AARCH32 -DUGUID_UTILITY
  
 # compiler
 CC = $(TOOL)gcc

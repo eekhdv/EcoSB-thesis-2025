@@ -1,4 +1,4 @@
-﻿ifeq ($(OS), Windows_NT)
+ifeq ($(OS), Windows_NT)
 	#WINDOWS USE THESE DEFINITIONS
 	RM = -rm -f
 	SLASH = \\
@@ -50,6 +50,9 @@ endif
 INC = \
 -I ..$(SLASH)..$(SLASH)..$(SLASH)HeaderFiles \
 -I ..$(SLASH)..$(SLASH)..$(SLASH)SharedFiles \
+-I $(ECO_FRAMEWORK)$(SLASH)Eco.GPIO1$(SLASH)SharedFiles \
+-I $(ECO_FRAMEWORK)$(SLASH)Eco.UART1$(SLASH)SharedFiles \
+-I $(ECO_FRAMEWORK)$(SLASH)Eco.ModBus1$(SLASH)SharedFiles \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.Core1$(SLASH)SharedFiles \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.InterfaceBus1$(SLASH)SharedFiles \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.MemoryManager1$(SLASH)SharedFiles \
@@ -58,8 +61,8 @@ INC = \
 
 # source files.
 SRC = \
-..$(SLASH)..$(SLASH)..$(SLASH)SourceFiles$(SLASH)CEcoEcoModBus1SL.c \
-..$(SLASH)..$(SLASH)..$(SLASH)SourceFiles$(SLASH)CEcoEcoModBus1SLFactory.c
+..$(SLASH)..$(SLASH)..$(SLASH)SourceFiles$(SLASH)CEcoModBus1SL.c \
+..$(SLASH)..$(SLASH)..$(SLASH)SourceFiles$(SLASH)CEcoModBus1SLFactory.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -68,7 +71,7 @@ OUT_DIR = ..$(SLASH)..$(SLASH)..$(SLASH)BuildFiles$(SLASH)EcoOS$(SLASH)$(ARCH_TA
 
  
 # C++ compiler flags (-g -O2 -Wall)
-CCFLAGS = $(CCFLAGS_TARGET) -Wall -Wno-missing-braces -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -DECO_OS -DECO_STM32 -DUGUID_UTILITY
+CCFLAGS = $(CCFLAGS_TARGET) -Wall -Wno-missing-braces -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -fno-builtin -DECO_OS -DECO_STM32 -DECO_AARCH32 -DUGUID_UTILITY
  
 # compiler
 CC = $(TOOL)gcc
