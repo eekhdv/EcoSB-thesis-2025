@@ -23,7 +23,7 @@
 #include "IEcoUART1.h"
 #include "IEcoSystem1.h"
 #include "IdEcoMemoryManager1.h"
-#ifdef ECO_WIN32
+#ifdef ECO_WINDOWS
 #include "IEcoUART1WIN32Config.h"
 #elif ECO_AVR8
 #include "IEcoUART1AVR8Config.h"
@@ -42,7 +42,7 @@
 #elif ECO_STM32
 #include "IEcoUART1STM32F4Config.h"
 #include "IEcoGPIO1STM32Config.h"
-#define ECO_GPIO_CONFIG_DESCRIPTOR GPIO_CONFIG_DESCRIPTOR
+#include "IEcoRCC1STM32Config.h"
 #endif
 
 typedef struct CEcoUART1Device_025F3EF0 {
@@ -51,7 +51,7 @@ typedef struct CEcoUART1Device_025F3EF0 {
     IEcoUART1DeviceVTbl* m_pVTblIDevice;
 
     /* Таблица функций интерфейса IEcoUART1Config */
-#ifdef ECO_WIN32
+#ifdef ECO_WINDOWS
     IEcoUART1WIN32ConfigVTbl* m_pVTblIUARTConfig;
 #elif ECO_AVR8
     IEcoUART1AVR8ConfigVTbl* m_pVTblIUARTConfig;
@@ -65,8 +65,12 @@ typedef struct CEcoUART1Device_025F3EF0 {
 #elif ECO_LINUX
     IEcoUART1LinuxConfigVTbl* m_pVTblIUARTConfig;
 #elif ECO_STM32
+    /* Таблица функций интерфейса IEcoUART1STM32F4Config */
     IEcoUART1STM32F4ConfigVTbl* m_pVTblIUARTConfig;
-    IEcoGPIO1STM32ConfigVTbl* m_pVTblIGPIOConfig;
+    /* Таблица функций интерфейса IEcoGPIO1STM32Config */
+    IEcoGPIO1STM32ConfigVTbl*   m_pVTblIGPIOConfig;
+    /* Таблица функций интерфейса IEcoRCC1STM32Config */
+    IEcoRCC1STM32ConfigVTbl*    m_pVTblIRCCConfig;
 #endif
 
     /* Счетчик ссылок */
@@ -81,7 +85,7 @@ typedef struct CEcoUART1Device_025F3EF0 {
     /* Данные экземпляра */
     ECO_UART_CONFIG_DESCRIPTOR* m_UARTConfig;
 
-#ifdef ECO_WIN32
+#ifdef ECO_WINDOWS
     void* m_Device;
 #elif ECO_BCM283X
     ECO_GPIO_CONFIG_DESCRIPTOR* m_GPIOConfig;
@@ -90,9 +94,9 @@ typedef struct CEcoUART1Device_025F3EF0 {
     ECO_CCU_CONFIG_DESCRIPTOR* m_CCUConfig;
 #elif ECO_LINUX
     int16_t m_Fd;
-=======
 #elif ECO_STM32
     ECO_GPIO_CONFIG_DESCRIPTOR* m_GPIOConfig;
+    ECO_RCC_CONFIG_DESCRIPTOR*  m_RCCConfig;
 #endif
 
 } CEcoUART1Device_025F3EF0, *CEcoUART1Device_025F3EF0Ptr;

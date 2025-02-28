@@ -78,20 +78,22 @@ typedef struct GPIO_CONFIG_DESCRIPTOR {
 
 /* IEcoGPIO1BCM283xConfig IID = {7B844D9C-EA99-4E86-95DD-CA78668D0B2A} */
 #ifndef __IID_IEcoGPIO1BCM283xConfig
-static const UGUID IID_IEcoGPIO1BCM283xConfig = { 0x01, 0x10, 0x7B, 0x84, 0x4D, 0x9C, 0xEA, 0x99, 0x4E, 0x86, 0x95, 0xDD, 0xCA, 0x78, 0x66, 0x8D, 0x0B, 0x2A };
+static const UGUID IID_IEcoGPIO1BCM283xConfig = { 0x01, 0x10, {0x7B, 0x84, 0x4D, 0x9C, 0xEA, 0x99, 0x4E, 0x86, 0x95, 0xDD, 0xCA, 0x78, 0x66, 0x8D, 0x0B, 0x2A}};
 #endif /* __IID_IEcoGPIO1BCM283xConfig */
+
+typedef struct IEcoGPIO1BCM283xConfig* IEcoGPIO1BCM283xConfigPtr_t;
 
 typedef struct IEcoGPIO1BCM283xConfigVTbl {
 
     /* IEcoUnknown */
-    int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ const UGUID* riid, /* out */ void **ppv);
-    uint32_t (ECOCALLMETHOD *AddRef)(/* in */ struct IEcoGPIO1BCM283xConfig* me);
-    uint32_t (ECOCALLMETHOD *Release)(/* in */ struct IEcoGPIO1BCM283xConfig* me);
+    int16_t (ECOCALLMETHOD *QueryInterface)(/* in */ IEcoGPIO1BCM283xConfigPtr_t me, /* in */ const UGUID* riid, /* out */ voidptr_t* ppv);
+    uint32_t (ECOCALLMETHOD *AddRef)(/* in */ IEcoGPIO1BCM283xConfigPtr_t me);
+    uint32_t (ECOCALLMETHOD *Release)(/* in */ IEcoGPIO1BCM283xConfigPtr_t me);
 
     /* IEcoGPIO1BCM283xConfig */
-    int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ GPIO_CONFIG_DESCRIPTOR* config);
-    GPIO_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ struct IEcoGPIO1BCM283xConfig* me);
-    int16_t (ECOCALLMETHOD *set_LogicalPinNumber)(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber);
+    int16_t (ECOCALLMETHOD *set_ConfigDescriptor)(/* in */ IEcoGPIO1BCM283xConfigPtr_t me, /* in */ GPIO_CONFIG_DESCRIPTOR* config);
+    GPIO_CONFIG_DESCRIPTOR* (ECOCALLMETHOD *get_ConfigDescriptor)(/* in */ IEcoGPIO1BCM283xConfigPtr_t me);
+    int16_t (ECOCALLMETHOD *set_LogicalPinNumber)(/* in */ IEcoGPIO1BCM283xConfigPtr_t me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber);
 
 } IEcoGPIO1BCM283xConfigVTbl, *IEcoGPIO1BCM283xConfigVTblPtr;
 

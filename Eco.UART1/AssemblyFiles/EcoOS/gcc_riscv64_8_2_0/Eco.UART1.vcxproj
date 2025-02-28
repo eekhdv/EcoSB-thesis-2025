@@ -166,10 +166,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticDebug|Win32'">
-    <NMakeBuildCommandLine>make TARGET=1 DEBUG=1 ARCHITECTURE=ECO_AVR8 DEVICE=atmega328p</NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=1 ARCHITECTURE=ECO_RISCV64 DEVICE=D1</NMakeReBuildCommandLine>
-    <NMakePreprocessorDefinitions>ECO_LIB;_DEBUG;ECO_AVR8;ECO_OS;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeBuildCommandLine>make TARGET=1 DEBUG=1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean TARGET=1 DEBUG=1 </NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make clean all TARGET=1 DEBUG=1</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>ECO_LIB;_DEBUG;ECO_RISCV64;ECO_OS;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.DateTime1\SharedFiles;..\..\..\..\Eco.GPIO1\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='StaticRelease|Win32'">

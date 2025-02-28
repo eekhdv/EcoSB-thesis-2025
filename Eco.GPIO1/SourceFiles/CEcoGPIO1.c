@@ -23,7 +23,7 @@
 #include "IEcoInterfaceBus1.h"
 #include "CEcoGPIO1.h"
 
-extern bool_t IsEqualUGUID_A70A4C2E9C9645BD91367754D01F101F(/* in */ const UGUID* rguid1, /* in */ const UGUID* rguid2);
+extern bool_t ECOCALLMETHOD IsEqualUGUID_A70A4C2E9C9645BD91367754D01F101F(/* in */ const UGUID* rguid1, /* in */ const UGUID* rguid2);
 #define IsEqualUGUID(rguid1, rguid2) IsEqualUGUID_A70A4C2E9C9645BD91367754D01F101F(rguid1, rguid2)
 
 /*
@@ -37,7 +37,7 @@ extern bool_t IsEqualUGUID_A70A4C2E9C9645BD91367754D01F101F(/* in */ const UGUID
  * </описание>
  *
  */
-int16_t CEcoGPIO1_QueryInterface(/* in */ struct IEcoGPIO1* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
+int16_t ECOCALLMETHOD CEcoGPIO1_QueryInterface(/* in */ struct IEcoGPIO1* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
 
     /* Проверка указателей */
@@ -105,7 +105,7 @@ int16_t CEcoGPIO1_QueryInterface(/* in */ struct IEcoGPIO1* me, /* in */ const U
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_AddRef(/* in */ struct IEcoGPIO1* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_AddRef(/* in */ struct IEcoGPIO1* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
 
     /* Проверка указателя */
@@ -128,7 +128,7 @@ uint32_t CEcoGPIO1_AddRef(/* in */ struct IEcoGPIO1* me) {
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_Release(/* in */ struct IEcoGPIO1* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_Release(/* in */ struct IEcoGPIO1* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
 
     /* Проверка указателя */
@@ -159,11 +159,14 @@ uint32_t CEcoGPIO1_Release(/* in */ struct IEcoGPIO1* me) {
  * </описание>
  *
  */
-int16_t CEcoGPIO1_set_Mode(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in */ uint8_t mode) {
+int16_t ECOCALLMETHOD CEcoGPIO1_set_Mode(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in */ uint8_t mode) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
-    GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
+#ifdef ECO_STM32
+    ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t indexPort = 0;
     uint8_t indexPin = 0;
+#elif ECO_RISCV64
+#endif
     int16_t result = -1;
 
     /* Проверка указателя */
@@ -177,13 +180,33 @@ int16_t CEcoGPIO1_set_Mode(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t Logi
             pDescriptor = pCMe->m_PortConfig[indexPort];
             for(indexPin = 0; indexPin < 16; indexPin++) {
                 if (pDescriptor->LogicalPinMask[indexPin] == LogicalPinNumber) {
-                    pDescriptor->Register.Map->MODER = mode;
-                    result = 0;
+					if (GPIO_MODE_INPUT == mode) {
+						pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2+1);
+						pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2);
+					}
+					else if (GPIO_MODE_OUTPUT == mode) {
+						pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2+1);
+						pDescriptor->Register.Map->MODER |=  (1 << indexPin*2);
+					}
+					else if (GPIO_MODE_AF == mode) {
+						pDescriptor->Register.Map->MODER |=  (1 << indexPin*2+1);
+						pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2);
+					}
+					else if (GPIO_MODE_ANALOG == mode) {
+						pDescriptor->Register.Map->MODER |=  (1 << indexPin*2+1);
+						pDescriptor->Register.Map->MODER |=  (1 << indexPin*2);
+					}
+					else {
+						result = -1;
+					}
+
                     break;
                 }
             }
         }
     }
+#elif ECO_RISCV64
+    pCMe->m_GPIOConfig = 0;
 #else
 #endif
 
@@ -202,9 +225,9 @@ int16_t CEcoGPIO1_set_Mode(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t Logi
  * </описание>
  *
  */
-int16_t CEcoGPIO1_set_Data(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in */ uint8_t Value) {
+int16_t ECOCALLMETHOD CEcoGPIO1_set_Data(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in */ uint8_t Value) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
-    GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
+    ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t indexPort = 0;
     uint8_t indexPin = 0;
     int16_t result = -1;
@@ -316,8 +339,14 @@ int16_t CEcoGPIO1_set_Data(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t Logi
             }
         }
     }
+#elif ECO_RISCV64
+    pDescriptor = (ECO_GPIO_CONFIG_DESCRIPTOR*)pCMe->m_GPIOConfig;
+    pDescriptor->LogicalPinMask[indexPin] = indexPort;
+    pDescriptor->LogicalPinMask[indexPort] = indexPin;
 #endif
-    return 0;
+    result = 0;
+
+    return result;
 }
 
 /*
@@ -331,9 +360,9 @@ int16_t CEcoGPIO1_set_Data(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t Logi
  * </описание>
  *
  */
-int16_t CEcoGPIO1_get_Data(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in | out */ uint8_t *pValue) {
+int16_t ECOCALLMETHOD CEcoGPIO1_get_Data(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t LogicalPinNumber, /* in | out */ uint8_t *pValue) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
-    GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
+    ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t indexPort = 0;
     uint8_t indexPin = 0;
     int16_t result = -1;
@@ -386,8 +415,13 @@ int16_t CEcoGPIO1_get_Data(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t Logi
         }
     }
 #elif ECO_BCM283X
+#elif ECO_RISCV64
+    pDescriptor = (ECO_GPIO_CONFIG_DESCRIPTOR*)pCMe->m_GPIOConfig;
+    pDescriptor->LogicalPinMask[indexPin] = indexPort;
+    pDescriptor->LogicalPinMask[indexPort] = indexPin;
+    pDescriptor->LogicalPinMask[indexPort] = value = value2;
 #endif
-    return 0;
+    return result;
 }
 
 #ifdef ECO_AVR8
@@ -402,7 +436,7 @@ int16_t CEcoGPIO1_get_Data(/* in */ struct IEcoGPIO1* me, /* in */ uint16_t Logi
  * </описание>
  *
  */
-int16_t CEcoGPIO1_AVR8Config_QueryInterface(/* in */ struct IEcoGPIO1AVR8Config* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
+int16_t ECOCALLMETHOD CEcoGPIO1_AVR8Config_QueryInterface(/* in */ struct IEcoGPIO1AVR8Config* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателей */
@@ -441,7 +475,7 @@ int16_t CEcoGPIO1_AVR8Config_QueryInterface(/* in */ struct IEcoGPIO1AVR8Config*
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_AVR8Config_AddRef(/* in */ struct IEcoGPIO1AVR8Config* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_AVR8Config_AddRef(/* in */ struct IEcoGPIO1AVR8Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -464,7 +498,7 @@ uint32_t CEcoGPIO1_AVR8Config_AddRef(/* in */ struct IEcoGPIO1AVR8Config* me) {
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_AVR8Config_Release(/* in */ struct IEcoGPIO1AVR8Config* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_AVR8Config_Release(/* in */ struct IEcoGPIO1AVR8Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -495,7 +529,7 @@ uint32_t CEcoGPIO1_AVR8Config_Release(/* in */ struct IEcoGPIO1AVR8Config* me) {
  * </описание>
  *
  */
-int16_t CEcoGPIO1_AVR8Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1AVR8Config* me, /* in */ uint8_t PortNumber, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoGPIO1_AVR8Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1AVR8Config* me, /* in */ uint8_t PortNumber, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
     int16_t result = -1;
     uint8_t index = 0;
@@ -527,7 +561,7 @@ int16_t CEcoGPIO1_AVR8Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1AVR8C
  * </описание>
  *
  */
-ECO_GPIO_CONFIG_DESCRIPTOR* CEcoGPIO1_AVR8Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1AVR8Config* me, /* in */ uint8_t PortNumber) {
+ECO_GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoGPIO1_AVR8Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1AVR8Config* me, /* in */ uint8_t PortNumber) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
     ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t index = 0;
@@ -557,7 +591,7 @@ ECO_GPIO_CONFIG_DESCRIPTOR* CEcoGPIO1_AVR8Config_get_ConfigDescriptor(/* in */ s
  * </описание>
  *
  */
-int16_t CEcoGPIO1_AVR8Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1AVR8Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t PortNumber, /* in */ uint16_t PinNumber) {
+int16_t ECOCALLMETHOD CEcoGPIO1_AVR8Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1AVR8Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t PortNumber, /* in */ uint16_t PinNumber) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
     ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t index = 0;
@@ -597,7 +631,7 @@ int16_t CEcoGPIO1_AVR8Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1AVR8C
  * </описание>
  *
  */
-int16_t CEcoGPIO1_STM32Config_QueryInterface(/* in */ struct IEcoGPIO1* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
+int16_t ECOCALLMETHOD CEcoGPIO1_STM32Config_QueryInterface(/* in */ struct IEcoGPIO1* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателей */
@@ -640,7 +674,7 @@ int16_t CEcoGPIO1_STM32Config_QueryInterface(/* in */ struct IEcoGPIO1* me, /* i
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_STM32Config_AddRef(/* in */ struct IEcoGPIO1* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_STM32Config_AddRef(/* in */ struct IEcoGPIO1* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -663,7 +697,7 @@ uint32_t CEcoGPIO1_STM32Config_AddRef(/* in */ struct IEcoGPIO1* me) {
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_STM32Config_Release(/* in */ struct IEcoGPIO1* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_STM32Config_Release(/* in */ struct IEcoGPIO1* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -694,7 +728,7 @@ uint32_t CEcoGPIO1_STM32Config_Release(/* in */ struct IEcoGPIO1* me) {
  * </описание>
  *
  */
-int16_t CEcoGPIO1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ uint8_t PortNumber, /* in */ GPIO_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoGPIO1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ uint8_t PortNumber, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
     int16_t result = -1;
     uint8_t index = 0;
@@ -726,9 +760,9 @@ int16_t CEcoGPIO1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM3
  * </описание>
  *
  */
-GPIO_CONFIG_DESCRIPTOR* CEcoGPIO1_STM32Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ uint8_t PortNumber) {
+ECO_GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoGPIO1_STM32Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ uint8_t PortNumber) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
-    GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
+    ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t index = 0;
 
     /* Проверка указателя */
@@ -756,9 +790,9 @@ GPIO_CONFIG_DESCRIPTOR* CEcoGPIO1_STM32Config_get_ConfigDescriptor(/* in */ stru
  * </описание>
  *
  */
-int16_t CEcoGPIO1_STM32Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t PortNumber, /* in */ uint16_t PinNumber) {
+int16_t ECOCALLMETHOD CEcoGPIO1_STM32Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t PortNumber, /* in */ uint16_t PinNumber) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
-    GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
+    ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t index = 0;
     int16_t result = -1;
 
@@ -796,7 +830,7 @@ int16_t CEcoGPIO1_STM32Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1STM3
  * </описание>
  *
  */
-int16_t CEcoRCC1_STM32Config_QueryInterface(/* in */ struct IEcoGPIO1* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
+int16_t ECOCALLMETHOD CEcoRCC1_STM32Config_QueryInterface(/* in */ struct IEcoGPIO1* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателей */
@@ -839,7 +873,7 @@ int16_t CEcoRCC1_STM32Config_QueryInterface(/* in */ struct IEcoGPIO1* me, /* in
  * </описание>
  *
  */
-uint32_t CEcoRCC1_STM32Config_AddRef(/* in */ struct IEcoGPIO1* me) {
+uint32_t ECOCALLMETHOD CEcoRCC1_STM32Config_AddRef(/* in */ struct IEcoGPIO1* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателя */
@@ -862,7 +896,7 @@ uint32_t CEcoRCC1_STM32Config_AddRef(/* in */ struct IEcoGPIO1* me) {
  * </описание>
  *
  */
-uint32_t CEcoRCC1_STM32Config_Release(/* in */ struct IEcoGPIO1* me) {
+uint32_t ECOCALLMETHOD CEcoRCC1_STM32Config_Release(/* in */ struct IEcoGPIO1* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателя */
@@ -893,7 +927,7 @@ uint32_t CEcoRCC1_STM32Config_Release(/* in */ struct IEcoGPIO1* me) {
  * </описание>
  *
  */
-int16_t CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ RCC_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ RCC_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателя */
@@ -918,7 +952,7 @@ int16_t CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32
  * </описание>
  *
  */
-RCC_CONFIG_DESCRIPTOR* CEcoRCC1_STM32Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me) {
+RCC_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoRCC1_STM32Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателя */
@@ -941,7 +975,7 @@ RCC_CONFIG_DESCRIPTOR* CEcoRCC1_STM32Config_get_ConfigDescriptor(/* in */ struct
  * </описание>
  *
  */
-int16_t CEcoGPIO1_BCM283xConfig_QueryInterface(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
+int16_t ECOCALLMETHOD CEcoGPIO1_BCM283xConfig_QueryInterface(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1BCM283xConfig*)));
 
     /* Проверка указателей */
@@ -980,7 +1014,7 @@ int16_t CEcoGPIO1_BCM283xConfig_QueryInterface(/* in */ struct IEcoGPIO1BCM283xC
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_BCM283xConfig_AddRef(/* in */ struct IEcoGPIO1BCM283xConfig* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_BCM283xConfig_AddRef(/* in */ struct IEcoGPIO1BCM283xConfig* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -1003,7 +1037,7 @@ uint32_t CEcoGPIO1_BCM283xConfig_AddRef(/* in */ struct IEcoGPIO1BCM283xConfig* 
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_BCM283xConfig_Release(/* in */ struct IEcoGPIO1BCM283xConfig* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_BCM283xConfig_Release(/* in */ struct IEcoGPIO1BCM283xConfig* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -1034,7 +1068,7 @@ uint32_t CEcoGPIO1_BCM283xConfig_Release(/* in */ struct IEcoGPIO1BCM283xConfig*
  * </описание>
  *
  */
-int16_t CEcoGPIO1_BCM283xConfig_set_ConfigDescriptor(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ GPIO_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoGPIO1_BCM283xConfig_set_ConfigDescriptor(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ GPIO_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -1059,7 +1093,7 @@ int16_t CEcoGPIO1_BCM283xConfig_set_ConfigDescriptor(/* in */ struct IEcoGPIO1BC
  * </описание>
  *
  */
-GPIO_CONFIG_DESCRIPTOR* CEcoGPIO1_BCM283xConfig_get_ConfigDescriptor(/* in */ struct IEcoGPIO1BCM283xConfig* me) {
+GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoGPIO1_BCM283xConfig_get_ConfigDescriptor(/* in */ struct IEcoGPIO1BCM283xConfig* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -1081,7 +1115,7 @@ GPIO_CONFIG_DESCRIPTOR* CEcoGPIO1_BCM283xConfig_get_ConfigDescriptor(/* in */ st
  * </описание>
  *
  */
-int16_t CEcoGPIO1_BCM283xConfig_set_LogicalPinNumber(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber) {
+int16_t ECOCALLMETHOD CEcoGPIO1_BCM283xConfig_set_LogicalPinNumber(/* in */ struct IEcoGPIO1BCM283xConfig* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
     GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t index = 0;
@@ -1124,7 +1158,7 @@ int16_t CEcoGPIO1_BCM283xConfig_set_LogicalPinNumber(/* in */ struct IEcoGPIO1BC
  * </описание>
  *
  */
-int16_t CEcoGPIO1_K210Config_QueryInterface(/* in */ struct IEcoGPIO1K210Config* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
+int16_t ECOCALLMETHOD CEcoGPIO1_K210Config_QueryInterface(/* in */ struct IEcoGPIO1K210Config* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателей */
@@ -1163,7 +1197,7 @@ int16_t CEcoGPIO1_K210Config_QueryInterface(/* in */ struct IEcoGPIO1K210Config*
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_K210Config_AddRef(/* in */ struct IEcoGPIO1K210Config* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_K210Config_AddRef(/* in */ struct IEcoGPIO1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -1186,7 +1220,7 @@ uint32_t CEcoGPIO1_K210Config_AddRef(/* in */ struct IEcoGPIO1K210Config* me) {
  * </описание>
  *
  */
-uint32_t CEcoGPIO1_K210Config_Release(/* in */ struct IEcoGPIO1K210Config* me) {
+uint32_t ECOCALLMETHOD CEcoGPIO1_K210Config_Release(/* in */ struct IEcoGPIO1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -1217,7 +1251,7 @@ uint32_t CEcoGPIO1_K210Config_Release(/* in */ struct IEcoGPIO1K210Config* me) {
  * </описание>
  *
  */
-int16_t CEcoGPIO1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1K210Config* me, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoGPIO1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1K210Config* me, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -1242,7 +1276,7 @@ int16_t CEcoGPIO1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1K210C
  * </описание>
  *
  */
-ECO_GPIO_CONFIG_DESCRIPTOR* CEcoGPIO1_K210Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1K210Config* me) {
+ECO_GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoGPIO1_K210Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
 
     /* Проверка указателя */
@@ -1264,7 +1298,7 @@ ECO_GPIO_CONFIG_DESCRIPTOR* CEcoGPIO1_K210Config_get_ConfigDescriptor(/* in */ s
  * </описание>
  *
  */
-int16_t CEcoGPIO1_K210Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1K210Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber) {
+int16_t ECOCALLMETHOD CEcoGPIO1_K210Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1K210Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*)));
     ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t index = 0;
@@ -1306,7 +1340,7 @@ int16_t CEcoGPIO1_K210Config_set_LogicalPinNumber(/* in */ struct IEcoGPIO1K210C
  * </описание>
  *
  */
-int16_t CEcoFPIOA1_K210Config_QueryInterface(/* in */ struct IEcoFPIOA1K210Config* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
+int16_t ECOCALLMETHOD CEcoFPIOA1_K210Config_QueryInterface(/* in */ struct IEcoFPIOA1K210Config* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*)));
 
     /* Проверка указателей */
@@ -1353,7 +1387,7 @@ int16_t CEcoFPIOA1_K210Config_QueryInterface(/* in */ struct IEcoFPIOA1K210Confi
  * </описание>
  *
  */
-uint32_t CEcoFPIOA1_K210Config_AddRef(/* in */ struct IEcoFPIOA1K210Config* me) {
+uint32_t ECOCALLMETHOD CEcoFPIOA1_K210Config_AddRef(/* in */ struct IEcoFPIOA1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*)));
 
     /* Проверка указателя */
@@ -1376,7 +1410,7 @@ uint32_t CEcoFPIOA1_K210Config_AddRef(/* in */ struct IEcoFPIOA1K210Config* me) 
  * </описание>
  *
  */
-uint32_t CEcoFPIOA1_K210Config_Release(/* in */ struct IEcoFPIOA1K210Config* me) {
+uint32_t ECOCALLMETHOD CEcoFPIOA1_K210Config_Release(/* in */ struct IEcoFPIOA1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*)));
 
     /* Проверка указателя */
@@ -1407,7 +1441,7 @@ uint32_t CEcoFPIOA1_K210Config_Release(/* in */ struct IEcoFPIOA1K210Config* me)
  * </описание>
  *
  */
-int16_t CEcoFPIOA1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoFPIOA1K210Config* me, /* in */ ECO_FPIOA_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoFPIOA1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoFPIOA1K210Config* me, /* in */ ECO_FPIOA_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*)));
 
     /* Проверка указателя */
@@ -1432,7 +1466,7 @@ int16_t CEcoFPIOA1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoFPIOA1K21
  * </описание>
  *
  */
-ECO_FPIOA_CONFIG_DESCRIPTOR* CEcoFPIOA1_K210Config_get_ConfigDescriptor(/* in */ struct IEcoFPIOA1K210Config* me) {
+ECO_FPIOA_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoFPIOA1_K210Config_get_ConfigDescriptor(/* in */ struct IEcoFPIOA1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*)));
 
     /* Проверка указателя */
@@ -1454,7 +1488,7 @@ ECO_FPIOA_CONFIG_DESCRIPTOR* CEcoFPIOA1_K210Config_get_ConfigDescriptor(/* in */
  * </описание>
  *
  */
-int16_t CEcoSYSCTL1_K210Config_QueryInterface(/* in */ struct IEcoSYSCTL1K210Config* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
+int16_t ECOCALLMETHOD CEcoSYSCTL1_K210Config_QueryInterface(/* in */ struct IEcoSYSCTL1K210Config* me, /* in */ const UGUID* riid, /* out */ void** ppv) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*) + sizeof(struct IEcoFPIOA1K210Config*)));
 
     /* Проверка указателей */
@@ -1501,7 +1535,7 @@ int16_t CEcoSYSCTL1_K210Config_QueryInterface(/* in */ struct IEcoSYSCTL1K210Con
  * </описание>
  *
  */
-uint32_t CEcoSYSCTL1_K210Config_AddRef(/* in */ struct IEcoSYSCTL1K210Config* me) {
+uint32_t ECOCALLMETHOD CEcoSYSCTL1_K210Config_AddRef(/* in */ struct IEcoSYSCTL1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*) + sizeof(struct IEcoFPIOA1K210Config*)));
 
     /* Проверка указателя */
@@ -1524,7 +1558,7 @@ uint32_t CEcoSYSCTL1_K210Config_AddRef(/* in */ struct IEcoSYSCTL1K210Config* me
  * </описание>
  *
  */
-uint32_t CEcoSYSCTL1_K210Config_Release(/* in */ struct IEcoSYSCTL1K210Config* me) {
+uint32_t ECOCALLMETHOD CEcoSYSCTL1_K210Config_Release(/* in */ struct IEcoSYSCTL1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*) + sizeof(struct IEcoFPIOA1K210Config*)));
 
     /* Проверка указателя */
@@ -1555,7 +1589,7 @@ uint32_t CEcoSYSCTL1_K210Config_Release(/* in */ struct IEcoSYSCTL1K210Config* m
  * </описание>
  *
  */
-int16_t CEcoSYSCTL1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoSYSCTL1K210Config* me, /* in */ ECO_SYSCTL_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoSYSCTL1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoSYSCTL1K210Config* me, /* in */ ECO_SYSCTL_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*) + sizeof(struct IEcoFPIOA1K210Config*)));
 
     /* Проверка указателя */
@@ -1579,7 +1613,7 @@ int16_t CEcoSYSCTL1_K210Config_set_ConfigDescriptor(/* in */ struct IEcoSYSCTL1K
  * </описание>
  *
  */
-ECO_SYSCTL_CONFIG_DESCRIPTOR* CEcoSYSCTL1_K210Config_get_ConfigDescriptor(/* in */ struct IEcoSYSCTL1K210Config* me) {
+ECO_SYSCTL_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoSYSCTL1_K210Config_get_ConfigDescriptor(/* in */ struct IEcoSYSCTL1K210Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1K210Config*) + sizeof(struct IEcoFPIOA1K210Config*)));
 
     /* Проверка указателя */
@@ -1603,8 +1637,8 @@ ECO_SYSCTL_CONFIG_DESCRIPTOR* CEcoSYSCTL1_K210Config_get_ConfigDescriptor(/* in 
  * </описание>
  *
  */
-int16_t initCEcoGPIO1(/*in*/ struct IEcoGPIO1* me, /* in */ struct IEcoUnknown *pIUnkSystem) {
-    CEcoGPIO1* pCMe = (CEcoGPIO1*)me;
+int16_t ECOCALLMETHOD initCEcoGPIO1(/*in*/ struct IEcoGPIO1* me, /* in */ struct IEcoUnknown *pIUnkSystem) {
+    /*CEcoGPIO1* pCMe = (CEcoGPIO1*)me;*/
     int16_t result = -1;
 
     /* Проверка указателей */
@@ -1618,7 +1652,7 @@ int16_t initCEcoGPIO1(/*in*/ struct IEcoGPIO1* me, /* in */ struct IEcoUnknown *
 }
 
 /* Create Virtual Table */
-IEcoGPIO1VTbl g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl = {
+IEcoGPIO1VTbl g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl_D01F101F = {
     CEcoGPIO1_QueryInterface,
     CEcoGPIO1_AddRef,
     CEcoGPIO1_Release,
@@ -1666,8 +1700,8 @@ IEcoRCC1STM32ConfigVTbl g_21F17A2862264966A6CEB207CDB6CB1CVTbl = {
 };
 
 /* Выделяем память под один экземпляр */
-CEcoGPIO1 g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTblGPIO = {
-    &g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl,
+CEcoGPIO1 g_x96EBAA047B4E4BDE914D8C3C57F48F2FGPIO1_D01F101F = {
+    &g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl_D01F101F,
     &g_D9671208DCAD444890AA5F4825055DFAVTbl,
     &g_21F17A2862264966A6CEB207CDB6CB1CVTbl,
     0, /* Ref */
@@ -1734,6 +1768,24 @@ CEcoGPIO1 g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTblGPIO = {
     0, /* Conf */
     0  /* Conf */
 };
+#elif ECO_RISCV64
+IEcoGPIO1RISCV64D1ConfigVTbl g_2C25EC2943B44E4583B43375FC35C4D6VTbl_D01F101F = {
+    //CEcoGPIO1_K210Config_QueryInterface,
+    //CEcoGPIO1_K210Config_AddRef,
+    //CEcoGPIO1_K210Config_Release,
+    //CEcoGPIO1_K210Config_set_ConfigDescriptor,
+    //CEcoGPIO1_K210Config_get_ConfigDescriptor,
+    //CEcoGPIO1_K210Config_set_LogicalPinNumber
+};
+
+/* Выделяем память под один экземпляр */
+CEcoGPIO1 g_x96EBAA047B4E4BDE914D8C3C57F48F2FGPIO1_D01F101F = {
+    &g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTbl_D01F101F,
+    &g_2C25EC2943B44E4583B43375FC35C4D6VTbl_D01F101F,
+    0, /* Ref */
+    0, /* Mem */
+    0  /* Conf */
+};
 #endif
 
 /*
@@ -1747,11 +1799,8 @@ CEcoGPIO1 g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTblGPIO = {
  * </описание>
  *
  */
-int16_t createCEcoGPIO1(/* in */ IEcoUnknown* pIUnkSystem, /* in */ IEcoUnknown* pIUnkOuter, /* out */ IEcoGPIO1** ppIGPIO) {
+int16_t ECOCALLMETHOD createCEcoGPIO1(/* in */ IEcoUnknown* pIUnkSystem, /* in */ IEcoUnknown* pIUnkOuter, /* out */ IEcoGPIO1** ppIGPIO) {
     int16_t result = -1;
-    IEcoSystem1* pISys = 0;
-    IEcoInterfaceBus1* pIBus = 0;
-    IEcoMemoryAllocator1* pIMem = 0;
     CEcoGPIO1* pCMe = 0;
 
     /* Проверка указателей */
@@ -1760,7 +1809,7 @@ int16_t createCEcoGPIO1(/* in */ IEcoUnknown* pIUnkSystem, /* in */ IEcoUnknown*
     }
 
     /* Получение указателя на структуру компонента расположенной в области инициализированных данных */
-    pCMe = &g_x96EBAA047B4E4BDE914D8C3C57F48F2FVTblGPIO;
+    pCMe = &g_x96EBAA047B4E4BDE914D8C3C57F48F2FGPIO1_D01F101F;
 
     if (pCMe->m_cRef > 1) {
         pCMe->m_cRef++;
@@ -1787,6 +1836,6 @@ int16_t createCEcoGPIO1(/* in */ IEcoUnknown* pIUnkSystem, /* in */ IEcoUnknown*
  * </описание>
  *
  */
-void deleteCEcoGPIO1(/* in */ IEcoGPIO1* pIGPIO) {
-    CEcoGPIO1* pCMe = (CEcoGPIO1*)pIGPIO;
+void ECOCALLMETHOD deleteCEcoGPIO1(/* in */ IEcoGPIO1* pIGPIO) {
+    /*CEcoGPIO1* pCMe = (CEcoGPIO1*)pIGPIO;*/
 }

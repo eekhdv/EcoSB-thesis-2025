@@ -91,7 +91,7 @@
       <AdditionalIncludeDirectories>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.FileSystemManagement1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;..\..\..\..\Eco.List1\SharedFiles;..\..\..\..\Eco.String1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsC</CompileAs>
-      <PreprocessorDefinitions>ECO_WINDOWS;ECO_WIN32;_DEBUG;_WINDOWS;ECO_LIB;UGUID_UTILITY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ECO_WINDOWS;ECO_X86_32;_DEBUG;_WINDOWS;ECO_LIB;UGUID_UTILITY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
@@ -112,7 +112,7 @@
       <AdditionalIncludeDirectories>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.FileSystemManagement1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;..\..\..\..\Eco.List1\SharedFiles;..\..\..\..\Eco.String1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <CompileAs>CompileAsC</CompileAs>
-      <PreprocessorDefinitions>ECO_WINDOWS;ECO_WIN32;_DEBUG;_WINDOWS;ECO_DLL;UGUID_UTILITY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ECO_WINDOWS;ECO_X86_32;_DEBUG;_WINDOWS;ECO_DLL;UGUID_UTILITY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
@@ -136,7 +136,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsC</CompileAs>
       <AdditionalIncludeDirectories>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.FileSystemManagement1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;..\..\..\..\Eco.List1\SharedFiles;..\..\..\..\Eco.String1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ECO_WINDOWS;ECO_WIN32;NDEBUG;_WINDOWS;ECO_LIB;UGUID_UTILITY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ECO_WINDOWS;ECO_X86_32;NDEBUG;_WINDOWS;ECO_LIB;UGUID_UTILITY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
@@ -161,7 +161,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <CompileAs>CompileAsC</CompileAs>
       <AdditionalIncludeDirectories>..\..\..\HeaderFiles;..\..\..\SharedFiles;..\..\..\..\Eco.Core1\SharedFiles;..\..\..\..\Eco.FileSystemManagement1\SharedFiles;..\..\..\..\Eco.MemoryManager1\SharedFiles;..\..\..\..\Eco.List1\SharedFiles;..\..\..\..\Eco.String1\SharedFiles;..\..\..\..\Eco.InterfaceBus1\SharedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ECO_WINDOWS;ECO_WIN32;NDEBUG;_WINDOWS;ECO_DLL;UGUID_UTILITY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ECO_WINDOWS;ECO_X86_32;NDEBUG;_WINDOWS;ECO_DLL;UGUID_UTILITY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>

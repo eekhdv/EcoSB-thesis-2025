@@ -23,6 +23,9 @@
 #include "IEcoMemoryManager1.h"
 #include "IdEcoInterfaceBus1.h"
 #include "IdEcoUART1.h"
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #ifdef ECO_WIN32
 #include "IEcoUART1WIN32Config.h"
@@ -129,6 +132,8 @@ int8_t WriteCharacterAtCursorPosition(/* in */ uintptr_t FrameBufferAddress, /* 
 
 #elif ECO_STM32
 #include "IEcoUART1STM32Config.h"
+#elif ECO_LINUX
+#include "IEcoUART1LinuxConfig.h"
 #endif
 
 #ifdef ECO_WIN32
@@ -155,6 +160,8 @@ int main(void) {
     IEcoGPIO1BCM283xConfig* pIGPIOConfig = 0;
     GPIO_CONFIG_DESCRIPTOR xGPIO = {0};
 #elif ECO_STM32
+#elif ECO_LINUX
+    IEcoUART1LinuxConfig* pIUARTConfig = 0;
 #endif
     /* Указатель на интерфейс для работы с интерфейсом ввода/вывода общего назначения */
     //IEcoGPIO1* pIGPIO = 0;
@@ -162,8 +169,9 @@ int main(void) {
     int16_t result = 0;
     /* Данные */
     byte_t data = 0;
-    ECO_UART_CONFIG_DESCRIPTOR xUART = {0};
-    ECO_UART_1_CONFIG xDevConfig = {0};
+    ECO_UART_CONFIG_DESCRIPTOR xUART = {.slaveFlag = 0, .devNum = -1};
+
+    ECO_UART_1_CONFIG xDevConfig = {.BaudRate = 115000, .DataBits = 0, .StopBits = 0, .Parity = 0};
 
 #ifdef ECO_WIN32
     /* Проверка и создание системного интрефейса */
@@ -189,8 +197,20 @@ int main(void) {
         goto Release;
     }
 #endif
+#elif ECO_LINUX
+    result = GetIEcoComponentFactoryPtr_00000000000000000000000042757331->pVTbl->Alloc(GetIEcoComponentFactoryPtr_00000000000000000000000042757331, 0, 0, &IID_IEcoInterfaceBus1, (void **)&pIBus);
+    /* Проверка */
+    if (result != 0 && pIBus == 0) {
+        /* Освобождение в случае ошибки */
+        goto Release;
+    }
+    result = pIBus->pVTbl->RegisterComponent(pIBus, &CID_EcoUART1, (IEcoUnknown*)GetIEcoComponentFactoryPtr_B40E129B56624BD7B5F8339C025F3EF0);
+    /* Проверка */
+    if (result != 0) {
+        /* Освобождение в случае ошибки */
+        goto Release;
+    }
 #else
-
 
     /* Указатель на тестируемый интерфейс */
     IEcoIPCCMailbox1* pIMailbox = 0;
@@ -219,7 +239,7 @@ int main(void) {
         ColourDepth = buffer[3];
     }
     pIMailbox->pVTbl->ProcessingByArgs(pIMailbox, MB_CHANNEL_ARM_PROPERTY_ARM, &buffer[0], 23,
-        MB_CHANNEL_PROPERTY_ARM_ALLOCATE_FRAMEBUFFER, 8, 4, 16, 0,
+        MB_CHANNEL_PROPERTY_LinuxOCATE_FRAMEBUFFER, 8, 4, 16, 0,
         MB_CHANNEL_PROPERTY_ARM_SET_PHYSICAL_WIDTH_HEIGHT, 8, 8, ScreenWidth, ScreenHeight,
         MB_CHANNEL_PROPERTY_ARM_SET_VIRTUAL_WIDTH_HEIGHT, 8, 8, ScreenWidth, ScreenHeight,
         MB_CHANNEL_PROPERTY_ARM_SET_DEPTH, 4, 4, ColourDepth,
@@ -259,6 +279,18 @@ int main(void) {
        // WriteCharacterAtCursorPosition(FrameBufferAddress, Pitch, 0, 48);
     /* Создание UART устройства с аппаратной реализацией */
     result = pIUART->pVTbl->new_Device(pIUART, &pIDevice1);
+    if (result != 0 || pIDevice1 == 0) {
+        /* Освобождение в случае ошибки */
+        goto Release;
+    }
+    
+    /* Запрос интерфейса UART конфигурации */
+    result = pIDevice1->pVTbl->QueryInterface(pIDevice1, &IID_IEcoUART1LinuxConfig, (void**) &pIUARTConfig);
+    if (result != 0 && pIUARTConfig == 0) {
+        /* Освобождение интерфейсов в случае ошибки */
+        goto Release;
+    }
+    pIUARTConfig->pVTbl->set_ConfigDescriptor(pIUARTConfig, &xUART);
 #ifdef ECO_WIN32
     /* Запрос интерфейса UART конфигурации */
     result = pIDevice1->pVTbl->QueryInterface(pIDevice1, &IID_IEcoUART1WIN32Config, (void**) &pIUARTConfig);
@@ -343,7 +375,55 @@ Release:
     }
 
     return result;
+#elif ECO_LINUX
+    pIDevice1->pVTbl->Connect(pIDevice1, &xDevConfig);
+    printf("Opened: %s%d\n", "/dev/pts/", xUART.devNum);
+    byte_t dataByte;
+    pIDevice1->pVTbl->Receive(pIDevice1, &dataByte);
+    printf("Received: %c\n", dataByte);
+    sleep(5);
+    pIDevice1->pVTbl->Transmit(pIDevice1, 'H' );
+    sleep(1);
+    pIDevice1->pVTbl->Transmit(pIDevice1, 'e' );
+    sleep(1);
+    pIDevice1->pVTbl->Transmit(pIDevice1, 'l' );
+    sleep(1);
+    pIDevice1->pVTbl->Transmit(pIDevice1, 'l' );
+    sleep(1);
+    pIDevice1->pVTbl->Transmit(pIDevice1, 'o' );
+    sleep(1);
+    pIDevice1->pVTbl->Transmit(pIDevice1, '!' );
+    sleep(1);
+    pIDevice1->pVTbl->Transmit(pIDevice1, '\n' );
+    sleep(10);
 
+    pIDevice1->pVTbl->Disconnect(pIDevice1);
+Release:
+    /* Освобождение интерфейса для работы с интерфейсной шиной */
+    if (pIBus != 0) {
+        pIBus->pVTbl->Release(pIBus);
+    }
+
+    /* Освобождение интерфейса работы с памятью */
+    if (pIMem != 0) {
+        pIMem->pVTbl->Release(pIMem);
+    }
+
+    /* Освобождение тестируемого интерфейса */
+    if (pIDevice1 != 0) {
+        pIDevice1->pVTbl->Release(pIDevice1);
+    }
+
+    if (pIUART != 0) {
+        pIUART->pVTbl->Release(pIUART);
+    }
+
+    /* Освобождение системного интерфейса */
+    if (pISys != 0) {
+        pISys->pVTbl->Release(pISys);
+    }
+
+    return result;
 #else /* Эхо-сервер */
     /* Подключение */
             //WriteCharacterAtCursorPosition(FrameBufferAddress, Pitch, 32, 48);
