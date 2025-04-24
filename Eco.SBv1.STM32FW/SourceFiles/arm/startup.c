@@ -13,6 +13,8 @@ extern uint32_t _ebss;
 
 extern void EcoStartup(void);
 
+extern void SysTick_Handler(void);
+
 
 void Default_Handler(void) {
     while(1) {}
@@ -58,7 +60,7 @@ uint32_t vector_table[] = {
     (uint32_t) Default_Handler,
     (uint32_t) 0,
     (uint32_t) Default_Handler,
-    (uint32_t) Default_Handler,
+    (uint32_t) SysTick_Handler,
     (uint32_t) Default_Handler,
     (uint32_t) Default_Handler,
     (uint32_t) Default_Handler,
