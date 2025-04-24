@@ -223,6 +223,10 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_QueryInterface(/* in */ struct IE
         *ppv = &pCMe->m_pVTblIGPIOConfig;
         pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
     }
+    else if ( IsEqualUGUID(riid, &IID_IEcoRCC1STM32Config) ) {
+        *ppv = &pCMe->m_pVTblIRCCConfig;
+        pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
+    }
 #endif
 
     else {
@@ -472,6 +476,15 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
     /* RCC_APB2ENR_USART1EN = (0x1UL << 4U) */
     /* *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->APB2ENR) |= (0x1UL << 4U); */
     /* *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->BRR) = config->BaudRate;  */
+
+    #define RCC_CFGR_PPRE1_DIV1                0x00000000U                         /*!< HCLK not divided   */
+    #define RCC_CFGR_PPRE1_DIV2                0x00001000U                         /*!< HCLK divided by 2  */
+    #define RCC_CFGR_PPRE1_DIV4                0x00001400U                         /*!< HCLK divided by 4  */
+    #define RCC_CFGR_PPRE1_DIV8                0x00001800U                         /*!< HCLK divided by 8  */
+    #define RCC_CFGR_PPRE1_DIV16               0x00001C00U                         /*!< HCLK divided by 16 */
+    #define RCC_HCLK_DIV16                   RCC_CFGR_PPRE1_DIV16
+
+
     #define USART_CR1_RE    (0x1UL << 2U)  
     #define USART_CR1_TE    (0x1UL << 3U)  
     #define USART_CR1_PS    (0x1UL << 9U)  
@@ -480,46 +493,120 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
     #define USART_CR1_UE    (0x1UL << 13U) 
     #define USART_CR1_OVER8 (0x1UL << 15U)
     #define USART_CR2_STOP  (0x3UL << 12U)
+    #define USART_CR3_RTSE_Pos            (8U)                                     
+    #define USART_CR3_RTSE_Msk            (0x1UL << USART_CR3_RTSE_Pos)             /*!< 0x00000100 */
+    #define USART_CR3_RTSE                USART_CR3_RTSE_Msk                       /*!<RTS Enable                  */
+    #define USART_CR3_CTSE_Pos            (9U)                                     
+    #define USART_CR3_CTSE_Msk            (0x1UL << USART_CR3_CTSE_Pos)             /*!< 0x00000200 */
+    #define USART_CR3_CTSE                USART_CR3_CTSE_Msk                       /*!<CTS Enable                  */
+    #define RCC_CFGR_PPRE1_Pos                 (10U)                               
+    #define RCC_CFGR_PPRE1_Msk                 (0x7UL << RCC_CFGR_PPRE1_Pos)        /*!< 0x00001C00 */
+    #define RCC_CFGR_PPRE1                     RCC_CFGR_PPRE1_Msk                  /*!< PRE1[2:0] bits (APB1 prescaler) */
+    #define RCC_CFGR_PPRE2_Pos                 (13U)                               
+    #define RCC_CFGR_PPRE2_Msk                 (0x7UL << RCC_CFGR_PPRE2_Pos)        /*!< 0x0000E000 */
+    #define RCC_CFGR_PPRE2                     RCC_CFGR_PPRE2_Msk                  /*!< PRE2[2:0] bits (APB2 prescaler) */
+    #define RCC_CFGR_HPRE_Pos                  (4U)                                
+    #define RCC_CFGR_HPRE_Msk                  (0xFUL << RCC_CFGR_HPRE_Pos)         /*!< 0x000000F0 */
+    #define RCC_CFGR_HPRE                      RCC_CFGR_HPRE_Msk                   /*!< HPRE[3:0] bits (AHB prescaler) */
+    #define USART_CR2_LINEN_Pos           (14U)                                    
+    #define USART_CR2_LINEN_Msk           (0x1UL << USART_CR2_LINEN_Pos)            /*!< 0x00004000 */
+    #define USART_CR2_LINEN               USART_CR2_LINEN_Msk                      /*!<LIN mode enable */
+    #define USART_CR2_CLKEN_Pos           (11U)                                    
+    #define USART_CR2_CLKEN_Msk           (0x1UL << USART_CR2_CLKEN_Pos)            /*!< 0x00000800 */
+    #define USART_CR2_CLKEN               USART_CR2_CLKEN_Msk                      /*!<Clock Enable                         */
+    #define USART_CR3_SCEN_Pos            (5U)                                     
+    #define USART_CR3_SCEN_Msk            (0x1UL << USART_CR3_SCEN_Pos)             /*!< 0x00000020 */
+    #define USART_CR3_SCEN                USART_CR3_SCEN_Msk                       /*!<Smartcard mode enable       */
+    #define USART_CR3_IREN_Pos            (1U)                                     
+    #define USART_CR3_IREN_Msk            (0x1UL << USART_CR3_IREN_Pos)             /*!< 0x00000002 */
+    #define USART_CR3_IREN                USART_CR3_IREN_Msk                       /*!<IrDA mode Enable            */
+    #define USART_CR3_HDSEL_Pos           (3U)                                     
+    #define USART_CR3_HDSEL_Msk           (0x1UL << USART_CR3_HDSEL_Pos)            /*!< 0x00000008 */
+    #define USART_CR3_HDSEL               USART_CR3_HDSEL_Msk                      /*!<Half-Duplex Selection       */
+
+
 
     #define RCC_APB2ENR_USART1EN        (0x1UL << 4U)
     #define RCC_AHB1ENR_GPIOAEN         (0x1UL << 0U)
     /********** Настройка MSP для USART1 ************/
-    {
-        uint32_t tmpreg = 0x00U; \
-        *((volatile uint32_t*)&pCMe->m_RCCConfig->Register.Map->APB2ENR) |=  RCC_APB2ENR_USART1EN;
-	    /* Небольшая задержка после включения RCC клока */ \
-	    tmpreg = (*((volatile uint32_t*)&pCMe->m_RCCConfig->Register.Map->APB2ENR) & RCC_APB2ENR_USART1EN);
-	    (void)tmpreg;
-    }
+    // {
+    //     uint32_t tmpreg = 0x00U; \
+    //     *((volatile uint32_t*)&pCMe->m_RCCConfig->Register.Map->APB2ENR) |=  RCC_APB2ENR_USART1EN;
+	  //   /* Небольшая задержка после включения RCC клока */ \
+	  //   tmpreg = (*((volatile uint32_t*)&pCMe->m_RCCConfig->Register.Map->APB2ENR) & RCC_APB2ENR_USART1EN);
+	  //   (void)tmpreg;
+    // }
 
     /********** Настройка MSP для GPIOA ************/
-    {
-        uint32_t tmpreg = 0x00U; \
-        *((volatile uint32_t*)&pCMe->m_RCCConfig->Register.Map->AHB2ENR) |=  RCC_AHB1ENR_GPIOAEN;
-	    /* Небольшая задержка после включения RCC клока */ \
-	    tmpreg = (*((volatile uint32_t*)&pCMe->m_RCCConfig->Register.Map->AHB2ENR) & RCC_AHB1ENR_GPIOAEN);
-	    (void)tmpreg;
-    }
+    // {
+    //     uint32_t tmpreg = 0x00U; \
+    //     *((volatile uint32_t*)&pCMe->m_RCCConfig->Register.Map->AHB2ENR) |=  RCC_AHB1ENR_GPIOAEN;
+	  //   /* Небольшая задержка после включения RCC клока */ \
+	  //   tmpreg = (*((volatile uint32_t*)&pCMe->m_RCCConfig->Register.Map->AHB2ENR) & RCC_AHB1ENR_GPIOAEN);
+	  //   (void)tmpreg;
+    // }
 
     /********** Настройка GPIO для USART ************/
     /* TODO: Setting up GPIO for USART */
     // pCMe->m_pVTblIGPIOConfig->set_LogicalPinNumber
     // result = pCMe->m_pVTblIGPIOConfig.kл->pVTbl->set_Mode(pIGPIO, 13, GPIO_MODE_OUTPUT);
     /* Возможно, нужно добавить GPIO не как интерфейс, а подключить компонент */
+    #define UART_MODE_TX_RX                     ((uint32_t)(USART_CR1_TE | USART_CR1_RE))
 
-    uint32_t tmpReg = (uint32_t)config->Parity;
-    uint32_t clearMask = ~((uint32_t)(USART_CR1_M | USART_CR1_PCE | USART_CR1_PS | USART_CR1_TE | USART_CR1_RE | USART_CR1_OVER8));
+
+    uint32_t tmpReg = (uint32_t)config->Parity | UART_MODE_TX_RX;
+    uint32_t clearMask = (uint32_t)(USART_CR1_M | USART_CR1_PCE | USART_CR1_PS | USART_CR1_TE | USART_CR1_RE | USART_CR1_OVER8);
+
+    #define WRITE_REG(REG, VAL)   ((REG) = (VAL))
+    #define READ_REG(REG)         ((REG))
     #define MODIFY_REG(REG, CLEARMASK, SETMASK)  WRITE_REG((REG), (((READ_REG(REG)) & (~(CLEARMASK))) | (SETMASK)))
+    #define CLEAR_BIT(REG, BIT)   ((REG) &= ~(BIT))
+
+    #define UART_DIV_SAMPLING16(PCLK, BAUD)            ((uint32_t)((((uint64_t)(PCLK))*25U)/(4U*((uint64_t)(BAUD)))))
+    #define UART_DIVMANT_SAMPLING16(PCLK, BAUD)        (UART_DIV_SAMPLING16((PCLK), (BAUD))/100U)
+    #define UART_DIVFRAQ_SAMPLING16(PCLK, BAUD)        ((((UART_DIV_SAMPLING16((PCLK), (BAUD)) - (UART_DIVMANT_SAMPLING16((PCLK), (BAUD)) * 100U)) * 16U)\
+                                                         + 50U) / 100U)
+    /* UART BRR = mantissa + overflow + fraction
+            = (UART DIVMANT << 4) + (UART DIVFRAQ & 0xF0) + (UART DIVFRAQ & 0x0FU) */
+    #define UART_BRR_SAMPLING16(PCLK, BAUD)            ((UART_DIVMANT_SAMPLING16((PCLK), (BAUD)) << 4U) + \
+                                                        (UART_DIVFRAQ_SAMPLING16((PCLK), (BAUD)) & 0xF0U) + \
+                                                        (UART_DIVFRAQ_SAMPLING16((PCLK), (BAUD)) & 0x0FU))
+
+    pCMe->m_UARTConfig->Register.Map->CR1 &= ~(USART_CR1_UE);
+    MODIFY_REG(pCMe->m_UARTConfig->Register.Map->CR2, USART_CR2_STOP, config->StopBits);
+
+    MODIFY_REG(pCMe->m_UARTConfig->Register.Map->CR1, clearMask, tmpReg);
+    MODIFY_REG(pCMe->m_UARTConfig->Register.Map->CR3, (USART_CR3_RTSE | USART_CR3_CTSE), 0);
+
+    MODIFY_REG(pCMe->m_RCCConfig->Register.Map->CFGR, RCC_CFGR_PPRE1, RCC_HCLK_DIV16);
+    MODIFY_REG(pCMe->m_RCCConfig->Register.Map->CFGR, RCC_CFGR_PPRE2, (RCC_HCLK_DIV16 << 3));
+    MODIFY_REG(pCMe->m_RCCConfig->Register.Map->CFGR, RCC_CFGR_HPRE, 0);
+
+
+    uint32_t SystemCoreClock = 16000000;
+    const uint8_t APBPrescTable[8]  = {0, 0, 0, 0, 1, 2, 3, 4};
+
+    uint32_t pclk = SystemCoreClock >> APBPrescTable[(pCMe->m_RCCConfig->Register.Map->CFGR & RCC_CFGR_PPRE1) >> RCC_CFGR_PPRE1_Pos]; // 1000000
+
+    pCMe->m_UARTConfig->Register.Map->BRR = 9;
+  //
+    CLEAR_BIT(pCMe->m_UARTConfig->Register.Map->CR2, (USART_CR2_LINEN | USART_CR2_CLKEN));
+    CLEAR_BIT(pCMe->m_UARTConfig->Register.Map->CR3, (USART_CR3_SCEN | USART_CR3_HDSEL | USART_CR3_IREN));
+
+    /* Enable the peripheral */
+    pCMe->m_UARTConfig->Register.Map->CR1 |=  USART_CR1_UE;
+
 
     /* Установка стоп битов */
-    *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR2) = (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR2) & USART_CR2_STOP) | (config->StopBits);
+    // *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR2) = (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR2) & USART_CR2_STOP) | (config->StopBits);
     /* Установка четности */
-    *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR1) = (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR1) & clearMask) | (tmpReg);
+    // *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR1) = (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR1) & clearMask) | (tmpReg);
     /* *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR1) = USART_CR1_TE | USART_CR1_TE | USART_CR1_UE; */
     /* Установка Hardware flow control */
     /*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->CR1) = ???*/ 
 
-    *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->BRR) = config->BaudRate; /* TODO: Установка baudrate
+    //*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->BRR) = config->BaudRate;
+                                                                                      /* TODO: Установка baudrate
                                                                                        * Вместо обычной установки нужно пересчитать baudrate 
                                                                                        * по формуле: mantissa + overflow + fraction
                                                                                        * UART_BRR_SAMPLING8 (в файле stm32f4xx_hal_uart.h)
@@ -806,6 +893,10 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Config_QueryInterface(/* in */ IE
     }
     else if ( IsEqualUGUID(riid, &IID_IEcoGPIO1STM32Config) ) {
         *ppv = &pCMe->m_pVTblIGPIOConfig;
+        pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
+    }
+    else if ( IsEqualUGUID(riid, &IID_IEcoRCC1STM32Config) ) {
+        *ppv = &pCMe->m_pVTblIRCCConfig;
         pCMe->m_pVTblIDevice->AddRef((IEcoUART1Device*)pCMe);
     }
 #elif ECO_LINUX
@@ -1131,18 +1222,26 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/
 #elif ECO_RISCV64
 int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/* in */ struct IEcoGPIO1RISCV64D1Config* me, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
 #elif ECO_STM32
-int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/* in */ IEcoGPIO1STM32ConfigPtr_t me, /* in */ uint8_t portNumber, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_ConfigDescriptor(/* in */ IEcoGPIO1STM32ConfigPtr_t me, /* in */ uint8_t PortNumber, /* in */ ECO_GPIO_CONFIG_DESCRIPTOR* config) {
 #endif
     CEcoUART1Device_025F3EF0* pCMe = (CEcoUART1Device_025F3EF0*)((byte_t*)me - (sizeof(struct IEcoUnknown*)*2));
+    int16_t result = -1;
+    uint8_t index = 0;
 
     /* Проверка указателя */
     if (me == 0 || config == 0 ) {
-        return -1;
+        return result;
     }
 
-    pCMe->m_GPIOConfig = config;
+    for(index = 0; index < 14; index++) {
+        if (pCMe->m_PortName[index] == PortNumber || index == PortNumber) {
+            pCMe->m_PortConfig[index] = config;
+            result = 0;
+            break;
+        }
+    }
 
-    return 0;
+    return result;
 }
 
 
@@ -1166,12 +1265,21 @@ ECO_GPIO_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_ge
 #endif
     CEcoUART1Device_025F3EF0* pCMe = (CEcoUART1Device_025F3EF0*)((byte_t*)me - (sizeof(struct IEcoUnknown*)*2));
 
+    ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
+    uint8_t index = 0;
+
     /* Проверка указателя */
     if (me == 0 ) {
         return 0;
     }
 
-    return (ECO_GPIO_CONFIG_DESCRIPTOR*)pCMe->m_GPIOConfig;
+    for(index = 0; index < 14; index++) {
+        if (pCMe->m_PortName[index] == PortNumber || index == PortNumber) {
+            pDescriptor = pCMe->m_PortConfig[index];
+            break;
+        }
+    }
+    return pDescriptor;
 }
 
 /*
@@ -1190,12 +1298,13 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/
 #elif ECO_RISCV64
 int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/* in */ struct IEcoGPIO1RISCV64D1Config* me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint32_t PinNumber) {
 #elif ECO_STM32
-int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/* in */ IEcoGPIO1STM32ConfigPtr_t me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t BankNumber, /* in */ uint16_t PinNumber) {
+int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/* in */ IEcoGPIO1STM32ConfigPtr_t me, /* in */ uint8_t LogicalPinNumber, /* in */ uint8_t PortNumber, /* in */ uint16_t PinNumber) {
 #endif
     CEcoUART1Device_025F3EF0* pCMe = (CEcoUART1Device_025F3EF0*)((byte_t*)me - (sizeof(struct IEcoUnknown*)*2));
 
     ECO_GPIO_CONFIG_DESCRIPTOR* pDescriptor = 0;
     uint8_t index = 0;
+    uint8_t indexPin = 0;
     int16_t result = -1;
 
     /* Проверка указателя */
@@ -1203,30 +1312,24 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_GPIOConfig_set_LogicalPinNumber(/
         return -1;
     }
 
-    pDescriptor = (ECO_GPIO_CONFIG_DESCRIPTOR*)pCMe->m_GPIOConfig;
-
+    for(index = 0; index < 14; index++) {
+        if (pCMe->m_PortName[index] == PortNumber || index == PortNumber) {
+            pDescriptor = pCMe->m_PortConfig[index];
+            break;
+        }
+    }
     if (pDescriptor != 0) {
-#ifdef ECO_STM32
         for(index = 0; index < 16; index++) {
-#else
-        for(index = 0; index < 32; index++) {
-#endif
             if (PinNumber & (1 << index)) {
-                if (BankNumber == 0) {
-                    pDescriptor->LogicalPinMask[index] = LogicalPinNumber;
-                    result = 0;
-                }
-                else if (BankNumber == 1) {
-#ifdef ECO_STM32
-#else
-                    pDescriptor->LogicalPinMask[32 + index] = LogicalPinNumber;
-#endif
-                    result = 0;
-                }
+                pDescriptor->LogicalPinMask[index] = LogicalPinNumber;
+					      pDescriptor->Register.Map->MODER |=  (1 << (indexPin*2+1));
+					      pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2);
+                result = 0;
                 break;
             }
         }
     }
+
     return result;
 }
 
