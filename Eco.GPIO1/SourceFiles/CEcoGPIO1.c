@@ -927,7 +927,7 @@ uint32_t ECOCALLMETHOD CEcoRCC1_STM32Config_Release(/* in */ struct IEcoGPIO1* m
  * </описание>
  *
  */
-int16_t ECOCALLMETHOD CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ RCC_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ ECO_RCC_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателя */
@@ -952,7 +952,7 @@ int16_t ECOCALLMETHOD CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct 
  * </описание>
  *
  */
-RCC_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoRCC1_STM32Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me) {
+ECO_RCC_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoRCC1_STM32Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателя */
@@ -960,7 +960,7 @@ RCC_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoRCC1_STM32Config_get_ConfigDescriptor(/
         return 0;
     }
 
-    return (RCC_CONFIG_DESCRIPTOR*)pCMe->m_RCCConfig;
+    return (ECO_RCC_CONFIG_DESCRIPTOR*)pCMe->m_RCCConfig;
 }
 
 #elif ECO_BCM283X
