@@ -245,6 +245,7 @@ static inline uint32_t SysTick_Config(uint32_t ticks)
 #define ECO_GPIO_HIGHT     1
 #define ECO_GPIO_LOW       0
 
+
 /* Пользовательские пины */ 
 // #define LED1_Pin ECO_GPIO_PIN_6
 // #define LED1_GPIO_Port ECO_GPIOA
@@ -279,7 +280,7 @@ void delay(uint32_t Delay)
    uint32_t wait = Delay;
 
    /* Add a freq to guarantee minimum wait */
-   if (wait < 0xFFFF)
+   if (wait < DELAY_MAX)
    {
 	   wait += (uint32_t)(uwTickFreq);
    }
@@ -287,7 +288,9 @@ void delay(uint32_t Delay)
    while((Eco_GetTick() - tickstart) < wait) { }
 }
 
-#define RCC_AHB1ENR     *((volatile uint32_t*) (0x40023830))
+uint32_t isLoop = 1;
+
+#define RCC_AHB1ENR                     *((volatile uint32_t*) (0x40023830))
 
 #define RCC_HCLK_DIV1                    0x00000000U
 #define RCC_HCLK_DIV2                    0x00001000U
@@ -327,23 +330,89 @@ void delay(uint32_t Delay)
 #define GPIOB_BSRR      *((volatile uint32_t*) (0x40020418))
 
 /* Global initialized variable */
-uint32_t isLoop = 1;
-#define PWR_CR_VOS_Pos         (14U)                                           
-#define PWR_CR_VOS_Msk         (0x1UL << PWR_CR_VOS_Pos)                        /*!< 0x00004000 */
-#define PWR_CR_VOS             PWR_CR_VOS_Msk                                  /*!< VOS bit (Regulator voltage scaling output selection) */
-#define PWR_REGULATOR_VOLTAGE_SCALE1         PWR_CR_VOS             /* Scale 1 mode(default value at reset): the maximum value of fHCLK = 168 MHz. */
-#define RCC_HSICALIBRATION_DEFAULT       0x10U         /* Default HSI calibration trimming value */
-#define RCC_CR_HSITRIM_Pos                 (3U)                                
-#define RCC_CR_HSITRIM_Msk                 (0x1FUL << RCC_CR_HSITRIM_Pos)       /*!< 0x000000F8 */
-#define RCC_CR_HSITRIM                     RCC_CR_HSITRIM_Msk                  
+#define PWR_CR_VOS                        0x00004000                      /*!< VOS bit (Regulator voltage scaling output selection) */
+#define PWR_REGULATOR_VOLTAGE_SCALE1      PWR_CR_VOS                      /* Scale 1 mode(default value at reset): the maximum value of fHCLK = 168 MHz. */
+#define RCC_HSICALIBRATION_DEFAULT        0x10U                           /* Default HSI calibration trimming value */
+#define RCC_CR_HSITRIM_Pos                3U                                
+#define RCC_CR_HSITRIM_Msk                (0x1FUL << RCC_CR_HSITRIM_Pos)  /*!< 0x000000F8 */
+#define RCC_CR_HSITRIM                    RCC_CR_HSITRIM_Msk                  
 
-#define RCC_CFGR_SWS_Pos                   (2U)                                
-#define RCC_CFGR_SWS_Msk                   (0x3UL << RCC_CFGR_SWS_Pos)          /*!< 0x0000000C */
-#define RCC_CFGR_SWS                       RCC_CFGR_SWS_Msk                    /*!< SWS[1:0] bits (System Clock Switch Status) */
-#define RCC_SYSCLKSOURCE_HSI             0x00000000U
-#define RCC_CFGR_SW_Pos                    (0U)                                
-#define RCC_CFGR_SW_Msk                    (0x3UL << RCC_CFGR_SW_Pos)           /*!< 0x00000003 */
-#define RCC_CFGR_SW                        RCC_CFGR_SW_Msk                     /*!< SW[1:0] bits (System clock Switch) */
+#define RCC_CFGR_SWS_Pos                  (2U)                                
+#define RCC_CFGR_SWS_Msk                  (0x3UL << RCC_CFGR_SWS_Pos)          /*!< 0x0000000C */
+#define RCC_CFGR_SWS                      RCC_CFGR_SWS_Msk                    /*!< SWS[1:0] bits (System Clock Switch Status) */
+#define RCC_SYSCLKSOURCE_HSI              0x00000000U
+#define RCC_CFGR_SW                       0x00000003UL                    /*!< SW[1:0] bits (System clock Switch) */
+
+#define RCC_FLAG_MASK                    ((uint8_t)0x1FU)
+#define RCC_FLAG_HSIRDY                  ((uint8_t)0x21)
+
+#define ECO_SET 1
+#define ECO_RESET 0
+
+#define  GPIO_SPEED_FREQ_LOW          0x00000000U  /*!< IO works at 2 MHz, please refer to the product datasheet */
+#define  GPIO_SPEED_FREQ_MEDIUM       0x00000001U  /*!< range 12,5 MHz to 50 MHz, please refer to the product datasheet */
+#define  GPIO_SPEED_FREQ_HIGH         0x00000002U  /*!< range 25 MHz to 100 MHz, please refer to the product datasheet  */
+#define  GPIO_SPEED_FREQ_VERY_HIGH    0x00000003U  /*!< range 50 MHz to 200 MHz, please refer to the product datasheet  */
+
+#define OUTPUT_TYPE_Pos               4U
+#define OUTPUT_TYPE                   (0x1UL << OUTPUT_TYPE_Pos)
+
+#define GPIO_OTYPER_OT_0              0x00000001U
+#define GPIO_OSPEEDER_OSPEEDR0        0x00000003U
+#define GPIO_PUPDR_PUPDR0             0x00000003U
+#define GPIO_MODE                     0x3UL
+#define GPIO_MODER_MODER0             0x00000003U
+
+#define OUTPUT_PP                     0x0UL << 4U
+#define USART_CR1_UE                  0x00002000                         /*!<USART Enable                           */
+#define USART_CR2_STOP                0x00003000                         /*!<STOP[1:0] bits (STOP bits) */
+#define USART_CR1_RE                  0x00000004U                        /*!<Receiver Enable                        */
+#define USART_CR1_TE                  0x00000008U                        /*!<Transmitter Enable                     */
+#define UART_WORDLENGTH_8B            0x00000000U
+#define UART_STOPBITS_1               0x00000000U
+#define UART_PARITY_NONE              0x00000000U
+#define UART_OVERSAMPLING_16          0x00000000U
+#define USART_CR1_PCE                 0x00000400UL                       /*!<Parity Control Enable                  */
+#define USART_CR1_M                   0x00001000UL                       /*!<Word length                            */
+#define USART_CR1_PS                  0x00000200UL                       /*!<Parity Selection                       */
+#define USART_CR1_OVER8               0x00008000UL                       /*!<USART Oversampling by 8 enable         */
+#define UART_HWCONTROL_NONE           0x00000000U
+#define USART_CR3_RTSE                0x00000100UL                       /*!<RTS Enable                  */
+#define UART_MODE_RX                  ((uint32_t)USART_CR1_RE)
+#define UART_MODE_TX                  ((uint32_t)USART_CR1_TE)
+#define UART_MODE_TX_RX               ((uint32_t)(USART_CR1_TE | USART_CR1_RE))
+
+#define USART_CR3_CTSE                0x00000200UL                       /*!<CTS Enable                  */
+#define USART_CR1_RXNEIE              0x00000020UL                       /*!<RXNE Interrupt Enable                  */
+#define USART_CR1_PEIE                0x00000100UL                       /*!<PE Interrupt Enable                    */
+#define USART_SR_RXNE                 0x00000020UL                       /*!<Read Data Register Not Empty */
+#define USART_SR_TXE                  0x00000080UL                       /*!<Transmit Data Register Empty */
+#define USART_CR1_TXEIE               0x00000080UL                       /*!<TXE Interrupt Enable                   */
+#define USART_CR3_EIE                 0x00000001UL                       /*!<Error Interrupt Enable      */
+#define USART_SR_TC                   0x00000040UL                       /*!<Transmission Complete        */
+
+#define UART_FLAG_TXE                       ((uint32_t)USART_SR_TXE)
+#define UART_FLAG_RXNE                      ((uint32_t)USART_SR_RXNE)
+#define UART_FLAG_TC                        ((uint32_t)USART_SR_TC)
+
+#define ATOMIC_CLEAR_BIT(REG, BIT)                           \
+  do {                                                       \
+    uint32_t val;                                            \
+    do {                                                     \
+      val = __LDREXW((volatile uint32_t *)&(REG)) & ~(BIT);      \
+    } while ((__STREXW(val,(volatile uint32_t *)&(REG))) != 0U); \
+  } while(0)
+
+#define UART_DIV_SAMPLING16(_PCLK_, _BAUD_)            ((uint32_t)((((uint32_t)(_PCLK_))*25U)/(4U*((uint32_t)(_BAUD_)))))
+#define UART_DIVMANT_SAMPLING16(_PCLK_, _BAUD_)        (UART_DIV_SAMPLING16((_PCLK_), (_BAUD_))/100U)
+#define UART_DIVFRAQ_SAMPLING16(_PCLK_, _BAUD_)        ((((UART_DIV_SAMPLING16((_PCLK_), (_BAUD_)) - (UART_DIVMANT_SAMPLING16((_PCLK_), (_BAUD_)) * 100U)) * 16U)\
+                                                         + 50U) / 100U)
+/* UART BRR = mantissa + overflow + fraction
+            = (UART DIVMANT << 4) + (UART DIVFRAQ & 0xF0) + (UART DIVFRAQ & 0x0FU) */
+#define UART_BRR_SAMPLING16(_PCLK_, _BAUD_)            ((UART_DIVMANT_SAMPLING16((_PCLK_), (_BAUD_)) << 4U) + \
+                                                        (UART_DIVFRAQ_SAMPLING16((_PCLK_), (_BAUD_)) & 0xF0U) + \
+                                                        (UART_DIVFRAQ_SAMPLING16((_PCLK_), (_BAUD_)) & 0x0FU))
+
 
 void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
 {
@@ -352,7 +421,7 @@ void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
 	(void)rccConfig->Register.Map->APB1ENR;
 
 	PWR->CR = (PWR->CR & (~PWR_CR_VOS)) | PWR_REGULATOR_VOLTAGE_SCALE1;
-  PWR->CR & PWR_CR_VOS;
+  /* PWR->CR & PWR_CR_VOS; */
   (void)PWR->CR;
 
 
@@ -363,11 +432,10 @@ void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
   rccConfig->Register.Map->CFGR = (rccConfig->Register.Map->CFGR & (~RCC_CFGR_PPRE2)) | (RCC_HCLK_DIV16 << 3);
   rccConfig->Register.Map->CFGR = (rccConfig->Register.Map->CFGR & (~RCC_CFGR_HPRE))  | RCC_SYSCLK_DIV1;
 
-#define RCC_FLAG_MASK  ((uint8_t)0x1FU)
-#define RCC_FLAG_HSIRDY                  ((uint8_t)0x21)
 
   uint32_t flagHsiRdy = RCC_FLAG_HSIRDY >> 5U;
-  (((((flagHsiRdy == 1U)? rccConfig->Register.Map->CR : (flagHsiRdy == 2U ? rccConfig->Register.Map->BDCR : (flagHsiRdy == 3U ? rccConfig->Register.Map->CSR : rccConfig->Register.Map->CIR))) & (1U << (RCC_FLAG_HSIRDY & RCC_FLAG_MASK))) != 0U) ? 1U : 0U);
+  (void)flagHsiRdy;
+  /* (((((flagHsiRdy == 1U)? rccConfig->Register.Map->CR : (flagHsiRdy == 2U ? rccConfig->Register.Map->BDCR : (flagHsiRdy == 3U ? rccConfig->Register.Map->CSR : rccConfig->Register.Map->CIR))) & (1U << (RCC_FLAG_HSIRDY & RCC_FLAG_MASK))) != 0U) ? 1U : 0U); */
 
 	rccConfig->Register.Map->CFGR = (rccConfig->Register.Map->CFGR & (~RCC_CFGR_SW)) | RCC_SYSCLKSOURCE_HSI;
 
@@ -380,42 +448,83 @@ void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
 	SysTick_Config(SystemCoreClock / (1000U / uwTickFreq));
 }
 
-#define ATOMIC_CLEAR_BIT(REG, BIT)                           \
-  do {                                                       \
-    uint32_t val;                                            \
-    do {                                                     \
-      val = __LDREXW((volatile uint32_t *)&(REG)) & ~(BIT);      \
-    } while ((__STREXW(val,(volatile uint32_t *)&(REG))) != 0U); \
-  } while(0)
+typedef struct EcoGpioConfig_ 
+{
+    uint32_t OutputType    ;
+    uint32_t PullMode     ;
+    uint32_t SpeedFreq    ;
+    uint32_t AlterFunc    ; /* GPIO_AF8_UART4 */
+} EcoGpioConfig;
 
-#define ECO_SET 1
-#define ECO_RESET 0
 
-#define USART_CR1_RXNEIE_Pos          (5U)                                     
-#define USART_CR1_RXNEIE_Msk          (0x1UL << USART_CR1_RXNEIE_Pos)           /*!< 0x00000020 */
-#define USART_CR1_RXNEIE              USART_CR1_RXNEIE_Msk                     /*!<RXNE Interrupt Enable                  */
-#define USART_CR1_PEIE_Pos            (8U)                                     
-#define USART_CR1_PEIE_Msk            (0x1UL << USART_CR1_PEIE_Pos)             /*!< 0x00000100 */
-#define USART_CR1_PEIE                USART_CR1_PEIE_Msk                       /*!<PE Interrupt Enable                    */
-#define USART_SR_RXNE_Pos             (5U)
-#define USART_SR_RXNE_Msk             (0x1UL << USART_SR_RXNE_Pos)              /*!< 0x00000020 */
-#define USART_SR_RXNE                 USART_SR_RXNE_Msk                        /*!<Read Data Register Not Empty */
-#define USART_SR_TXE_Pos              (7U)
-#define USART_SR_TXE_Msk              (0x1UL << USART_SR_TXE_Pos)               /*!< 0x00000080 */
-#define USART_SR_TXE                  USART_SR_TXE_Msk                         /*!<Transmit Data Register Empty */
-#define USART_CR1_TXEIE_Pos           (7U)
-#define USART_CR1_TXEIE_Msk           (0x1UL << USART_CR1_TXEIE_Pos)            /*!< 0x00000080 */
-#define USART_CR1_TXEIE               USART_CR1_TXEIE_Msk                      /*!<TXE Interrupt Enable                   */
-#define USART_CR3_EIE_Pos             (0U)
-#define USART_CR3_EIE_Msk             (0x1UL << USART_CR3_EIE_Pos)              /*!< 0x00000001 */
-#define USART_CR3_EIE                 USART_CR3_EIE_Msk                        /*!<Error Interrupt Enable      */
-#define USART_SR_TC_Pos               (6U)
-#define USART_SR_TC_Msk               (0x1UL << USART_SR_TC_Pos)                /*!< 0x00000040 */
-#define USART_SR_TC                   USART_SR_TC_Msk                          /*!<Transmission Complete        */
+void EcoGpioInit(ECO_GPIO_CONFIG_DESCRIPTOR* xGPIO, EcoGpioConfig* config, uint16_t logicalPinNumber)
+{
+    uint32_t gpioOuputType    = config->OutputType;
+    uint32_t gpioPull         = config->PullMode;
+    uint32_t gpioSpeed        = config->SpeedFreq;
+    uint32_t gpioAlterFunc    = config->AlterFunc;
 
-#define UART_FLAG_TXE                       ((uint32_t)USART_SR_TXE)
-#define UART_FLAG_RXNE                      ((uint32_t)USART_SR_RXNE)
-#define UART_FLAG_TC                        ((uint32_t)USART_SR_TC)
+    xGPIO->Register.Map->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR0 << (logicalPinNumber * 2U));
+    xGPIO->Register.Map->OSPEEDR |= (gpioSpeed << (logicalPinNumber * 2U));
+
+    xGPIO->Register.Map->OTYPER &= ~(GPIO_OTYPER_OT_0 << logicalPinNumber);
+    xGPIO->Register.Map->OTYPER |= (((gpioOuputType & OUTPUT_TYPE) >> OUTPUT_TYPE_Pos) << logicalPinNumber);
+
+    xGPIO->Register.Map->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << (logicalPinNumber * 2U));
+    xGPIO->Register.Map->PUPDR |= (gpioPull << (logicalPinNumber * 2U));
+
+    if ((gpioOuputType & GPIO_MODE) == GPIO_MODE_AF)
+    {
+    	xGPIO->Register.Map->AFR[logicalPinNumber >> 3U] &= ~(0xFU << ((logicalPinNumber & 0x07U) * 4U));
+    	xGPIO->Register.Map->AFR[logicalPinNumber >> 3U] |= (gpioAlterFunc << ((logicalPinNumber & 0x07U) * 4U));
+    }
+
+    xGPIO->Register.Map->MODER &= ~(GPIO_MODER_MODER0 << (logicalPinNumber * 2U));
+    xGPIO->Register.Map->MODER |= ((gpioOuputType & GPIO_MODE) << (logicalPinNumber * 2U));
+}
+
+typedef struct EcoUartConfig_ 
+{
+    uint32_t WordLength  ;
+    uint32_t Parity      ;
+    uint32_t Mode        ;
+    uint32_t Oversampling;
+    uint32_t HwControl   ;
+    uint32_t BaudRate    ;
+} EcoUartConfig;
+
+void EcoUartEnable(ECO_UART_CONFIG_DESCRIPTOR* xUART, EcoUartConfig* config, uint32_t logicalPinNumber)
+{
+  uint32_t tmpreg;
+  uint32_t clearMask;
+  uint32_t pclk;
+
+  if (logicalPinNumber == 0 || logicalPinNumber == 1)
+  {
+    xUART->Register.Map->CR1 &=  ~USART_CR1_UE;
+
+    tmpreg    = (uint32_t)UART_STOPBITS_1;
+    clearMask = (uint32_t)USART_CR2_STOP;
+    xUART->Register.Map->CR2 = ((xUART->Register.Map->CR2 & (~clearMask)) | tmpreg);
+
+    tmpreg    = config->WordLength | config->Parity | config->Mode | config->Oversampling;
+    clearMask = (uint32_t)(USART_CR1_M | USART_CR1_PCE | USART_CR1_PS | USART_CR1_TE | USART_CR1_RE | USART_CR1_OVER8);
+    xUART->Register.Map->CR1 = ((xUART->Register.Map->CR1 & (~clearMask)) | tmpreg);
+
+    tmpreg    = config->HwControl;
+    clearMask = (uint32_t)USART_CR3_RTSE | USART_CR3_CTSE;
+    xUART->Register.Map->CR3 = ((xUART->Register.Map->CR3 & (~clearMask)) | tmpreg);
+
+    /* pclk = (SystemCoreClock >> APBPrescTable[(xRCC.Register.Map->CFGR & RCC_CFGR_PPRE1)>> RCC_CFGR_PPRE1_Pos]); */
+    pclk = SystemCoreClock;
+
+    xUART->Register.Map->BRR = UART_BRR_SAMPLING16(pclk, config->BaudRate);
+    xUART->Register.Map->CR1 |= USART_CR1_UE;
+  }
+}
+
+
+
 void EcoUartTransmit(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* buffer, uint32_t bufferSize)
 {
 	const uint8_t  *pdata8bits;
@@ -429,11 +538,11 @@ void EcoUartTransmit(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* buff
 	{
 	  while ((((uartConfig->Register.Map->SR & UART_FLAG_TXE) == UART_FLAG_TXE) ? ECO_SET : ECO_RESET) == ECO_RESET)
 	  {
-		if ((Eco_GetTick() - tickstart) > 100)
-		{
-		  ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
-		  ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
-		}
+		  if ((Eco_GetTick() - tickstart) > 100)
+		  {
+		    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
+		    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
+		  }
 	  }
 	  uartConfig->Register.Map->DR = (uint8_t)(*pdata8bits & 0xFFU);
 	  pdata8bits++;
@@ -622,15 +731,6 @@ int EcoStartup() {
     xGPIOA.Register.BaseAddress = ECO_GPIOA; /* 0x40020400UL */
     xUART.Register.BaseAddress  = ECO_UART4; /* 0x40004C00UL */
 
-#define  GPIO_SPEED_FREQ_LOW         0x00000000U  /*!< IO works at 2 MHz, please refer to the product datasheet */
-#define  GPIO_SPEED_FREQ_MEDIUM      0x00000001U  /*!< range 12,5 MHz to 50 MHz, please refer to the product datasheet */
-#define  GPIO_SPEED_FREQ_HIGH        0x00000002U  /*!< range 25 MHz to 100 MHz, please refer to the product datasheet  */
-#define  GPIO_SPEED_FREQ_VERY_HIGH   0x00000003U  /*!< range 50 MHz to 200 MHz, please refer to the product datasheet  */
-
-#define OUTPUT_TYPE_Pos                         4U
-#define OUTPUT_TYPE                             (0x1UL << OUTPUT_TYPE_Pos)
-#define OUTPUT_TYPE_Pos                         4U
-#define OUTPUT_TYPE                             (0x1UL << OUTPUT_TYPE_Pos)
     result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoGPIO1, 0, &IID_IEcoGPIO1, (void**) &pIGPIO);
 
     /* Проверка */
@@ -660,188 +760,65 @@ int EcoStartup() {
         goto Release;
     }
     EcoClockConfigure(pIRCCConfig->pVTbl->get_ConfigDescriptor(pIRCCConfig));
-  xRCC.Register.Map->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-	xGPIOA.Register.Map->BSRR = (uint32_t)(ECO_GPIO_PIN_6|ECO_GPIO_PIN_7) << 16U;
+
+    xRCC.Register.Map->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+	  xGPIOA.Register.Map->BSRR = (uint32_t)(ECO_GPIO_PIN_6|ECO_GPIO_PIN_7) << 16U;
+
+/******************** init GPIO LEDs *****************************/
+
+    EcoGpioConfig led1PinConfig = {
+      .OutputType = GPIO_MODE_OUTPUT,
+      .PullMode = 0,
+      .SpeedFreq = GPIO_SPEED_FREQ_HIGH,
+      .AlterFunc = 0
+    };
+
+    EcoGpioConfig led2PinConfig = {
+      .OutputType = GPIO_MODE_OUTPUT,
+      .PullMode = 0,
+      .SpeedFreq = GPIO_SPEED_FREQ_HIGH,
+      .AlterFunc = 0
+    };
+
+    #define LED1_Pin 6
+    #define LED2_Pin 7
 
 	  /*Configure GPIO pins : LED1_Pin LED2_Pin */
-	uint32_t logicalPinNumber = 6;
-	uint32_t gpioOuputType    = GPIO_MODE_OUTPUT;
-	uint32_t gpioPull         = 0;
-	uint32_t gpioSpeed        = GPIO_SPEED_FREQ_HIGH;
+    EcoGpioInit(&xGPIOA, &led1PinConfig, LED1_Pin);
+    EcoGpioInit(&xGPIOA, &led2PinConfig, LED2_Pin);
 
+    result = pIGPIOConfig->pVTbl->set_ConfigDescriptor(pIGPIOConfig, 1 /* or A */, &xGPIOA);
+    result = pIGPIOConfig->pVTbl->set_LogicalPinNumber(pIGPIOConfig, ECO_GPIO_LPN_6, 1 /* or A */, ECO_GPIO_PIN_6);
+    result = pIGPIOConfig->pVTbl->set_LogicalPinNumber(pIGPIOConfig, ECO_GPIO_LPN_7, 1 /* or A */, ECO_GPIO_PIN_7);
+    result = pIGPIO->pVTbl->set_Mode(pIGPIO, ECO_GPIO_LPN_6, GPIO_MODE_OUTPUT);
+    result = pIGPIO->pVTbl->set_Mode(pIGPIO, ECO_GPIO_LPN_7, GPIO_MODE_OUTPUT);  
 
-#define GPIO_OTYPER_OT0_Pos              (0U)                                  
-#define GPIO_OTYPER_OT0_Msk              (0x1UL << GPIO_OTYPER_OT0_Pos)         /*!< 0x00000001 */
-#define GPIO_OTYPER_OT_0                  GPIO_OTYPER_OT0_Msk                   
-#define GPIO_OSPEEDR_OSPEED0_Pos         (0U)                                  
-#define GPIO_OSPEEDR_OSPEED0_Msk         (0x3UL << GPIO_OSPEEDR_OSPEED0_Pos)    /*!< 0x00000003 */
-#define GPIO_OSPEEDER_OSPEEDR0             GPIO_OSPEEDR_OSPEED0_Msk              
-#define GPIO_PUPDR_PUPD0_Pos             (0U)                                  
-#define GPIO_PUPDR_PUPD0_Msk             (0x3UL << GPIO_PUPDR_PUPD0_Pos)        /*!< 0x00000003 */
-#define GPIO_PUPDR_PUPDR0                 GPIO_PUPDR_PUPD0_Msk                  
-#define GPIO_MODE_Pos                           0U
-#define GPIO_MODE                               (0x3UL << GPIO_MODE_Pos)
-#define GPIO_MODER_MODER0_Pos            (0U)                                  
-#define GPIO_MODER_MODER0_Msk            (0x3UL << GPIO_MODER_MODER0_Pos)       /*!< 0x00000003 */
-#define GPIO_MODER_MODER0                GPIO_MODER_MODER0_Msk                 
+/******************** init UART 4 *****************************/
 
-	xGPIOA.Register.Map->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->OSPEEDR |= (gpioSpeed << (logicalPinNumber * 2U));
+  #define GPIO_AF8_UART4 0x08
+    EcoGpioConfig gpioUart4TxConfig = {
+      .OutputType = GPIO_MODE_AF | OUTPUT_PP,
+      .PullMode   = 0,
+      .SpeedFreq  = GPIO_SPEED_FREQ_VERY_HIGH,
+      .AlterFunc  = GPIO_AF8_UART4
+    };
 
-	xGPIOA.Register.Map->OTYPER &= ~(GPIO_OTYPER_OT_0 << logicalPinNumber);
-	xGPIOA.Register.Map->OTYPER |= (((gpioOuputType & OUTPUT_TYPE) >> OUTPUT_TYPE_Pos) << logicalPinNumber);
+  #define UART_GPIO_PIN_RX 0
+  #define UART_GPIO_PIN_TX 1
 
-	xGPIOA.Register.Map->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->PUPDR |= (gpioPull << (logicalPinNumber * 2U));
+    /* Configure GPIO pins for UART 4 */
+    EcoGpioInit(&xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_TX);
+    EcoGpioInit(&xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_RX);
 
-	xGPIOA.Register.Map->MODER &= ~(GPIO_MODER_MODER0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->MODER |= ((gpioOuputType & GPIO_MODE) << (logicalPinNumber * 2U));
-
-	logicalPinNumber = 7;
-	gpioOuputType    = GPIO_MODE_OUTPUT;
-	gpioPull         = 0;
-	gpioSpeed        = GPIO_SPEED_FREQ_HIGH;
-	xGPIOA.Register.Map->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->OSPEEDR |= (gpioSpeed << (logicalPinNumber * 2U));
-
-	xGPIOA.Register.Map->OTYPER &= ~(GPIO_OTYPER_OT_0 << logicalPinNumber) ;
-	xGPIOA.Register.Map->OTYPER |= (((gpioOuputType & OUTPUT_TYPE) >> OUTPUT_TYPE_Pos) << logicalPinNumber);
-
-	xGPIOA.Register.Map->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->PUPDR |= (gpioPull << (logicalPinNumber * 2U));
-
-	xGPIOA.Register.Map->MODER &= ~(GPIO_MODER_MODER0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->MODER |= ((gpioOuputType & GPIO_MODE) << (logicalPinNumber * 2U));
-
-  result = pIGPIOConfig->pVTbl->set_ConfigDescriptor(pIGPIOConfig, 1 /* or A */, &xGPIOA);
-  result = pIGPIOConfig->pVTbl->set_LogicalPinNumber(pIGPIOConfig, ECO_GPIO_LPN_6, 1 /* or A */, ECO_GPIO_PIN_6);
-  result = pIGPIOConfig->pVTbl->set_LogicalPinNumber(pIGPIOConfig, ECO_GPIO_LPN_7, 1 /* or A */, ECO_GPIO_PIN_7);
-  result = pIGPIO->pVTbl->set_Mode(pIGPIO, ECO_GPIO_LPN_6, GPIO_MODE_OUTPUT);
-  result = pIGPIO->pVTbl->set_Mode(pIGPIO, ECO_GPIO_LPN_7, GPIO_MODE_OUTPUT);  
-
-
-/************** init UART 4 *****************************/
-
-#define OUTPUT_PP                               0x0UL << 4U
-
-	logicalPinNumber = 0;
-	gpioOuputType    = GPIO_MODE_AF | OUTPUT_PP;
-	gpioPull         = 0;
-	gpioSpeed        = GPIO_SPEED_FREQ_VERY_HIGH;
-
-	uint32_t gpioAlterFunc = 0x08; /* GPIO_AF8_UART4 */
-
-	xGPIOA.Register.Map->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->OSPEEDR |= (gpioSpeed << (logicalPinNumber * 2U));
-
-	xGPIOA.Register.Map->OTYPER &= ~(GPIO_OTYPER_OT_0 << logicalPinNumber);
-	xGPIOA.Register.Map->OTYPER |= (((gpioOuputType & OUTPUT_TYPE) >> OUTPUT_TYPE_Pos) << logicalPinNumber);
-
-	xGPIOA.Register.Map->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->PUPDR |= (gpioPull << (logicalPinNumber * 2U));
-
-	if ((gpioOuputType & GPIO_MODE) == GPIO_MODE_AF)
-	{
-		xGPIOA.Register.Map->AFR[logicalPinNumber >> 3U] &= ~(0xFU << ((logicalPinNumber & 0x07U) * 4U));
-		xGPIOA.Register.Map->AFR[logicalPinNumber >> 3U] |= (gpioAlterFunc << ((logicalPinNumber & 0x07U) * 4U));
-	}
-
-	xGPIOA.Register.Map->MODER &= ~(GPIO_MODER_MODER0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->MODER |= ((gpioOuputType & GPIO_MODE) << (logicalPinNumber * 2U));
-
-	logicalPinNumber = 1;
-	gpioOuputType    = GPIO_MODE_AF | OUTPUT_PP;
-	gpioPull         = 0;
-	gpioSpeed        = GPIO_SPEED_FREQ_VERY_HIGH;
-	gpioAlterFunc = 0x08; /* GPIO_AF8_UART4 */
-
-	xGPIOA.Register.Map->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->OSPEEDR |= (gpioSpeed << (logicalPinNumber * 2U));
-
-	xGPIOA.Register.Map->OTYPER &= ~(GPIO_OTYPER_OT_0 << logicalPinNumber);
-	xGPIOA.Register.Map->OTYPER |= (((gpioOuputType & OUTPUT_TYPE) >> OUTPUT_TYPE_Pos) << logicalPinNumber);
-
-	xGPIOA.Register.Map->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->PUPDR |= (gpioPull << (logicalPinNumber * 2U));
-
-	if ((gpioOuputType & GPIO_MODE) == GPIO_MODE_AF)
-	{
-		xGPIOA.Register.Map->AFR[logicalPinNumber >> 3U] &= ~(0xFU << ((logicalPinNumber & 0x07U) * 4U));
-		xGPIOA.Register.Map->AFR[logicalPinNumber >> 3U] |= (gpioAlterFunc << ((logicalPinNumber & 0x07U) * 4U));
-	}
-
-	xGPIOA.Register.Map->MODER &= ~(GPIO_MODER_MODER0 << (logicalPinNumber * 2U));
-	xGPIOA.Register.Map->MODER |= ((gpioOuputType & GPIO_MODE) << (logicalPinNumber * 2U));
-
-#define USART_CR1_UE_Pos              (13U)
-#define USART_CR1_UE_Msk              (0x1UL << USART_CR1_UE_Pos)               /*!< 0x00002000 */
-#define USART_CR1_UE                  USART_CR1_UE_Msk                         /*!<USART Enable                           */
-  xUART.Register.Map->CR1 &=  ~USART_CR1_UE;
-
-#define UART_STOPBITS_1                     0x00000000U
-#define USART_CR2_STOP_Pos            (12U)
-#define USART_CR2_STOP_Msk            (0x3UL << USART_CR2_STOP_Pos)             /*!< 0x00003000 */
-#define USART_CR2_STOP                USART_CR2_STOP_Msk                       /*!<STOP[1:0] bits (STOP bits) */
-  uint32_t tmpreg = (uint32_t)UART_STOPBITS_1;
-  uint32_t clearMask = (uint32_t)USART_CR2_STOP;
-  xUART.Register.Map->CR2 = ((xUART.Register.Map->CR2 & (~clearMask)) | tmpreg);
-
-#define USART_CR1_RE_Pos              (2U)
-#define USART_CR1_RE_Msk              (0x1UL << USART_CR1_RE_Pos)               /*!< 0x00000004 */
-#define USART_CR1_RE                  USART_CR1_RE_Msk                         /*!<Receiver Enable                        */
-#define USART_CR1_TE_Pos              (3U)
-#define USART_CR1_TE_Msk              (0x1UL << USART_CR1_TE_Pos)               /*!< 0x00000008 */
-#define USART_CR1_TE                  USART_CR1_TE_Msk                         /*!<Transmitter Enable                     */
-#define UART_WORDLENGTH_8B                  0x00000000U
-#define UART_STOPBITS_1                     0x00000000U
-#define UART_PARITY_NONE                    0x00000000U
-#define UART_OVERSAMPLING_16                    0x00000000U
-#define USART_CR1_PCE_Pos             (10U)
-#define USART_CR1_PCE_Msk             (0x1UL << USART_CR1_PCE_Pos)              /*!< 0x00000400 */
-#define USART_CR1_PCE                 USART_CR1_PCE_Msk                        /*!<Parity Control Enable                  */
-#define USART_CR1_M_Pos               (12U)
-#define USART_CR1_M_Msk               (0x1UL << USART_CR1_M_Pos)                /*!< 0x00001000 */
-#define USART_CR1_M                   USART_CR1_M_Msk                          /*!<Word length                            */
-#define USART_CR1_PS_Pos              (9U)
-#define USART_CR1_PS_Msk              (0x1UL << USART_CR1_PS_Pos)               /*!< 0x00000200 */
-#define USART_CR1_PS                  USART_CR1_PS_Msk                         /*!<Parity Selection                       */
-#define USART_CR1_OVER8_Pos           (15U)
-#define USART_CR1_OVER8_Msk           (0x1UL << USART_CR1_OVER8_Pos)            /*!< 0x00008000 */
-#define USART_CR1_OVER8               USART_CR1_OVER8_Msk                      /*!<USART Oversampling by 8 enable         */
-#define UART_HWCONTROL_NONE                  0x00000000U
-#define USART_CR3_RTSE_Pos            (8U)
-#define USART_CR3_RTSE_Msk            (0x1UL << USART_CR3_RTSE_Pos)             /*!< 0x00000100 */
-#define USART_CR3_RTSE                USART_CR3_RTSE_Msk                       /*!<RTS Enable                  */
-#define UART_MODE_RX                        ((uint32_t)USART_CR1_RE)
-#define UART_MODE_TX                        ((uint32_t)USART_CR1_TE)
-#define UART_MODE_TX_RX                     ((uint32_t)(USART_CR1_TE | USART_CR1_RE))
-#define USART_CR3_CTSE_Pos            (9U)
-#define USART_CR3_CTSE_Msk            (0x1UL << USART_CR3_CTSE_Pos)             /*!< 0x00000200 */
-#define USART_CR3_CTSE                USART_CR3_CTSE_Msk                       /*!<CTS Enable                  */
-
-  tmpreg = (uint32_t)UART_WORDLENGTH_8B | UART_PARITY_NONE | UART_MODE_TX_RX | UART_OVERSAMPLING_16;
-  clearMask = (uint32_t)(USART_CR1_M | USART_CR1_PCE | USART_CR1_PS | USART_CR1_TE | USART_CR1_RE | USART_CR1_OVER8);
-  xUART.Register.Map->CR1 = ((xUART.Register.Map->CR1 & (~clearMask)) | tmpreg);
-
-  tmpreg = (uint32_t)UART_HWCONTROL_NONE;
-  clearMask = (uint32_t)USART_CR3_RTSE | USART_CR3_CTSE;
-  xUART.Register.Map->CR3 = ((xUART.Register.Map->CR3 & (~clearMask)) | tmpreg);
-
-  uint32_t pclk = (SystemCoreClock >> APBPrescTable[(xRCC.Register.Map->CFGR & RCC_CFGR_PPRE1)>> RCC_CFGR_PPRE1_Pos]);
-
-
-#define UART_DIV_SAMPLING16(_PCLK_, _BAUD_)            ((uint32_t)((((uint32_t)(_PCLK_))*25U)/(4U*((uint32_t)(_BAUD_)))))
-#define UART_DIVMANT_SAMPLING16(_PCLK_, _BAUD_)        (UART_DIV_SAMPLING16((_PCLK_), (_BAUD_))/100U)
-#define UART_DIVFRAQ_SAMPLING16(_PCLK_, _BAUD_)        ((((UART_DIV_SAMPLING16((_PCLK_), (_BAUD_)) - (UART_DIVMANT_SAMPLING16((_PCLK_), (_BAUD_)) * 100U)) * 16U)\
-                                                         + 50U) / 100U)
-/* UART BRR = mantissa + overflow + fraction
-            = (UART DIVMANT << 4) + (UART DIVFRAQ & 0xF0) + (UART DIVFRAQ & 0x0FU) */
-#define UART_BRR_SAMPLING16(_PCLK_, _BAUD_)            ((UART_DIVMANT_SAMPLING16((_PCLK_), (_BAUD_)) << 4U) + \
-                                                        (UART_DIVFRAQ_SAMPLING16((_PCLK_), (_BAUD_)) & 0xF0U) + \
-                                                        (UART_DIVFRAQ_SAMPLING16((_PCLK_), (_BAUD_)) & 0x0FU))
-  xUART.Register.Map->BRR = UART_BRR_SAMPLING16(pclk, 115200);
-  xUART.Register.Map->CR1 |= USART_CR1_UE;
-
+    EcoUartConfig uart4Config = {
+      .HwControl = UART_HWCONTROL_NONE,
+      .WordLength = UART_WORDLENGTH_8B,
+      .Parity = UART_PARITY_NONE,
+      .Mode = UART_MODE_TX_RX,
+      .Oversampling = UART_OVERSAMPLING_16,
+      .BaudRate = 115200
+    };
+    EcoUartEnable(&xUART, &uart4Config, 0);
 
     /* Пример 1: Цикл установки и сброса уровня на логическом контакте */
     //xGPIOA.Register.Map->BSRR = ((xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6) << 16U) | (~xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6);
@@ -849,15 +826,8 @@ int EcoStartup() {
 #define MODBUS_BUFFER_SIZE 256
     uint8_t modbusBuffer[MODBUS_BUFFER_SIZE];
 
-    while (1) {
-      // result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_HIGHT);
-      // result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_LOW);
-    	// // xGPIOA.Register.Map->BSRR = ((xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6) << 16U) | (~xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6);
-    	// // xGPIOA.Register.Map->BSRR = ((xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_7) << 16U) | (~xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_7);
-	    // delay(1000);
-
-      // result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_LOW);
-      // result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_HIGHT);
+    while (1)
+    {
 		  if (EcoUartReceive(&xUART, modbusBuffer, MODBUS_BUFFER_SIZE, 0xffff) == 0)
 		  {
         result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_HIGHT);
