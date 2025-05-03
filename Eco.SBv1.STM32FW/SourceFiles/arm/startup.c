@@ -15,6 +15,8 @@ extern void EcoStartup(void);
 
 extern void SysTick_Handler(void);
 
+extern void UART4_IRQHandler(void);
+
 
 void Default_Handler(void) {
     while(1) {}
@@ -112,7 +114,7 @@ uint32_t vector_table[] = {
     (uint32_t) 0,
     (uint32_t) Default_Handler,
     (uint32_t) Default_Handler,
-    (uint32_t) Default_Handler,
+    (uint32_t) UART4_IRQHandler,
     (uint32_t) 0,
     (uint32_t) 0,
     (uint32_t) 0,

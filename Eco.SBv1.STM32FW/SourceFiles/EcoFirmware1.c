@@ -34,8 +34,12 @@
 #include "IEcoGPIO1STM32Config.h"
 #include "IEcoUART1STM32F4Config.h"
 
+static ECO_UART_CONFIG_DESCRIPTOR xUART  = {0};
+void UART_RxCpltCallback(ECO_UART_CONFIG_DESCRIPTOR *huart);
 
 
+#define MODBUS_BUFFER_SIZE 256
+uint8_t modbusBuffer[MODBUS_BUFFER_SIZE];
 
 static inline uint32_t __STREXW(uint32_t value, volatile uint32_t *addr)
 {
@@ -114,8 +118,11 @@ typedef struct
   volatile uint32_t CPACR;                  /*!< Offset: 0x088 (R/W)  Coprocessor Access Control Register */
 } SCB_Type;
 
+
 /* IRQ */
-static const int32_t SysTick_IRQn                = -1;
+static const int32_t SysTick_IRQn        = -1;     /*!< 15 Cortex-M4 System Tick Interrupt                                */
+static const int32_t UART4_IRQn          = 52;     /*!< UART4 global Interrupt                                            */
+
 
 /* System Core Clock */
 static const uint32_t SystemCoreClock = 16000000U;
@@ -143,6 +150,31 @@ const uint8_t APBPrescTable[8]  = {0, 0, 0, 0, 1, 2, 3, 4};
 #define SysTick_CTRL_TICKINT_Msk           (1UL << SysTick_CTRL_TICKINT_Pos)              /*!< SysTick CTRL: TICKINT Mask */
 #define SysTick_CTRL_ENABLE_Pos             0U                                            /*!< SysTick CTRL: ENABLE Position */
 #define SysTick_CTRL_ENABLE_Msk            (1UL /*<< SysTick_CTRL_ENABLE_Pos*/)           /*!< SysTick CTRL: ENABLE Mask */
+
+#define SCB_AIRCR_PRIGROUP_Pos              8U                                            /*!< SCB AIRCR: PRIGROUP Position */
+#define SCB_AIRCR_PRIGROUP_Msk             (7UL << SCB_AIRCR_PRIGROUP_Pos)                /*!< SCB AIRCR: PRIGROUP Mask */
+
+#define __NVIC_PRIO_BITS          4U       /*!< STM32F4XX uses 4 Bits for the Priority Levels */
+
+static inline uint32_t __NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t PreemptPriority, uint32_t SubPriority)
+{
+  uint32_t PriorityGroupTmp = (PriorityGroup & (uint32_t)0x07UL);   /* only values 0..7 are used          */
+  uint32_t PreemptPriorityBits;
+  uint32_t SubPriorityBits;
+
+  PreemptPriorityBits = ((7UL - PriorityGroupTmp) > (uint32_t)(__NVIC_PRIO_BITS)) ? (uint32_t)(__NVIC_PRIO_BITS) : (uint32_t)(7UL - PriorityGroupTmp);
+  SubPriorityBits     = ((PriorityGroupTmp + (uint32_t)(__NVIC_PRIO_BITS)) < (uint32_t)7UL) ? (uint32_t)0UL : (uint32_t)((PriorityGroupTmp - 7UL) + (uint32_t)(__NVIC_PRIO_BITS));
+
+  return (
+           ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits) |
+           ((SubPriority     & (uint32_t)((1UL << (SubPriorityBits    )) - 1UL)))
+         );
+}
+
+static inline uint32_t __NVIC_GetPriorityGrouping(void)
+{
+  return ((uint32_t)((SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) >> SCB_AIRCR_PRIGROUP_Pos));
+}
 
 static inline void NVIC_SetPriority(int32_t IRQn, uint32_t priority)
 {
@@ -274,6 +306,7 @@ uint32_t Eco_GetTick(void)
   return uwTick;
 }
 
+
 void delay(uint32_t Delay)
 {
    uint32_t tickstart = Eco_GetTick();
@@ -395,6 +428,27 @@ uint32_t isLoop = 1;
 #define UART_FLAG_RXNE                      ((uint32_t)USART_SR_RXNE)
 #define UART_FLAG_TC                        ((uint32_t)USART_SR_TC)
 
+#define USART_CR1_IDLEIE              0x00000010                     /*!<IDLE Interrupt Enable                  */
+
+
+#define UART_CR1_REG_INDEX 1U
+#define UART_CR2_REG_INDEX 2U
+#define UART_CR3_REG_INDEX 2U
+
+#define UART_IT_PE                       ((uint32_t)(UART_CR1_REG_INDEX << 28U | USART_CR1_PEIE))
+#define UART_IT_TXE                      ((uint32_t)(UART_CR1_REG_INDEX << 28U | USART_CR1_TXEIE))
+#define UART_IT_TC                       ((uint32_t)(UART_CR1_REG_INDEX << 28U | USART_CR1_TCIE))
+#define UART_IT_RXNE                     ((uint32_t)(UART_CR1_REG_INDEX << 28U | USART_CR1_RXNEIE))
+#define UART_IT_IDLE                     ((uint32_t)(UART_CR1_REG_INDEX << 28U | USART_CR1_IDLEIE))
+
+#define UART_IT_LBD                      ((uint32_t)(UART_CR2_REG_INDEX << 28U | USART_CR2_LBDIE))
+
+#define UART_IT_CTS                      ((uint32_t)(UART_CR3_REG_INDEX << 28U | USART_CR3_CTSIE))
+#define UART_IT_ERR                      ((uint32_t)(UART_CR3_REG_INDEX << 28U | USART_CR3_EIE))
+
+#define UART_IT_MASK                     0x0000FFFFU
+
+
 #define ATOMIC_CLEAR_BIT(REG, BIT)                           \
   do {                                                       \
     uint32_t val;                                            \
@@ -413,6 +467,41 @@ uint32_t isLoop = 1;
                                                         (UART_DIVFRAQ_SAMPLING16((_PCLK_), (_BAUD_)) & 0xF0U) + \
                                                         (UART_DIVFRAQ_SAMPLING16((_PCLK_), (_BAUD_)) & 0x0FU))
 
+uint8_t* g_pRxBuffPtr = modbusBuffer;
+uint32_t g_RxXferSize = MODBUS_BUFFER_SIZE;
+uint32_t g_RxXferCount = MODBUS_BUFFER_SIZE;
+
+
+void UART4_IRQHandler(void)
+{
+  volatile uint32_t tmpreg = 0x00U;               \
+  tmpreg = xUART.Register.Map->SR;        \
+  tmpreg = xUART.Register.Map->DR;        \
+  (void)tmpreg;                             \
+
+
+  /* DMA mode not enabled */
+  /* Check received length : If all expected data are received, do nothing.
+     Otherwise, if at least one data has already been received, IDLE event is to be notified to user */
+  uint16_t nb_rx_data = g_RxXferSize - g_RxXferCount;
+  if ((g_RxXferSize > 0U) && (nb_rx_data > 0U))
+  {
+    /* Disable the UART Parity Error Interrupt and RXNE interrupts */
+    ATOMIC_CLEAR_BIT(xUART.Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE));
+
+    /* Disable the UART Error Interrupt: (Frame error, noise error, overrun error) */
+    ATOMIC_CLEAR_BIT(xUART.Register.Map->CR3, USART_CR3_EIE);
+
+    ATOMIC_CLEAR_BIT(xUART.Register.Map->CR1, USART_CR1_IDLEIE);
+  }
+  return;
+
+  UART_RxCpltCallback(&xUART);
+
+  /* USER CODE BEGIN UART4_IRQn 1 */
+
+  /* USER CODE END UART4_IRQn 1 */
+}
 
 void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
 {
@@ -495,7 +584,7 @@ typedef struct EcoUartConfig_
 
 void EcoUartEnable(ECO_UART_CONFIG_DESCRIPTOR* xUART, EcoUartConfig* config, uint32_t logicalPinNumber)
 {
-  uint32_t tmpreg;
+  volatile uint32_t tmpreg;
   uint32_t clearMask;
   uint32_t pclk;
 
@@ -538,10 +627,11 @@ void EcoUartTransmit(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* buff
 	{
 	  while ((((uartConfig->Register.Map->SR & UART_FLAG_TXE) == UART_FLAG_TXE) ? ECO_SET : ECO_RESET) == ECO_RESET)
 	  {
-		  if ((Eco_GetTick() - tickstart) > 100)
+		  if ((Eco_GetTick() - tickstart) > 1000)
 		  {
 		    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
 		    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
+        return;
 		  }
 	  }
 	  uartConfig->Register.Map->DR = (uint8_t)(*pdata8bits & 0xFFU);
@@ -551,14 +641,29 @@ void EcoUartTransmit(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* buff
 
 	while ((((uartConfig->Register.Map->SR & UART_FLAG_TC) == UART_FLAG_TC) ? ECO_SET : ECO_RESET) == ECO_RESET)
 	{
-	  if ((Eco_GetTick() - tickstart) > 100)
+	  if ((Eco_GetTick() - tickstart) > 1000)
 	  {
 	    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
 	    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
+      return;
 	  }
 	}
-
 }
+
+void UART_RxCpltCallback(ECO_UART_CONFIG_DESCRIPTOR *uartConfig) {
+
+  // Turn on UART4_IT
+	EcoUartTransmit(uartConfig, modbusBuffer, MODBUS_BUFFER_SIZE);
+  ((UART_IT_ERR >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_ERR & UART_IT_MASK) :
+  ((UART_IT_ERR >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK) :
+  (xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK));
+
+  ((UART_IT_RXNE >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_RXNE & UART_IT_MASK) :
+  ((UART_IT_RXNE >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK) :
+  (xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK));
+}
+
+
 
 uint16_t EcoUartReceive(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* buffer, uint32_t bufferSize, uint16_t timeout)
 {
@@ -619,7 +724,7 @@ int EcoStartup() {
     ECO_GPIO_CONFIG_DESCRIPTOR xGPIOB = {0};
 
     IEcoUART1STM32F4Config* pIUARTConfig = 0;
-    ECO_UART_CONFIG_DESCRIPTOR xUART  = {0};
+    //ECO_UART_CONFIG_DESCRIPTOR xUART  = {0};
     ECO_GPIO_CONFIG_DESCRIPTOR xGPIOA = {0};
     IEcoUART1Device* pIDevice1   = 0;
     ECO_UART_1_CONFIG xDevConfig = {0};
@@ -810,6 +915,16 @@ int EcoStartup() {
     EcoGpioInit(&xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_TX);
     EcoGpioInit(&xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_RX);
 
+    uint32_t prioritygroup = 0x00U;
+  
+    prioritygroup = __NVIC_GetPriorityGrouping();
+    
+    // set prio for UART4 IT
+    NVIC_SetPriority(UART4_IRQn, __NVIC_EncodePriority(prioritygroup, 0, 0));
+    // turn on IRQ for UART4 IT
+    NVIC->ISER[(UART4_IRQn >> 5UL)] = (uint32_t)(1UL << (UART4_IRQn & 0x1FUL));
+
+
     EcoUartConfig uart4Config = {
       .HwControl = UART_HWCONTROL_NONE,
       .WordLength = UART_WORDLENGTH_8B,
@@ -820,24 +935,40 @@ int EcoStartup() {
     };
     EcoUartEnable(&xUART, &uart4Config, 0);
 
+
+    // Turn on UART4_IT
+    // ((UART_IT_ERR >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_ERR & UART_IT_MASK) :
+    // ((UART_IT_ERR >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK) :
+    // (xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK));
+
+    // ((UART_IT_RXNE >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_RXNE & UART_IT_MASK) :
+    // ((UART_IT_RXNE >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK) :
+    // (xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK));
+
+
+
     /* Пример 1: Цикл установки и сброса уровня на логическом контакте */
     //xGPIOA.Register.Map->BSRR = ((xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6) << 16U) | (~xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6);
 
-#define MODBUS_BUFFER_SIZE 256
-    uint8_t modbusBuffer[MODBUS_BUFFER_SIZE];
+
+    uint8_t hello[] = "Hello world!";
+    uint32_t sizeHello = sizeof(hello);
+    EcoUartTransmit(&xUART, hello, sizeHello);
 
     while (1)
     {
-		  if (EcoUartReceive(&xUART, modbusBuffer, MODBUS_BUFFER_SIZE, 0xffff) == 0)
-		  {
-        result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_HIGHT);
-	      delay(1000);
-        EcoUartTransmit(&xUART, modbusBuffer, MODBUS_BUFFER_SIZE);
-        result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_LOW);
-      }
+      // if (EcoUartReceive(&xUART, modbusBuffer, MODBUS_BUFFER_SIZE, 0xffff) == 0)
+      // {
+      //   result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_HIGHT);
+      //   delay(1000);
+      //   EcoUartTransmit(&xUART, modbusBuffer, MODBUS_BUFFER_SIZE);
+      //   result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_LOW);
+      // }
       result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_LOW);
-	    delay(2000);
+	    delay(1000);
       result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_HIGHT);
+	    delay(1000);
+      EcoUartTransmit(&xUART, hello, sizeHello);
     }
 
 Release:
