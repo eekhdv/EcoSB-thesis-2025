@@ -1,0 +1,6 @@
+*.o
+*.zip
+*.json
+
+.cache
+.vscode
