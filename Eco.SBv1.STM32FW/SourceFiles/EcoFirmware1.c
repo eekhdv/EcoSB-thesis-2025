@@ -125,7 +125,7 @@ static const int32_t UART4_IRQn          = 52;     /*!< UART4 global Interrupt  
 
 
 /* System Core Clock */
-static const uint32_t SystemCoreClock = 16000000U;
+static uint32_t SystemCoreClock = 16000000U;
 const uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
 const uint8_t APBPrescTable[8]  = {0, 0, 0, 0, 1, 2, 3, 4};
 
@@ -497,25 +497,10 @@ void UART4_IRQHandler(void)
   return;
 
   UART_RxCpltCallback(&xUART);
-
-  /* USER CODE BEGIN UART4_IRQn 1 */
-
-  /* USER CODE END UART4_IRQn 1 */
 }
 
 void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
 {
-	rccConfig->Register.Map->APB1ENR |= RCC_APB1ENR_PWREN;
-	rccConfig->Register.Map->APB1ENR &= RCC_APB1ENR_PWREN;
-	(void)rccConfig->Register.Map->APB1ENR;
-
-	PWR->CR = (PWR->CR & (~PWR_CR_VOS)) | PWR_REGULATOR_VOLTAGE_SCALE1;
-  /* PWR->CR & PWR_CR_VOS; */
-  (void)PWR->CR;
-
-
-	rccConfig->Register.Map->CR = rccConfig->Register.Map->CR  &  (~RCC_CR_HSITRIM | ((uint32_t)RCC_HSICALIBRATION_DEFAULT << RCC_CR_HSITRIM_Pos));
-
 	/* HCLK Configuration */
   rccConfig->Register.Map->CFGR = (rccConfig->Register.Map->CFGR & (~RCC_CFGR_PPRE1)) | RCC_HCLK_DIV16;
   rccConfig->Register.Map->CFGR = (rccConfig->Register.Map->CFGR & (~RCC_CFGR_PPRE2)) | (RCC_HCLK_DIV16 << 3);
@@ -535,6 +520,23 @@ void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
 
 	/* Update the SystemCoreClock global variable */
 	SysTick_Config(SystemCoreClock / (1000U / uwTickFreq));
+}
+
+/* SCB Application Interrupt and Reset Control Register Definitions */
+#define SCB_AIRCR_VECTKEY_Pos              16U                                            /*!< SCB AIRCR: VECTKEY Position */
+#define SCB_AIRCR_VECTKEY_Msk              (0xFFFFUL << SCB_AIRCR_VECTKEY_Pos)            /*!< SCB AIRCR: VECTKEY Mask */
+
+static inline void __NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
+{
+  uint32_t reg_value;
+  uint32_t PriorityGroupTmp = (PriorityGroup & (uint32_t)0x07UL);             /* only values 0..7 are used          */
+
+  reg_value  =  SCB->AIRCR;                                                   /* read old register configuration    */
+  reg_value &= ~((uint32_t)(SCB_AIRCR_VECTKEY_Msk | SCB_AIRCR_PRIGROUP_Msk)); /* clear bits to change               */
+  reg_value  =  (reg_value                                   |
+                ((uint32_t)0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
+                (PriorityGroupTmp << SCB_AIRCR_PRIGROUP_Pos)  );              /* Insert write key and priority group */
+  SCB->AIRCR =  reg_value;
 }
 
 typedef struct EcoGpioConfig_ 
@@ -594,20 +596,33 @@ void EcoUartEnable(ECO_UART_CONFIG_DESCRIPTOR* xUART, EcoUartConfig* config, uin
 
     tmpreg    = (uint32_t)UART_STOPBITS_1;
     clearMask = (uint32_t)USART_CR2_STOP;
-    xUART->Register.Map->CR2 = ((xUART->Register.Map->CR2 & (~clearMask)) | tmpreg);
+    xUART->Register.Map->CR2 = (xUART->Register.Map->CR2 & (~clearMask)) | tmpreg;
 
     tmpreg    = config->WordLength | config->Parity | config->Mode | config->Oversampling;
     clearMask = (uint32_t)(USART_CR1_M | USART_CR1_PCE | USART_CR1_PS | USART_CR1_TE | USART_CR1_RE | USART_CR1_OVER8);
-    xUART->Register.Map->CR1 = ((xUART->Register.Map->CR1 & (~clearMask)) | tmpreg);
+    xUART->Register.Map->CR1 = (xUART->Register.Map->CR1 & (~clearMask)) | tmpreg;
 
     tmpreg    = config->HwControl;
     clearMask = (uint32_t)USART_CR3_RTSE | USART_CR3_CTSE;
-    xUART->Register.Map->CR3 = ((xUART->Register.Map->CR3 & (~clearMask)) | tmpreg);
+    xUART->Register.Map->CR3 = (xUART->Register.Map->CR3 & (~clearMask)) | tmpreg;
 
     /* pclk = (SystemCoreClock >> APBPrescTable[(xRCC.Register.Map->CFGR & RCC_CFGR_PPRE1)>> RCC_CFGR_PPRE1_Pos]); */
     pclk = SystemCoreClock;
 
+    /* Calculate and set baudrate */
     xUART->Register.Map->BRR = UART_BRR_SAMPLING16(pclk, config->BaudRate);
+
+#define USART_CR2_LINEN               0x00004000                      /*!<LIN mode enable */
+#define USART_CR2_CLKEN               0x00000800                      /*!<Clock Enable                         */
+#define USART_CR3_SCEN                0x00000020                       /*!<Smartcard mode enable       */
+#define USART_CR3_IREN                0x00000002                       /*!<IrDA mode Enable            */
+#define USART_CR3_HDSEL               0x00000008                      /*!<Half-Duplex Selection       */
+
+    /* Clear bits */
+	  xUART->Register.Map->CR2 &= (USART_CR2_LINEN | USART_CR2_CLKEN);
+    xUART->Register.Map->CR3 &= (USART_CR3_SCEN | USART_CR3_HDSEL | USART_CR3_IREN);
+
+    /* Enable UART4 */
     xUART->Register.Map->CR1 |= USART_CR1_UE;
   }
 }
@@ -673,7 +688,6 @@ uint16_t EcoUartReceive(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* b
 
 	pdata8bits  = buffer;
 
-	uint32_t res = 0;
 	while (RxXferCount > 0U)
 	{
 	  while ((((uartConfig->Register.Map->SR & UART_FLAG_RXNE) == UART_FLAG_RXNE) ? ECO_SET : ECO_RESET) == ECO_RESET)
@@ -682,14 +696,14 @@ uint16_t EcoUartReceive(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* b
 	    {
 	      ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
 	      ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
-	      res = 0x04;
+        return 0x04;
 	    }
 	  }
 	  *pdata8bits = (uint8_t)(uartConfig->Register.Map->DR & (uint8_t)0x00FF);
 	  pdata8bits++;
 	  RxXferCount--;
 	}
-  return res;
+  return 0x00;
 }
 
 extern uint32_t _end;
@@ -864,6 +878,10 @@ int EcoStartup() {
         /* Освобождение системного интерфейса в случае ошибки */
         goto Release;
     }
+    #define NVIC_PRIORITYGROUP_4         0x00000003U /*!< 4 bits for pre-emption priority
+                                                      0 bits for subpriority */
+    __NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
     EcoClockConfigure(pIRCCConfig->pVTbl->get_ConfigDescriptor(pIRCCConfig));
 
     xRCC.Register.Map->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
@@ -900,6 +918,15 @@ int EcoStartup() {
 
 /******************** init UART 4 *****************************/
 
+  volatile uint32_t tmpreg = 0x00U;
+  xRCC.Register.Map->APB1ENR |= RCC_APB1ENR_UART4EN;
+  tmpreg = xRCC.Register.Map->APB1ENR & RCC_APB1ENR_UART4EN;
+  (void)tmpreg;
+
+  xRCC.Register.Map->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+  tmpreg = xRCC.Register.Map->AHB1ENR & RCC_AHB1ENR_GPIOAEN;
+  (void)tmpreg;
+
   #define GPIO_AF8_UART4 0x08
     EcoGpioConfig gpioUart4TxConfig = {
       .OutputType = GPIO_MODE_AF | OUTPUT_PP,
@@ -924,6 +951,7 @@ int EcoStartup() {
     // turn on IRQ for UART4 IT
     NVIC->ISER[(UART4_IRQn >> 5UL)] = (uint32_t)(1UL << (UART4_IRQn & 0x1FUL));
 
+    // // Turn on UART4_IT
 
     EcoUartConfig uart4Config = {
       .HwControl = UART_HWCONTROL_NONE,
@@ -936,7 +964,7 @@ int EcoStartup() {
     EcoUartEnable(&xUART, &uart4Config, 0);
 
 
-    // Turn on UART4_IT
+
     // ((UART_IT_ERR >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_ERR & UART_IT_MASK) :
     // ((UART_IT_ERR >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK) :
     // (xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK));
@@ -946,14 +974,14 @@ int EcoStartup() {
     // (xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK));
 
 
-
     /* Пример 1: Цикл установки и сброса уровня на логическом контакте */
     //xGPIOA.Register.Map->BSRR = ((xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6) << 16U) | (~xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6);
 
 
-    uint8_t hello[] = "Hello world!";
-    uint32_t sizeHello = sizeof(hello);
-    EcoUartTransmit(&xUART, hello, sizeHello);
+    uint8_t hello[] = "Hello world!\n\r";
+    uint32_t sizeHello = sizeof(hello) - 1;
+    //EcoUartTransmit(&xUART, hello, sizeHello);
+    uint8_t buffer[256];
 
     while (1)
     {
@@ -968,7 +996,15 @@ int EcoStartup() {
 	    delay(1000);
       result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_HIGHT);
 	    delay(1000);
-      EcoUartTransmit(&xUART, hello, sizeHello);
+      // EcoUartTransmit(&xUART, hello, sizeHello);
+      if (EcoUartReceive(&xUART, buffer, 256, 1000) == 0x0)
+      {
+        EcoUartTransmit(&xUART, "Hello World\n\r", 13);
+      }
+      else
+      {
+        EcoUartTransmit(&xUART, "NO RECV\n\r", 9);
+      }
     }
 
 Release:
