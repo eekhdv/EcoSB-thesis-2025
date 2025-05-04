@@ -296,7 +296,7 @@ typedef struct EcoGpioConfig_
     uint32_t AlterFunc    ; /* GPIO_AF8_UART4 */
 } EcoGpioConfig;
 
-void EcoGpioInit(ECO_GPIO_CONFIG_DESCRIPTOR* xGPIO, EcoGpioConfig* config, uint16_t logicalPinNumber)
+void EcoGpio_Init(ECO_GPIO_CONFIG_DESCRIPTOR* xGPIO, EcoGpioConfig* config, uint16_t logicalPinNumber)
 {
     uint32_t gpioOuputType    = config->OutputType;
     uint32_t gpioPull         = config->PullMode;
@@ -538,8 +538,8 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
 
       ECO_GPIO_CONFIG_DESCRIPTOR* xGPIOA = pCMe->m_PortConfig[0];
       /* Configure GPIO pins for UART 4 */
-      EcoGpioInit(xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_TX);
-      EcoGpioInit(xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_RX);
+      EcoGpio_Init(xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_TX);
+      EcoGpio_Init(xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_RX);
     }
 
     volatile uint32_t tmpreg;

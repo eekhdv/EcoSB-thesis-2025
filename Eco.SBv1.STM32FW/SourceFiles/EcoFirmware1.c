@@ -680,7 +680,7 @@ void UART_RxCpltCallback(ECO_UART_CONFIG_DESCRIPTOR *uartConfig) {
 
 
 
-uint16_t EcoUartReceive(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* buffer, uint32_t bufferSize, uint16_t timeout)
+uint16_t EcoUartReceive(/* ECO_UART_CONFIG_DESCRIPTOR* uartConfig */ IEcoUART1Device* pIDevice, const uint8_t* buffer, uint32_t bufferSize, uint16_t timeout)
 {
   uint8_t  *pdata8bits;
 	uint32_t tickstart = Eco_GetTick();
@@ -690,16 +690,8 @@ uint16_t EcoUartReceive(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* b
 
 	while (RxXferCount > 0U)
 	{
-	  while ((((uartConfig->Register.Map->SR & UART_FLAG_RXNE) == UART_FLAG_RXNE) ? ECO_SET : ECO_RESET) == ECO_RESET)
-	  {
-	    if ((Eco_GetTick() - tickstart) > timeout)
-	    {
-	      ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
-	      ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
-        return 0x04;
-	    }
-	  }
-	  *pdata8bits = (uint8_t)(uartConfig->Register.Map->DR & (uint8_t)0x00FF);
+    /* TODO: Receive - блокер, поэтому зависает на бесконечном цикле */
+    pIDevice->pVTbl->Receive(pIDevice, pdata8bits);
 	  pdata8bits++;
 	  RxXferCount--;
 	}
@@ -958,7 +950,9 @@ int EcoStartup() {
       result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_HIGHT);
 	    delay(1000);
       // EcoUartTransmit(&xUART, hello, sizeHello);
-      if (EcoUartReceive(&xUART, buffer, 256, 1000) == 0x0)
+
+      //if (EcoUartReceive(&xUART, buffer, 256, 1000) == 0x0)
+      if (EcoUartReceive(pIDevice1, buffer, 256, 1000) == 0x0)
       {
         EcoUartTransmit(&xUART, "Hello World\n\r", 13);
       }
