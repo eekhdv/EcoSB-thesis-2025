@@ -864,30 +864,9 @@ int EcoStartup() {
 
 /******************** init GPIO LEDs *****************************/
 
-    EcoGpioConfig led1PinConfig = {
-      .OutputType = GPIO_MODE_OUTPUT,
-      .PullMode = 0,
-      .SpeedFreq = GPIO_SPEED_FREQ_HIGH,
-      .AlterFunc = 0
-    };
-
-    EcoGpioConfig led2PinConfig = {
-      .OutputType = GPIO_MODE_OUTPUT,
-      .PullMode = 0,
-      .SpeedFreq = GPIO_SPEED_FREQ_HIGH,
-      .AlterFunc = 0
-    };
-
-    #define LED1_Pin 6
-    #define LED2_Pin 7
-
-	  /*Configure GPIO pins : LED1_Pin LED2_Pin */
-    EcoGpioInit(&xGPIOA, &led1PinConfig, LED1_Pin);
-    EcoGpioInit(&xGPIOA, &led2PinConfig, LED2_Pin);
-
-    result = pIGPIOConfig->pVTbl->set_ConfigDescriptor(pIGPIOConfig, 1 /* or A */, &xGPIOA);
-    result = pIGPIOConfig->pVTbl->set_LogicalPinNumber(pIGPIOConfig, ECO_GPIO_LPN_6, 1 /* or A */, ECO_GPIO_PIN_6);
-    result = pIGPIOConfig->pVTbl->set_LogicalPinNumber(pIGPIOConfig, ECO_GPIO_LPN_7, 1 /* or A */, ECO_GPIO_PIN_7);
+    result = pIGPIOConfig->pVTbl->set_ConfigDescriptor(pIGPIOConfig, 0 /* or A */, &xGPIOA);
+    result = pIGPIOConfig->pVTbl->set_LogicalPinNumber(pIGPIOConfig, ECO_GPIO_LPN_6, 0 /* or A */, ECO_GPIO_PIN_6);
+    result = pIGPIOConfig->pVTbl->set_LogicalPinNumber(pIGPIOConfig, ECO_GPIO_LPN_7, 0 /* or A */, ECO_GPIO_PIN_7);
     result = pIGPIO->pVTbl->set_Mode(pIGPIO, ECO_GPIO_LPN_6, GPIO_MODE_OUTPUT);
     result = pIGPIO->pVTbl->set_Mode(pIGPIO, ECO_GPIO_LPN_7, GPIO_MODE_OUTPUT);  
 
@@ -907,9 +886,6 @@ int EcoStartup() {
 
     result = pIDevice1->pVTbl->Connect(pIDevice1, &config);
 
-    uint8_t hello[] = "Hello world!\n\r";
-    uint32_t sizeHello = sizeof(hello) - 1;
-    //EcoUartTransmit(&xUART, hello, sizeHello);
     uint8_t buffer[256];
 
     while (1)
@@ -918,7 +894,6 @@ int EcoStartup() {
 	    delay(1000);
       result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_HIGHT);
 	    delay(1000);
-      // EcoUartTransmit(&xUART, hello, sizeHello);
 
       //if (EcoUartReceive(&xUART, buffer, 256, 1000) == 0x0)
       if (EcoUartReceive(pIDevice1, buffer, 256, 1000) == 0x0)

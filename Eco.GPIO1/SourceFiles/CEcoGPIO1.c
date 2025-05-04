@@ -175,6 +175,16 @@ int16_t ECOCALLMETHOD CEcoGPIO1_set_Mode(/* in */ struct IEcoGPIO1* me, /* in */
     }
     
 #ifdef ECO_STM32
+#define  GPIO_SPEED_FREQ_HIGH         0x00000002U  /*!< range 25 MHz to 100 MHz, please refer to the product datasheet  */
+
+#define OUTPUT_TYPE_Pos               4U
+#define OUTPUT_TYPE                   (0x1UL << OUTPUT_TYPE_Pos)
+
+#define GPIO_OTYPER_OT_0              0x00000001U
+#define GPIO_OSPEEDER_OSPEEDR0        0x00000003U
+#define GPIO_PUPDR_PUPDR0             0x00000003U
+#define GPIO_MODE                     0x3UL
+
     for(indexPort = 0; indexPort < 14; indexPort++) {
         if (pCMe->m_PortConfig[indexPort] != 0) {
             pDescriptor = pCMe->m_PortConfig[indexPort];
@@ -185,8 +195,17 @@ int16_t ECOCALLMETHOD CEcoGPIO1_set_Mode(/* in */ struct IEcoGPIO1* me, /* in */
 						pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2);
 					}
 					else if (GPIO_MODE_OUTPUT == mode) {
-						pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2+1);
-						pDescriptor->Register.Map->MODER |=  (1 << indexPin*2);
+            pDescriptor->Register.Map->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR0 << (indexPin * 2U));
+            pDescriptor->Register.Map->OSPEEDR |= (GPIO_SPEED_FREQ_HIGH    << (indexPin * 2U));
+
+            pDescriptor->Register.Map->OTYPER  &= ~(GPIO_OTYPER_OT_0        << indexPin);
+            pDescriptor->Register.Map->OTYPER  |= (((GPIO_MODE_OUTPUT & OUTPUT_TYPE) >> OUTPUT_TYPE_Pos) << indexPin);
+
+            pDescriptor->Register.Map->PUPDR   &= ~(GPIO_PUPDR_PUPDR0        << (indexPin * 2U));
+            pDescriptor->Register.Map->PUPDR   |= (0                         << (indexPin * 2U));
+
+						pDescriptor->Register.Map->MODER   &= ~(1 << indexPin*2+1);
+						pDescriptor->Register.Map->MODER   |=  (1 << indexPin*2);
 					}
 					else if (GPIO_MODE_AF == mode) {
 						pDescriptor->Register.Map->MODER |=  (1 << indexPin*2+1);
