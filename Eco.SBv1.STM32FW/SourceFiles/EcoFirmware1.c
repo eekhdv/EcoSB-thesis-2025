@@ -35,7 +35,6 @@
 #include "IEcoUART1STM32F4Config.h"
 
 static ECO_UART_CONFIG_DESCRIPTOR xUART  = {0};
-//void UART_RxCpltCallback(ECO_UART_CONFIG_DESCRIPTOR *huart);
 
 
 #define MODBUS_BUFFER_SIZE 256
@@ -479,24 +478,14 @@ void UART4_IRQHandler(void)
   tmpreg = xUART.Register.Map->DR;        \
   (void)tmpreg;                             \
 
-
-  /* DMA mode not enabled */
-  /* Check received length : If all expected data are received, do nothing.
-     Otherwise, if at least one data has already been received, IDLE event is to be notified to user */
   uint16_t nb_rx_data = g_RxXferSize - g_RxXferCount;
   if ((g_RxXferSize > 0U) && (nb_rx_data > 0U))
   {
-    /* Disable the UART Parity Error Interrupt and RXNE interrupts */
     ATOMIC_CLEAR_BIT(xUART.Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE));
-
-    /* Disable the UART Error Interrupt: (Frame error, noise error, overrun error) */
     ATOMIC_CLEAR_BIT(xUART.Register.Map->CR3, USART_CR3_EIE);
-
     ATOMIC_CLEAR_BIT(xUART.Register.Map->CR1, USART_CR1_IDLEIE);
   }
   return;
-
-  // UART_RxCpltCallback(&xUART);
 }
 
 void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
@@ -629,7 +618,7 @@ void EcoUartEnable(ECO_UART_CONFIG_DESCRIPTOR* xUART, EcoUartConfig* config, uin
 
 
 
-void EcoUartTransmit(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* buffer, uint32_t bufferSize)
+void EcoUartTransmit(/* ECO_UART_CONFIG_DESCRIPTOR* uartConfig */IEcoUART1Device* pIDevice, const uint8_t* buffer, uint32_t bufferSize)
 {
 	const uint8_t  *pdata8bits;
 
@@ -640,42 +629,22 @@ void EcoUartTransmit(ECO_UART_CONFIG_DESCRIPTOR* uartConfig, const uint8_t* buff
 
 	while (TxXferCount > 0U)
 	{
-	  while ((((uartConfig->Register.Map->SR & UART_FLAG_TXE) == UART_FLAG_TXE) ? ECO_SET : ECO_RESET) == ECO_RESET)
-	  {
-		  if ((Eco_GetTick() - tickstart) > 1000)
-		  {
-		    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
-		    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
-        return;
-		  }
-	  }
-	  uartConfig->Register.Map->DR = (uint8_t)(*pdata8bits & 0xFFU);
+    pIDevice->pVTbl->Transmit(pIDevice, *pdata8bits);
 	  pdata8bits++;
 	  TxXferCount--;
 	}
 
-	while ((((uartConfig->Register.Map->SR & UART_FLAG_TC) == UART_FLAG_TC) ? ECO_SET : ECO_RESET) == ECO_RESET)
-	{
-	  if ((Eco_GetTick() - tickstart) > 1000)
-	  {
-	    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
-	    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
-      return;
-	  }
-	}
-}
-
-void UART_RxCpltCallback(ECO_UART_CONFIG_DESCRIPTOR *uartConfig) {
-
-  // Turn on UART4_IT
-	EcoUartTransmit(uartConfig, modbusBuffer, MODBUS_BUFFER_SIZE);
-  ((UART_IT_ERR >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_ERR & UART_IT_MASK) :
-  ((UART_IT_ERR >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK) :
-  (xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK));
-
-  ((UART_IT_RXNE >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_RXNE & UART_IT_MASK) :
-  ((UART_IT_RXNE >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK) :
-  (xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK));
+  /* Нужно добавить небольшое ожидание, пока не будет достигнут флаг UART_FLAG_TC */
+	/*while ((((uartConfig->Register.Map->SR & UART_FLAG_TC) == UART_FLAG_TC) ? ECO_SET : ECO_RESET) == ECO_RESET)
+	 *{
+	 *  if ((Eco_GetTick() - tickstart) > 1000)
+	 *  {
+	 *    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE));
+	 *    ATOMIC_CLEAR_BIT(uartConfig->Register.Map->CR3, USART_CR3_EIE);
+   * return;
+	 *  }
+	 *}
+  **/
 }
 
 
@@ -954,11 +923,13 @@ int EcoStartup() {
       //if (EcoUartReceive(&xUART, buffer, 256, 1000) == 0x0)
       if (EcoUartReceive(pIDevice1, buffer, 256, 1000) == 0x0)
       {
-        EcoUartTransmit(&xUART, "Hello World\n\r", 13);
+        // EcoUartTransmit(&xUART, "Hello World\n\r", 13);
+        EcoUartTransmit(pIDevice1, "Hello World\n\r", 13);
       }
       else
       {
-        EcoUartTransmit(&xUART, "NO RECV\n\r", 9);
+        //EcoUartTransmit(&xUART, "NO RECV\n\r", 9);
+        EcoUartTransmit(pIDevice1, "NO RECV\n\r", 9);
       }
     }
 
