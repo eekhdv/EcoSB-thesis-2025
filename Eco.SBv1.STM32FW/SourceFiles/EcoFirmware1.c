@@ -35,7 +35,7 @@
 #include "IEcoUART1STM32F4Config.h"
 
 static ECO_UART_CONFIG_DESCRIPTOR xUART  = {0};
-void UART_RxCpltCallback(ECO_UART_CONFIG_DESCRIPTOR *huart);
+//void UART_RxCpltCallback(ECO_UART_CONFIG_DESCRIPTOR *huart);
 
 
 #define MODBUS_BUFFER_SIZE 256
@@ -496,7 +496,7 @@ void UART4_IRQHandler(void)
   }
   return;
 
-  UART_RxCpltCallback(&xUART);
+  // UART_RxCpltCallback(&xUART);
 }
 
 void EcoClockConfigure(ECO_RCC_CONFIG_DESCRIPTOR* rccConfig)
@@ -734,6 +734,7 @@ int EcoStartup() {
     IEcoUART1* pIUART = 0;
     IEcoRCC1STM32Config* pIRCCConfig     = 0;
     IEcoGPIO1STM32Config* pIGPIOConfig   = 0;
+    IEcoGPIO1STM32Config* pIUARTGPIOConfig = 0;
     ECO_RCC_CONFIG_DESCRIPTOR xRCC    = {0};
     ECO_GPIO_CONFIG_DESCRIPTOR xGPIOB = {0};
 
@@ -826,12 +827,12 @@ int EcoStartup() {
         goto Release;
     }
 
-    // /* Запрос интерфейса RCC конфигурации */
-    // result = pIDevice1->pVTbl->QueryInterface(pIDevice1, &IID_IEcoGPIO1STM32Config, (void**) &pIGPIOConfig);
-    // if (result != 0 || pIGPIOConfig == 0) {
-    //     /* Освобождение интерфейсов в случае ошибки */
-    //     goto Release;
-    // }
+    /* Запрос интерфейса RCC конфигурации */
+    result = pIDevice1->pVTbl->QueryInterface(pIDevice1, &IID_IEcoGPIO1STM32Config, (void**) &pIUARTGPIOConfig);
+    if (result != 0 || pIUARTGPIOConfig == 0) {
+        /* Освобождение интерфейсов в случае ошибки */
+        goto Release;
+    }
 
     /* Запрос интерфейса RCC конфигурации */
     result = pIDevice1->pVTbl->QueryInterface(pIDevice1, &IID_IEcoRCC1STM32Config, (void**) &pIRCCConfig);
@@ -846,7 +847,7 @@ int EcoStartup() {
         goto Release;
     }
 
-    xRCC.Register.BaseAddress   = ECO_RCC;
+    xRCC.Register.BaseAddress   = ECO_RCC; /* 0x40023800UL */
     xGPIOA.Register.BaseAddress = ECO_GPIOA; /* 0x40020400UL */
     xUART.Register.BaseAddress  = ECO_UART4; /* 0x40004C00UL */
 
@@ -867,17 +868,30 @@ int EcoStartup() {
     //xGPIOA.Register.BaseAddress = ECO_GPIOA; //0x40020400UL;
 
 
-    // result = pIUARTConfig->pVTbl->set_ConfigDescriptor(pIUARTConfig, &xUART);
-    // if (result != 0) {
-    //     /* Освобождение в случае ошибки */
-    //     goto Release;
-    // }
 
     result = pIRCCConfig->pVTbl->set_ConfigDescriptor(pIRCCConfig, &xRCC);
     if (result != 0) {
         /* Освобождение системного интерфейса в случае ошибки */
         goto Release;
     }
+    result = pIUARTGPIOConfig->pVTbl->set_ConfigDescriptor(pIUARTGPIOConfig, 0, &xGPIOA);
+    if (result != 0) {
+        /* Освобождение системного интерфейса в случае ошибки */
+        goto Release;
+    }
+
+    // result = pIGPIO->pVTbl->set_ConfigDescriptor(pIRCCConfig, &xRCC);
+    // if (result != 0) {
+    //     /* Освобождение системного интерфейса в случае ошибки */
+    //     goto Release;
+    // }
+
+    result = pIUARTConfig->pVTbl->set_ConfigDescriptor(pIUARTConfig, &xUART);
+    if (result != 0) {
+        /* Освобождение в случае ошибки */
+        goto Release;
+    }
+
     #define NVIC_PRIORITYGROUP_4         0x00000003U /*!< 4 bits for pre-emption priority
                                                       0 bits for subpriority */
     __NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
@@ -918,65 +932,19 @@ int EcoStartup() {
 
 /******************** init UART 4 *****************************/
 
-  volatile uint32_t tmpreg = 0x00U;
-  xRCC.Register.Map->APB1ENR |= RCC_APB1ENR_UART4EN;
-  tmpreg = xRCC.Register.Map->APB1ENR & RCC_APB1ENR_UART4EN;
-  (void)tmpreg;
-
-  xRCC.Register.Map->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-  tmpreg = xRCC.Register.Map->AHB1ENR & RCC_AHB1ENR_GPIOAEN;
-  (void)tmpreg;
-
-  #define GPIO_AF8_UART4 0x08
-    EcoGpioConfig gpioUart4TxConfig = {
-      .OutputType = GPIO_MODE_AF | OUTPUT_PP,
-      .PullMode   = 0,
-      .SpeedFreq  = GPIO_SPEED_FREQ_VERY_HIGH,
-      .AlterFunc  = GPIO_AF8_UART4
-    };
-
-  #define UART_GPIO_PIN_RX 0
-  #define UART_GPIO_PIN_TX 1
-
-    /* Configure GPIO pins for UART 4 */
-    EcoGpioInit(&xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_TX);
-    EcoGpioInit(&xGPIOA, &gpioUart4TxConfig, UART_GPIO_PIN_RX);
-
-    uint32_t prioritygroup = 0x00U;
-  
-    prioritygroup = __NVIC_GetPriorityGrouping();
-    
-    // set prio for UART4 IT
-    NVIC_SetPriority(UART4_IRQn, __NVIC_EncodePriority(prioritygroup, 0, 0));
-    // turn on IRQ for UART4 IT
-    NVIC->ISER[(UART4_IRQn >> 5UL)] = (uint32_t)(1UL << (UART4_IRQn & 0x1FUL));
-
-    // // Turn on UART4_IT
-
-    EcoUartConfig uart4Config = {
-      .HwControl = UART_HWCONTROL_NONE,
-      .WordLength = UART_WORDLENGTH_8B,
-      .Parity = UART_PARITY_NONE,
-      .Mode = UART_MODE_TX_RX,
+    ECO_UART_1_CONFIG config = 
+    {
+      .BaudRate     = 115200,
+      .DataBits     = 0,
+      .StopBits     = 0,
+      .Parity       = UART_PARITY_NONE,
+      .WordLength   = UART_WORDLENGTH_8B,
+      .Mode         = UART_MODE_TX_RX,
       .Oversampling = UART_OVERSAMPLING_16,
-      .BaudRate = 115200
+      .HwControl    = UART_HWCONTROL_NONE
     };
-    EcoUartEnable(&xUART, &uart4Config, 0);
 
-
-
-    // ((UART_IT_ERR >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_ERR & UART_IT_MASK) :
-    // ((UART_IT_ERR >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK) :
-    // (xUART.Register.Map->CR2 |= (UART_IT_ERR & UART_IT_MASK));
-
-    // ((UART_IT_RXNE >> 28U) == UART_CR1_REG_INDEX) ? xUART.Register.Map->CR1 |= (UART_IT_RXNE & UART_IT_MASK) :
-    // ((UART_IT_RXNE >> 28U) == UART_CR2_REG_INDEX) ? xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK) :
-    // (xUART.Register.Map->CR2 |= (UART_IT_RXNE & UART_IT_MASK));
-
-
-    /* Пример 1: Цикл установки и сброса уровня на логическом контакте */
-    //xGPIOA.Register.Map->BSRR = ((xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6) << 16U) | (~xGPIOA.Register.Map->ODR & ECO_GPIO_PIN_6);
-
+    result = pIDevice1->pVTbl->Connect(pIDevice1, &config);
 
     uint8_t hello[] = "Hello world!\n\r";
     uint32_t sizeHello = sizeof(hello) - 1;
@@ -985,13 +953,6 @@ int EcoStartup() {
 
     while (1)
     {
-      // if (EcoUartReceive(&xUART, modbusBuffer, MODBUS_BUFFER_SIZE, 0xffff) == 0)
-      // {
-      //   result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_HIGHT);
-      //   delay(1000);
-      //   EcoUartTransmit(&xUART, modbusBuffer, MODBUS_BUFFER_SIZE);
-      //   result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_6, ECO_GPIO_LOW);
-      // }
       result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_LOW);
 	    delay(1000);
       result = pIGPIO->pVTbl->set_Data(pIGPIO, ECO_GPIO_LPN_7, ECO_GPIO_HIGHT);
