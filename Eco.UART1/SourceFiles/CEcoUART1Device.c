@@ -471,40 +471,43 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
     struct termios tty;
     if (pCMe->m_UARTConfig->slaveFlag == 0) 
     {
-      pCMe->m_Fd = open("/dev/ptmx", O_RDWR | O_NOCTTY | O_NONBLOCK);
+      pCMe->m_Fd = open(pCMe->m_UARTConfig->devName, O_RDWR | O_NOCTTY | O_NONBLOCK);
       ioctl(pCMe->m_Fd, TIOCSBRK, &config->BaudRate); // Set baudrate
       ioctl(pCMe->m_Fd, TIOCSPTLCK, &(int){0}); // Unlock pt
       ioctl(pCMe->m_Fd, TIOCGPTN, &ptsNum); // get pts number
 
-      if (ioctl(pCMe->m_Fd, TCGETS, &tty) < 0) {
-          /* perror("ioctl TCGETS"); */
-          /* close(pCMe->m_Fd); */
-          /* return 1; */
+      if (pCMe->m_UARTConfig->devName[5] == 'p') /* if device starts with 'p' : "/dev/p" */
+      {
+        if (ioctl(pCMe->m_Fd, TCGETS, &tty) < 0) {
+            /* perror("ioctl TCGETS"); */
+            /* close(pCMe->m_Fd); */
+            /* TODO: return 1; */
+        }
+
+        tty.c_cflag &= ~PARENB;   // 8N1
+        tty.c_cflag &= ~CSTOPB;
+        tty.c_cflag &= ~CSIZE;
+        tty.c_cflag |= CS8;
+
+        tty.c_lflag &= ~ICANON;
+        tty.c_lflag &= ~ECHO;
+        tty.c_lflag &= ~ECHOE;
+        tty.c_lflag &= ~ECHONL;
       }
 
-      tty.c_cflag &= ~PARENB;   // 8N1
-      tty.c_cflag &= ~CSTOPB;
-      tty.c_cflag &= ~CSIZE;
-      tty.c_cflag |= CS8;
-
-      tty.c_lflag &= ~ICANON;
-      tty.c_lflag &= ~ECHO;
-      tty.c_lflag &= ~ECHOE;
-      tty.c_lflag &= ~ECHONL;
-
-      if (ioctl(pCMe->m_Fd, TCSETS, &tty) < 0) {
-          /* perror("ioctl TCSETS"); */
-          /* close(pCMe->m_Fd); */
-          /* return 1; */
-      }
-
-      pCMe->m_UARTConfig->devNum = ptsNum;
+       if (ioctl(pCMe->m_Fd, TCSETS, &tty) < 0) {
+           /* perror("ioctl TCSETS"); */
+           /* close(pCMe->m_Fd); */
+           /* TODO: return 1; */
+       }
     }
     else if (pCMe->m_UARTConfig->slaveFlag == 1)
     {
-      char_t devName[12];
-      snprintf(devName, 12, "/dev/pts/%d", pCMe->m_UARTConfig->devNum); // Set up pts name
-      pCMe->m_Fd = open(devName, O_RDWR | O_NOCTTY | O_NONBLOCK);
+      pCMe->m_Fd = open(pCMe->m_UARTConfig->devName, O_RDWR | O_NOCTTY | O_NONBLOCK);
+
+      ioctl(pCMe->m_Fd, TIOCSBRK, &config->BaudRate); // Set baudrate
+      ioctl(pCMe->m_Fd, TIOCSPTLCK, &(int){0}); // Unlock pt
+      ioctl(pCMe->m_Fd, TIOCGPTN, &ptsNum); // get pts number
     }
 #elif ECO_STM32
     /********** Настройка MSP для UART4 ************/
