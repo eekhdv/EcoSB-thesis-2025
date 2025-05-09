@@ -31,7 +31,7 @@
 #include "IdEcoMemoryManager1.h"
 
 #ifdef ECO_STM32
-#include "IdEcoGPIO1.h"
+#include "IEcoGPIO1.h"
 #endif
 
 static uint8_t s_cTableCRCHi[] = {

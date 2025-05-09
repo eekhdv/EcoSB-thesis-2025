@@ -75,7 +75,7 @@ typedef struct IEcoModBus1SLVTbl {
     int16_t (ECOCALLMETHOD *EmitMessage)(/* in */ IEcoModBus1SLPtr_t me, /* in */ byte_t* PDU, /* in */ uint32_t pduLength);
     int16_t (ECOCALLMETHOD *RecvMessage)(/* in */ IEcoModBus1SLPtr_t me, /* out */ byte_t** data, /* out */ uint32_t* dataLength);
 
-    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLPtr_t me, /* in */ uint8_t isSlave);
+    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLPtr_t me, /* in */ uint8_t isSlave, /* in */ byte_t* devName, /* in */ uint16_t nameLength);
     int16_t (ECOCALLMETHOD *DisconnectBus)(/* in */ IEcoModBus1SLPtr_t me);
 
     int16_t (ECOCALLMETHOD *SwitchCommunicationLED)(/* in */ IEcoModBus1SLPtr_t me, /* in */ uint8_t State);

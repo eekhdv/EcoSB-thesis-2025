@@ -23,9 +23,6 @@
 #include "IEcoInterfaceBus1MemExt.h"
 #include "CEcoModBus1SL.h"
 #include "IEcoModBus1SL.h"
-//#include "depend.h"
-//#include <asm-generic/errno-base.h>
-//#include <stdio.h>
 
 #if ECO_LINUX
     #include "IEcoUART1LinuxConfig.h"
@@ -239,7 +236,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_RecvMessage(/* in */ IEcoMod
  * </описание>
  *
  */
-static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModBus1SLPtr_t me, uint8_t isSlave) {
+static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModBus1SLPtr_t me, uint8_t isSlave, byte_t* devName, uint16_t nameLength) {
     CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)me;
     IEcoUART1Device* pIDevice1 = 0;
 
@@ -283,8 +280,11 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModB
      * Из-за того, что это псевдотерминал, номер девайса назначается динамически.
      * При нормальном подключении по UART, номер будет статический
     **/
-    ///???ECO_UART_CONFIG_DESCRIPTOR xUART = {.slaveFlag = isSlave, .devNum = 2};
-    ///???pIUARTConfig->pVTbl->set_ConfigDescriptor(pIUARTConfig, &xUART);
+    ECO_UART_CONFIG_DESCRIPTOR xUART = {.slaveFlag = isSlave, .devName = { 0 }};
+    for (uint16_t i = 0; i < nameLength; i++) {
+      xUART.devName[i] = devName[i];
+    }
+    pIUARTConfig->pVTbl->set_ConfigDescriptor(pIUARTConfig, &xUART);
 
     ECO_UART_1_CONFIG UARTconfig = {115000, 0, 0, 0};
 
@@ -340,7 +340,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_SwitchCommunicationLED(/* in
     #ifdef ECO_LINUX
     return ERR_ECO_SUCCESES;
     #elif ECO_STM32
-    ///???return pCMe->m_pCommunicationLED->pVTbl->set_Mode((IEcoGPIO1*)pCMe->m_pCommunicationLED, COMMUNICATION_LED_PORT, GPIO_MODE_OUTPUT);
+    return pCMe->m_pCommunicationLED->pVTbl->set_Mode((IEcoGPIO1*)pCMe->m_pCommunicationLED, COMMUNICATION_LED_PORT, GPIO_MODE_OUTPUT);
     #endif /* ifdef ECO_LINUX */
 }
 
@@ -611,7 +611,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_RecvMessage(/* in */ IEco
 
     uint16_t decodedCRC16 = _calcCRC16((char_t*)decodedData, *dataLength);
     if (rawCRC16 != decodedCRC16) {
-      /*printf("ERROR: raw(%d) != decoded(%d)", rawCRC16, decodedCRC16); */
+      printf("ERROR: raw(%d) != decoded(%d)", rawCRC16, decodedCRC16); 
       return ERR_ECO_FAIL;
     }
 
@@ -629,7 +629,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_RecvMessage(/* in */ IEco
  * </описание>
  *
  */
-static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_ConnectBus(/* in */ IEcoModBus1SLRTUPtr_t me, uint8_t isSlave) {
+static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_ConnectBus(/* in */ IEcoModBus1SLRTUPtr_t me, uint8_t isSlave, /* in */ byte_t* devName, /* in */ uint16_t nameLength) {
     CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)((uint64_t)me - sizeof(struct IEcoUnknown*));
 
     /* Проверка указателей */
@@ -637,7 +637,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_ConnectBus(/* in */ IEcoM
         return ERR_ECO_POINTER;
     }
 
-    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, isSlave);
+    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, isSlave, devName, nameLength);
 }
 
 /*
@@ -894,7 +894,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_RecvMessage(/* in */ IE
  * </описание>
  *
  */
-static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_ConnectBus(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ uint8_t isSlave) {
+static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_ConnectBus(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ uint8_t isSlave, /* in */ byte_t* devName, /* in */ uint16_t nameLength) {
     CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)((uint64_t)me - sizeof(struct IEcoUnknown*));
 
     /* Проверка указателей */
@@ -902,7 +902,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_ConnectBus(/* in */ IEc
         return ERR_ECO_POINTER;
     }
 
-    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, isSlave);
+    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, isSlave, devName, nameLength);
 }
 
 /*
