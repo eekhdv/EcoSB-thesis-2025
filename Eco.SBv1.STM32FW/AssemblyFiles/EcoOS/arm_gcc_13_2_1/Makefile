@@ -107,16 +107,16 @@ LDFLAGS = -nostdlib $(LIBS)
 .SUFFIXES: .c
 
 .c.o:
-	$(GNU)$(CC) $(INC) $(CCFLAGS) -c $< -o $@ 
+	$(GNU)$(CC) $(INC) $(CCFLAGS) -c $< -o $@ -DSTM32F407xx -DECO_INT8_T_DEFINED -DECO_WCHAR_T_DEFINED -W -Wall
 
 .S.o:
-	$(GNU)$(CC) $(INC) -D__ASSEMBLY__  $(CCFLAGS)  -o $@ $< -c 
+	$(GNU)$(CC) $(INC) -D__ASSEMBLY__  $(CCFLAGS)  -o $@ $< -c  -DSTM32F407xx -DECO_INT8_T_DEFINED -DECO_WCHAR_T_DEFINED
 
 
 $(OUT_ELF): $(OBJ) $(OBJS)
 	mkdir -p $(OUT_DIR)
-	$(GNU)$(LD) ${LDFLAGS} -T$(LINKERFILE) -o $(OUT_DIR)\$(OUT_ELF) $(OBJ) $(OBJS) -Map $(OUT_MAP) ${LDFLAGS}
-	$(GNU)$(OC) --output-format=binary $(OUT_DIR)\$(OUT_ELF) $(OUT_DIR)\$(OUT_BIN)
+	$(GNU)$(LD) ${LDFLAGS} -T$(LINKERFILE) -o $(OUT_DIR)$(SLASH)$(OUT_ELF) $(OBJ) $(OBJS) -Map $(OUT_MAP) ${LDFLAGS}
+	$(GNU)$(OC) --output-format=binary $(OUT_DIR)$(SLASH)$(OUT_ELF) $(OUT_DIR)$(SLASH)$(OUT_BIN)
 	rm $(OBJ) $(OBJS)
 
 clean:

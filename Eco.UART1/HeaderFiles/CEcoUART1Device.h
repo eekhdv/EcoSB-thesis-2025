@@ -97,6 +97,8 @@ typedef struct CEcoUART1Device_025F3EF0 {
 #elif ECO_STM32
     ECO_GPIO_CONFIG_DESCRIPTOR* m_GPIOConfig;
     ECO_RCC_CONFIG_DESCRIPTOR*  m_RCCConfig;
+    uint8_t m_PortName[14];
+    void* m_PortConfig[14];
 #endif
 
 } CEcoUART1Device_025F3EF0, *CEcoUART1Device_025F3EF0Ptr;

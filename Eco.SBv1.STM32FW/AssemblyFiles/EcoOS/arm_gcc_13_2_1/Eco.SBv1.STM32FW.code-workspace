@@ -82,8 +82,9 @@
 				"environment": [],
 				"externalConsole": false,
 				"MIMode": "gdb",
-				"miDebuggerPath": "C:\\Dev\\toolchain\\xpack-arm-none-eabi-gcc-13.2.1-1.1\\bin\\arm-none-eabi-gdb.exe",
+				"miDebuggerPath": "/usr/bin/arm-none-eabi-gdb",
 				"miDebuggerServerAddress": "localhost:3333",
+				"targetArchitecture": "arm",
 				"setupCommands": [
 					{
 						"description": "Включить автоматическое форматирование для gdb",

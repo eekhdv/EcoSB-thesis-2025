@@ -175,6 +175,16 @@ int16_t ECOCALLMETHOD CEcoGPIO1_set_Mode(/* in */ struct IEcoGPIO1* me, /* in */
     }
     
 #ifdef ECO_STM32
+#define  GPIO_SPEED_FREQ_HIGH         0x00000002U  /*!< range 25 MHz to 100 MHz, please refer to the product datasheet  */
+
+#define OUTPUT_TYPE_Pos               4U
+#define OUTPUT_TYPE                   (0x1UL << OUTPUT_TYPE_Pos)
+
+#define GPIO_OTYPER_OT_0              0x00000001U
+#define GPIO_OSPEEDER_OSPEEDR0        0x00000003U
+#define GPIO_PUPDR_PUPDR0             0x00000003U
+#define GPIO_MODE                     0x3UL
+
     for(indexPort = 0; indexPort < 14; indexPort++) {
         if (pCMe->m_PortConfig[indexPort] != 0) {
             pDescriptor = pCMe->m_PortConfig[indexPort];
@@ -185,8 +195,17 @@ int16_t ECOCALLMETHOD CEcoGPIO1_set_Mode(/* in */ struct IEcoGPIO1* me, /* in */
 						pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2);
 					}
 					else if (GPIO_MODE_OUTPUT == mode) {
-						pDescriptor->Register.Map->MODER &= ~(1 << indexPin*2+1);
-						pDescriptor->Register.Map->MODER |=  (1 << indexPin*2);
+            pDescriptor->Register.Map->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR0 << (indexPin * 2U));
+            pDescriptor->Register.Map->OSPEEDR |= (GPIO_SPEED_FREQ_HIGH    << (indexPin * 2U));
+
+            pDescriptor->Register.Map->OTYPER  &= ~(GPIO_OTYPER_OT_0        << indexPin);
+            pDescriptor->Register.Map->OTYPER  |= (((GPIO_MODE_OUTPUT & OUTPUT_TYPE) >> OUTPUT_TYPE_Pos) << indexPin);
+
+            pDescriptor->Register.Map->PUPDR   &= ~(GPIO_PUPDR_PUPDR0        << (indexPin * 2U));
+            pDescriptor->Register.Map->PUPDR   |= (0                         << (indexPin * 2U));
+
+						pDescriptor->Register.Map->MODER   &= ~(1 << indexPin*2+1);
+						pDescriptor->Register.Map->MODER   |=  (1 << indexPin*2);
 					}
 					else if (GPIO_MODE_AF == mode) {
 						pDescriptor->Register.Map->MODER |=  (1 << indexPin*2+1);
@@ -927,7 +946,7 @@ uint32_t ECOCALLMETHOD CEcoRCC1_STM32Config_Release(/* in */ struct IEcoGPIO1* m
  * </описание>
  *
  */
-int16_t ECOCALLMETHOD CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ RCC_CONFIG_DESCRIPTOR* config) {
+int16_t ECOCALLMETHOD CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me, /* in */ ECO_RCC_CONFIG_DESCRIPTOR* config) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателя */
@@ -952,7 +971,7 @@ int16_t ECOCALLMETHOD CEcoRCC1_STM32Config_set_ConfigDescriptor(/* in */ struct 
  * </описание>
  *
  */
-RCC_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoRCC1_STM32Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me) {
+ECO_RCC_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoRCC1_STM32Config_get_ConfigDescriptor(/* in */ struct IEcoGPIO1STM32Config* me) {
     CEcoGPIO1* pCMe = (CEcoGPIO1*)((uint64_t)me - (sizeof(struct IEcoGPIO1*) + sizeof(struct IEcoGPIO1STM32Config*)));
 
     /* Проверка указателя */
@@ -960,7 +979,7 @@ RCC_CONFIG_DESCRIPTOR* ECOCALLMETHOD CEcoRCC1_STM32Config_get_ConfigDescriptor(/
         return 0;
     }
 
-    return (RCC_CONFIG_DESCRIPTOR*)pCMe->m_RCCConfig;
+    return (ECO_RCC_CONFIG_DESCRIPTOR*)pCMe->m_RCCConfig;
 }
 
 #elif ECO_BCM283X

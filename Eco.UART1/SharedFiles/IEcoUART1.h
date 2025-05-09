@@ -54,11 +54,46 @@
 #define ECO_UART_MARK_PARITY    3   /* Mark parity. */
 #define ECO_UART_SPACE_PARITY   4   /* Space parity. */
 
+#define OUTPUT_PP                     0x0UL << 4U
+#define USART_CR1_UE                  0x00002000                         /*!<USART Enable                           */
+#define USART_CR2_STOP                0x00003000                         /*!<STOP[1:0] bits (STOP bits) */
+#define UART_WORDLENGTH_8B            0x00000000U
+#define UART_STOPBITS_1               0x00000000U
+#define UART_PARITY_NONE              0x00000000U
+#define UART_OVERSAMPLING_16          0x00000000U
+#define USART_CR1_PCE                 0x00000400UL                       /*!<Parity Control Enable                  */
+#define USART_CR1_M                   0x00001000UL                       /*!<Word length                            */
+#define USART_CR1_PS                  0x00000200UL                       /*!<Parity Selection                       */
+#define USART_CR1_OVER8               0x00008000UL                       /*!<USART Oversampling by 8 enable         */
+#define UART_HWCONTROL_NONE           0x00000000U
+#define USART_CR3_RTSE                0x00000100UL                       /*!<RTS Enable                  */
+
+#define USART_CR1_RE                  0x00000004U                        /*!<Receiver Enable                        */
+#define UART_MODE_RX                  ((uint32_t)USART_CR1_RE)
+#define UART_MODE_TX                  ((uint32_t)USART_CR1_TE)
+#define UART_MODE_TX_RX               ((uint32_t)(USART_CR1_TE | USART_CR1_RE))
+
+#define USART_CR3_CTSE                0x00000200UL                       /*!<CTS Enable                  */
+#define USART_CR1_RXNEIE              0x00000020UL                       /*!<RXNE Interrupt Enable                  */
+#define USART_CR1_PEIE                0x00000100UL                       /*!<PE Interrupt Enable                    */
+#define USART_SR_RXNE                 0x00000020UL                       /*!<Read Data Register Not Empty */
+#define USART_SR_TXE                  0x00000080UL                       /*!<Transmit Data Register Empty */
+#define USART_CR1_TXEIE               0x00000080UL                       /*!<TXE Interrupt Enable                   */
+#define USART_CR3_EIE                 0x00000001UL                       /*!<Error Interrupt Enable      */
+#define USART_SR_TC                   0x00000040UL                       /*!<Transmission Complete        */
+
+
 typedef struct ECO_UART_1_CONFIG {
     uint32_t    BaudRate;
     uint8_t     DataBits;
     uint8_t     StopBits;
     uint8_t     Parity;
+#if defined (ECO_STM32) || defined(STM32F407xx)
+    uint8_t    WordLength  ;
+    uint32_t    Mode        ;
+    uint8_t    Oversampling; 
+    uint8_t    HwControl   ;
+#endif /* ECO_STM32 */
 } ECO_UART_1_CONFIG;
 
 /* IEcoUART1Device IID = {6B754B24-7D03-435B-B5E2-2165A2041862} */
