@@ -380,7 +380,7 @@ int16_t ECOCALLMETHOD createCEcoModBus1_A10E8757(/* in */ IEcoUnknownPtr_t pIUnk
     }
 
     /* Получение системного интерфейса приложения */
-    result = pIUnkSystem->pVTbl->QueryInterface(pIUnkSystem, &GID_IEcoSystem1, (void **)&pISys);
+    result = pIUnkSystem->pVTbl->QueryInterface(pIUnkSystem, &GID_IEcoSystem, (void **)&pISys);
     /* Проверка */
     if (result != 0 || pISys == 0) {
         return ERR_ECO_NOSYSTEM;

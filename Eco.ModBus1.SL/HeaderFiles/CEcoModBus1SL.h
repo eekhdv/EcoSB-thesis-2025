@@ -25,7 +25,6 @@
 #include "IEcoModBus1SLASCII.h"
 #include "IEcoSystem1.h"
 #include "IEcoModBus1.h"
-#include "IEcoUART1.h"
 #include "IdEcoUART1.h"
 #include "IdEcoModBus1.h"
 #include "IdEcoMemoryManager1.h"
@@ -100,7 +99,9 @@ typedef struct CEcoModBus1SL_A9153876 {
     IEcoModBus1* m_pIModBus;
 
     /* Интерфейсы для работы с UART */
+#ifdef ECO_LINUX
     IEcoUART1*       m_pIUART;
+#endif
     IEcoUART1Device* m_pIUARTDevice;
 
 #ifdef ECO_STM32 

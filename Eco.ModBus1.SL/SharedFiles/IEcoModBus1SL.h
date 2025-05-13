@@ -25,6 +25,10 @@
 #define __I_ECOMODBUS1SL_H__
 
 #include "IEcoBase1.h"
+#include "IdEcoUART1.h"
+#ifdef ECO_STM32
+#include "IdEcoGPIO1.h"
+#endif
 
 enum eEcoModBus1SLParity {
     ECO_MODBUS_1_MODE_NO   = 0,
@@ -75,7 +79,11 @@ typedef struct IEcoModBus1SLVTbl {
     int16_t (ECOCALLMETHOD *EmitMessage)(/* in */ IEcoModBus1SLPtr_t me, /* in */ byte_t* PDU, /* in */ uint32_t pduLength);
     int16_t (ECOCALLMETHOD *RecvMessage)(/* in */ IEcoModBus1SLPtr_t me, /* out */ byte_t** data, /* out */ uint32_t* dataLength);
 
+#ifdef ECO_LINUX
     int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLPtr_t me, /* in */ uint8_t isSlave, /* in */ byte_t* devName, /* in */ uint16_t nameLength);
+#else
+    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLPtr_t me, /* in */ IEcoUART1Device* device);
+#endif
     int16_t (ECOCALLMETHOD *DisconnectBus)(/* in */ IEcoModBus1SLPtr_t me);
 
     int16_t (ECOCALLMETHOD *SwitchCommunicationLED)(/* in */ IEcoModBus1SLPtr_t me, /* in */ uint8_t State);

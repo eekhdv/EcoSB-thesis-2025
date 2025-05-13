@@ -11,7 +11,7 @@ else
 	SLASH = /
 	SWALLOW_OUTPUT =
 	TOOLCHAIN = 
-	TOOL = 
+	TOOL = riscv32-unknown-elf-
 endif 
 
 ifeq ($(TARGET), 1)
@@ -49,7 +49,9 @@ INC = \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.Core1$(SLASH)SharedFiles \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.InterfaceBus1$(SLASH)SharedFiles \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.MemoryManager1$(SLASH)SharedFiles \
--I $(ECO_FRAMEWORK)$(SLASH)Eco.FileSystemManagement1$(SLASH)SharedFiles 
+-I $(ECO_FRAMEWORK)$(SLASH)Eco.FileSystemManagement1$(SLASH)SharedFiles \
+-I ..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)Eco.UART1$(SLASH)SharedFiles \
+-I ..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)Eco.ModBus1$(SLASH)SharedFiles 
 
 
 # source files.
@@ -64,8 +66,7 @@ OUT_DIR = ..$(SLASH)..$(SLASH)..$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TA
 
  
 # C++ compiler flags (-g -O2 -Wall)
-CCFLAGS = $(CCFLAGS_TARGET) -DECO_LINUX -DUGUID_UTILITY
- 
+CCFLAGS = $(CCFLAGS_TARGET) -DECO_LINUX -DUGUID_UTILITY -DECO_RISCV_64
 # compiler
 GNU = $(TOOLCHAIN)
 CC = $(TOOL)gcc
