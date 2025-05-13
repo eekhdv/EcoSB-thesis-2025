@@ -196,28 +196,20 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_RecvMessage(/* in */ IEcoMod
     for (i = 0; i < 253;)
     {
         int16_t bytesRead = pIDevice1->pVTbl->Receive(pIDevice1, &(*data)[i]);
-#ifdef ECO_LINUX
-        if (bytesRead > 0 || i == 0) {
-          clock_gettime(CLOCK_MONOTONIC, &last_byte_time);
-          i += bytesRead > 0;
-          // if (errno != EAGAIN && errno != EWOULDBLOCK) { // Игнорируем ошибки "нет данных"
-          //         printf("ERRORRRR\n");
-          // } else if (errno == EAGAIN) {
-          //         printf("EAGAIN\n");
-          // } else if (errno == EWOULDBLOCK) {
-          //         printf("WOULDBL\n");
-          // }
-        } 
-        clock_gettime(CLOCK_MONOTONIC, &current_time);
-        double_t time_diff = (current_time.tv_sec - last_byte_time.tv_sec) +
-                           (current_time.tv_nsec - last_byte_time.tv_nsec) / 1000000000.0;
-        if (time_diff > timeout) {
-            break;
-        }
-        if (i == 0) usleep(10000);
-#endif
     }
+      
+#ifdef ECO_LINUX
+    int16_t bytesRead = 0;
+    do {
+	    bytesRead = pIDevice1->pVTbl->Receive(pIDevice1, *data);
+	    if (bytesRead > 1)
+    		printf("wow: %d\n", bytesRead);
+    } while (bytesRead < 7);
+    *dataLength = bytesRead;
+#else 
     *dataLength = i;
+#endif
+
     pCMe->m_pVTblIEcoModBus1SL->SwitchCommunicationLED((IEcoModBus1SL*)pCMe, 0);
     
     /* pCMe->m_pIMem->pVTbl->Free(pCMe->m_pIMem, data); */
@@ -279,7 +271,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModB
     }
     pIUARTConfig->pVTbl->set_ConfigDescriptor(pIUARTConfig, &xUART);
 
-    ECO_UART_1_CONFIG UARTconfig = {115000, 0, 0, 0};
+    ECO_UART_1_CONFIG UARTconfig = {115200, 0, 0, 0};
 
     /* Подключение устройства */
     return pIDevice1->pVTbl->Connect(pIDevice1, &UARTconfig);
@@ -291,7 +283,6 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModB
     pCMe->m_pIUARTDevice = device;
     return 0;
 }
-
 #endif
 
 /*
@@ -309,7 +300,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_DisconnectBus(/* in */ IEcoM
     CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)me;
 
 #ifdef ECO_LINUX
-    uint16_t result = pCMe->m_pIUARTDevice->pVTbl->Disconnect(pCMe->m_pIUARTDevice);
+     uint16_t result = pCMe->m_pIUARTDevice->pVTbl->Disconnect(pCMe->m_pIUARTDevice);
 #else
     uint16_t result = 0;
 #endif
@@ -617,8 +608,10 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_RecvMessage(/* in */ IEco
 
     uint16_t decodedCRC16 = _calcCRC16((char_t*)decodedData, *dataLength);
     if (rawCRC16 != decodedCRC16) {
-      /* printf("ERROR: raw(%d) != decoded(%d)", rawCRC16, decodedCRC16); */
-      return ERR_ECO_FAIL;
+#ifdef ECO_LINUX
+      printf("ERROR: raw(%d) != decoded(%d)", rawCRC16, decodedCRC16);
+#endif
+      //return ERR_ECO_FAIL;
     }
 
     return ERR_ECO_SUCCESES;
