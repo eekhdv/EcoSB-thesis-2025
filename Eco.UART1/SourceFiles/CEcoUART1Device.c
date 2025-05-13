@@ -288,6 +288,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Release(/* in */ struct IEcoUART
     return pCMe->m_cRef;
 }
 
+#ifdef ECO_STM32
 typedef struct EcoGpioConfig_ 
 {
     uint32_t OutputType   ;
@@ -321,6 +322,7 @@ void EcoGpio_Init(ECO_GPIO_CONFIG_DESCRIPTOR* xGPIO, EcoGpioConfig* config, uint
     xGPIO->Register.Map->MODER &= ~(GPIO_MODER_MODER0 << (logicalPinNumber * 2U));
     xGPIO->Register.Map->MODER |= ((gpioOuputType & GPIO_MODE) << (logicalPinNumber * 2U));
 }
+#endif
 
 /*
  *
