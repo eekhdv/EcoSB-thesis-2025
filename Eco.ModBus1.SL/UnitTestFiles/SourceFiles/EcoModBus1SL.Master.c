@@ -56,6 +56,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     /* Указатель на интерфейс работы с ModBus */
     IEcoModBus1* pIEcoModBus1 = 0;
     /* Указатели на тестируемые интерфейсы */
+    // IEcoModBus1SL*   pIEcoModBus1SL = 0;
     IEcoModBus1SLRTU*   pIEcoModBus1SLRTU = 0;
     IEcoModBus1SLASCII* pIEcoModBus1SLASCII = 0;
     /* Проверка и создание системного интрефейса */
@@ -75,8 +76,10 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     }
 #ifdef ECO_LIB
     /* Регистрация статического компонента для работы с ModBus */
+    printf("Registering static lib\n");
     result = pIBus->pVTbl->RegisterComponent(pIBus, &CID_EcoModBus1, (IEcoUnknown*)GetIEcoComponentFactoryPtr_D3D7232DDB6940469D2B535BA10E8757);
     if (result != 0 ) {
+        printf("Error reg modbus component");
         /* Освобождение в случае ошибки */
         goto Release;
     }
@@ -84,6 +87,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     /* Регистрация статического компонента для работы c ModBus Serial Line */
     result = pIBus->pVTbl->RegisterComponent(pIBus, &CID_EcoModBus1SL, (IEcoUnknown*)GetIEcoComponentFactoryPtr_DA26D759A46F405F9977CB5AA9153876);
     if (result != 0 ) {
+        printf("Error reg modbussl component");
         /* Освобождение в случае ошибки */
         goto Release;
     }
@@ -91,27 +95,28 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     result = pIBus->pVTbl->RegisterComponent(pIBus, &CID_EcoUART1, (IEcoUnknown*)GetIEcoComponentFactoryPtr_B40E129B56624BD7B5F8339C025F3EF0);
     /* Проверка */
     if (result != 0) {
+        printf("Error reg uart component");
         /* Освобождение в случае ошибки */
         goto Release;
     }
 #endif
     /* Получение интерфейса управления памятью */
     result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoMemoryManager1, 0, &IID_IEcoMemoryAllocator1, (void**) &pIMem);
-
     /* Проверка */
     if (result != 0 || pIMem == 0) {
+        printf("Error quering EcoMemoryManager1 component");
         /* Освобождение системного интерфейса в случае ошибки */
         goto Release;
     }
 
     printf("Quering modbus...\n");
-    /* Получение тестируемого интерфейса */
-    result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoModBus1, 0, &IID_IEcoModBus1, (void**) &pIEcoModBus1);
-    if (result != 0 || pIEcoModBus1 == 0) {
-        /* Освобождение интерфейсов в случае ошибки */
-        printf("Error quering modbus component");
-        goto Release;
-    }
+    // /* Получение тестируемого интерфейса */
+    // result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoModBus1SL, 0, &IID_IEcoModBus1SL, (void**) &pIEcoModBus1SL);
+    // if (result != 0 || pIEcoModBus1SL == 0) {
+    //     /* Освобождение интерфейсов в случае ошибки */
+    //     printf("Error quering modbus SL component");
+    //     goto Release;
+    // }
 
     printf("Quering RTU...\n");
     /* Получение тестируемого интерфейса */
@@ -131,9 +136,11 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     }
 #endif
 
+
     /* Создание Шины */
     printf("Creating bus...\n");
-    result = pIEcoModBus1SLRTU->pVTbl->ConnectBus(pIEcoModBus1SLRTU, 0);
+    byte_t devName[] = "/dev/ptmx";
+    result = pIEcoModBus1SLRTU->pVTbl->ConnectBus(pIEcoModBus1SLRTU, 0, devName, sizeof(devName));
     if (result != ERR_ECO_SUCCESES) {
         /* Освобождение интерфейсов в случае ошибки */
         printf("Error connection to the BUS");
@@ -146,6 +153,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     uint32_t dataLength = 0;
 
     byte_t* recvData = 0;
+    printf("receiving...\n");
     result = pIEcoModBus1SLRTU->pVTbl->RecvMessage(pIEcoModBus1SLRTU, &functionCode, &subCode, &recvData, &dataLength);
     if (result != ERR_ECO_SUCCESES) {
         printf("Error while receiving");

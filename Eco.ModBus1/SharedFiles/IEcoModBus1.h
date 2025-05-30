@@ -26,6 +26,7 @@
 
 #include "IEcoBase1.h"
 
+
 #define ECO_MB_FUNCTION_CODE_LENGTH    0x1    /* 1 byte for function code */
 #define ECO_MB_SUBCODE_LENGTH          0x2    /* 2 bytes for subcode */
 
@@ -59,10 +60,14 @@
 /* MODBUS Exception Codes */
 #define ECO_MB_EC_ILLEGAL_FUNCTION                        0x01    /* The function code received in the query is not an allowable action for the server. */
 #define ECO_MB_EC_ILLEGAL_DATA_ADDRESS                    0x02    /* The data address received in the query is not an allowable address for the server. */
-#define ECO_MB_EC_ILLEGAL_DATA_VALUE                      0x03    /* A value contained in the query data field is not an allowable value for server. */
-#define ECO_MB_EC_SERVER_DEVICE_FAILURE                   0x04    /* An unrecoverable error occurred while the server was attempting to perform the requested action. */
-#define ECO_MB_EC_ACKNOWLEDGE                             0x05    /* Specialized use in conjunction with programming commands. */
-#define ECO_MB_EC_SERVER_DEVICE_BUSY                      0x06    /* Specialized use in conjunction with programming commands. */
+#define ECO_MB_EC_ILLEGAL_DATA_VALUE                      0x03    /* A value contained in the query data field is not an
+allowable value for server. */
+#define ECO_MB_EC_SERVER_DEVICE_FAILURE                   0x04    /* An unrecoverable error occurred while the server
+was attempting to perform the requested action. */
+#define ECO_MB_EC_ACKNOWLEDGE                             0x05    /* Specialized use in conjunction with programming
+commands. */
+#define ECO_MB_EC_SERVER_DEVICE_BUSY                      0x06    /* Specialized use in conjunction with programming
+commands. */
 #define ECO_MB_EC_MEMORY_PARITY_ERROR                     0x08    /* See in docs. */
 #define ECO_MB_EC_GATEWAY_PATH_UNAVAILABLE                0x0A    /* See in docs. */
 #define ECO_MB_EC_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND 0x0B    /* See in docs. */

@@ -46,7 +46,11 @@ typedef struct IEcoModBus1SLASCIIVTbl {
     int16_t (ECOCALLMETHOD *EmitMessage)(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ uint8_t functionCode, /* in */ uint16_t subCode, /* in */ byte_t* data, /* in */ uint32_t dataLength);
     int16_t (ECOCALLMETHOD *RecvMessage)(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ char_t* Name, /* out */ char_t** CopyName);
 
-    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ uint8_t isSlave);
+#if defined(ECO_LINUX)
+    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLASCIIPtr_t me, uint8_t isSlave, /* in */ byte_t* devName, /* in */ uint16_t nameLength);
+#elif defined(ECO_STM32)
+    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ IEcoUART1Device* device);
+#endif
     int16_t (ECOCALLMETHOD *DisconnectBus)(/* in */ IEcoModBus1SLASCIIPtr_t me);
 
     int16_t (ECOCALLMETHOD *EnableLED)(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ uint8_t State);

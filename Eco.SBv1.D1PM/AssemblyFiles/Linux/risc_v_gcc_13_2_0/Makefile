@@ -11,7 +11,7 @@ else
 	SLASH = /
 	SWALLOW_OUTPUT =
 	TOOLCHAIN = 
-	TOOL = 
+	TOOL =
 endif 
 
 ifeq ($(TARGET), 1)
@@ -56,7 +56,9 @@ INCLUDES = \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.InterfaceBus1$(SLASH)SharedFiles \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.FileSystemManagement1$(SLASH)SharedFiles \
 -I $(ECO_FRAMEWORK)$(SLASH)Eco.MemoryManager1$(SLASH)SharedFiles \
--I $(ECO_FRAMEWORK)$(SLASH)Eco.List1$(SLASH)SharedFiles
+-I $(ECO_FRAMEWORK)$(SLASH)Eco.List1$(SLASH)SharedFiles \
+-I ..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)Eco.ModBus1$(SLASH)SharedFiles \
+-I ..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)Eco.ModBus1.SL$(SLASH)SharedFiles
 
 # libraries directories
 LIB_DIR = \
@@ -65,7 +67,9 @@ LIB_DIR = \
 -L $(ECO_FRAMEWORK)$(SLASH)Eco.FileSystemManagement1$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TARGET)$(SLASH)StaticRelease \
 -L $(ECO_FRAMEWORK)$(SLASH)Eco.MemoryManager1$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TARGET)$(SLASH)StaticRelease \
 -L $(ECO_FRAMEWORK)$(SLASH)Eco.System1$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TARGET)$(SLASH)StaticRelease \
--L $(ECO_FRAMEWORK)$(SLASH)Eco.List1$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TARGET)$(SLASH)StaticRelease
+-L $(ECO_FRAMEWORK)$(SLASH)Eco.List1$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TARGET)$(SLASH)StaticRelease \
+-I ..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)Eco.ModBus1$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TARGET)$(SLASH)StaticRelease \
+-I ..$(SLASH)..$(SLASH)..$(SLASH)..$(SLASH)Eco.ModBus1.SL$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TARGET)$(SLASH)StaticRelease
 
 OBJ = $(SRC:.c=.o)
 
@@ -81,7 +85,7 @@ CC = $(TOOL)gcc
 AR = $(TOOL)gcc-ar
 
 ifeq ($(TARGET), 1)
-LIBS_TARGET= -l00000000000000000000000042757331 -l00000000000000000000000046534D31 -l0000000000000000000000004D656D31 -l53884AFC93C448ECAA929C8D3A562281
+LIBS_TARGET= -l00000000000000000000000042757331 -l00000000000000000000000046534D31 -l0000000000000000000000004D656D31 
 else
 LIBS_TARGET=
 endif

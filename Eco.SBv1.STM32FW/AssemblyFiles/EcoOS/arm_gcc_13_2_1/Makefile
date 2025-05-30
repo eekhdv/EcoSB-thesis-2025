@@ -89,7 +89,7 @@ OUT_MAP = EcoSBv1STM32FW.map
 OUT_DIR = ..$(SLASH)..$(SLASH)..$(SLASH)BuildFiles$(SLASH)$(PLATFORM_TARGET)$(SLASH)$(ARCH_TARGET)$(SLASH)$(DEVICE_TARGET)$(SLASH)$(CONFIG_TARGET)
 
 # C++ compiler flags (-g -O2 -Wall)
-CCFLAGS = -g -Wall -Wno-missing-braces -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -nostdlib -nostartfiles -fno-builtin -DECO_LIB -DECO_OS -DECO_AARCH32 -DUGUID_UTILITY -nostdlib -nostartfiles
+CCFLAGS = -g -Wall -Wno-missing-braces -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -nostdlib -nostartfiles -fno-builtin -DECO_LIB -DECO_OS -DECO_AARCH32 -DUGUID_UTILITY -nostdlib -nostartfiles -DECO_STM32
 
 # compiler
 CC = $(TOOL)gcc

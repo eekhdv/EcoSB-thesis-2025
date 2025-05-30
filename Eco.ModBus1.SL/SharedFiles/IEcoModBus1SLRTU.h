@@ -22,7 +22,7 @@
  */
 
 #ifndef __I_ECOMODBUS1SLRTU_H__
-#define __I_ECOMODBUS1SLTRU_H__
+#define __I_ECOMODBUS1SLRTU_H__
 
 #include "IEcoBase1.h"
 #include "IEcoModBus1SL.h"
@@ -46,7 +46,11 @@ typedef struct IEcoModBus1SLRTUVTbl {
     int16_t (ECOCALLMETHOD *EmitMessage)(/* in */ IEcoModBus1SLRTUPtr_t me, /* in */ uint8_t functionCode, /* in */ uint16_t subCode, /* in */ byte_t* data, /* in */ uint32_t dataLength);
     int16_t (ECOCALLMETHOD *RecvMessage)(/* in */ IEcoModBus1SLRTUPtr_t me, /* out */ uint8_t* functionCode, /* out */ uint16_t* subCode,  /* out */ byte_t** data, /* out */ uint32_t* dataLength);
 
-    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLRTUPtr_t me, /* in */ uint8_t isSlave);
+#if ECO_LINUX
+    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLRTUPtr_t me, uint8_t isSlave, /* in */ byte_t* devName, /* in */ uint16_t nameLength);
+#elif defined(ECO_STM32)
+    int16_t (ECOCALLMETHOD *ConnectBus)(/* in */ IEcoModBus1SLRTUPtr_t me, /* in */ IEcoUART1Device* device);
+#endif
     int16_t (ECOCALLMETHOD *DisconnectBus)(/* in */ IEcoModBus1SLRTUPtr_t me);
 
     int16_t (ECOCALLMETHOD *EnableLED)(/* in */ IEcoModBus1SLRTUPtr_t me, /* in */ uint8_t State);

@@ -24,8 +24,6 @@
 #include "IEcoUART1.h"
 #include "IdEcoGPIO1.h"
 #include "IdEcoUART1.h"
-#include "IdEcoModBus1.h"
-#include "IdEcoModBus1SL.h"
 //#include "IdEcoTaskScheduler1.h"
 #include "IdEcoMemoryManager1.h"
 #include "IEcoInterfaceBus1MemExt.h"
@@ -33,6 +31,11 @@
 #include "IEcoRCC1STM32Config.h"
 #include "IEcoGPIO1STM32Config.h"
 #include "IEcoUART1STM32F4Config.h"
+
+/* ModBus */
+#include "IdEcoModBus1.h"
+#include "IdEcoModBus1SL.h"
+#include "IEcoModBus1SLRTU.h"
 
 static ECO_UART_CONFIG_DESCRIPTOR xUART  = {0};
 
@@ -510,6 +513,11 @@ int EcoStartup() {
     IEcoUART1Device* pIDevice1   = 0;
     ECO_UART_1_CONFIG xDevConfig = {0};
 
+    /* Указатель на интерфейс работы с ModBus */
+    IEcoModBus1* pIEcoModBus1 = 0;
+    /* Указатель на интерфейс работы с ModBus RTU */
+    IEcoModBus1SLRTU*   pIEcoModBus1SLRTU = 0;
+
     uint8_t iValue = 0;
 
 /* Добавим макрос условной компиляции для дополнительной проверки статической сборки (можно опустить/закоментировать) */
@@ -613,6 +621,20 @@ int EcoStartup() {
         goto Release;
     }
 
+    /* Получение интерфейса работы с ModBus */
+    result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoModBus1, 0, &IID_IEcoModBus1, (void**) &pIEcoModBus1);
+    if (result != 0 || pIEcoModBus1 == 0) {
+        /* Освобождение интерфейсов в случае ошибки */
+        goto Release;
+    }
+
+    /* Получение интерфейса работы с ModBus.SL */
+    result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoModBus1SL, 0, &IID_IEcoModBus1SLRTU, (void**) &pIEcoModBus1SLRTU);
+    if (result != 0 || pIEcoModBus1SLRTU == 0) {
+        /* Освобождение интерфейсов в случае ошибки */
+        goto Release;
+    }
+
     xRCC.Register.BaseAddress   = ECO_RCC; /* 0x40023800UL */
     xGPIOA.Register.BaseAddress = ECO_GPIOA; /* 0x40020400UL */
     xUART.Register.BaseAddress  = ECO_UART4; /* 0x40004C00UL */
@@ -691,7 +713,20 @@ int EcoStartup() {
 
     result = pIDevice1->pVTbl->Connect(pIDevice1, &config);
 
+    result = pIEcoModBus1SLRTU->pVTbl->ConnectBus(pIEcoModBus1SLRTU, pIDevice1);
+
+    if (result != ERR_ECO_SUCCESES) {
+        /* Освобождение интерфейсов в случае ошибки */
+        goto Release;
+    }
+
     uint8_t buffer[256];
+    uint8_t functionCode = ECO_MB_FC_WRITE_FILE_RECORD;
+    uint16_t subCode = 0;
+
+    byte_t sendData[] = " HALT";
+    uint32_t dataLength = sizeof(sendData);
+    sendData[0] = (uint8_t)(dataLength - 1);
 
     while (1)
     {
@@ -701,16 +736,18 @@ int EcoStartup() {
 	    EcoDelay(1000);
 
       //if (EcoUartReceive(&xUART, buffer, 256, 1000) == 0x0)
-      if (EcoUartReceive(pIDevice1, buffer, 256, 1000) == 0x0)
-      {
+      // if (EcoUartReceive(pIDevice1, buffer, 256, 1000) == 0x0)
+      // {
         // EcoUartTransmit(&xUART, "Hello World\n\r", 13);
-        EcoUartTransmit(pIDevice1, "Hello World\n\r", 13);
-      }
-      else
-      {
-        //EcoUartTransmit(&xUART, "NO RECV\n\r", 9);
-        EcoUartTransmit(pIDevice1, "NO RECV\n\r", 9);
-      }
+        //EcoUartTransmit(pIDevice1, "Hello World\n\r", 13);
+      result = pIEcoModBus1SLRTU->pVTbl->EmitMessage(pIEcoModBus1SLRTU, functionCode, subCode, sendData, dataLength);
+	    EcoDelay(5000);
+      // }
+      // else
+      // {
+      //   //EcoUartTransmit(&xUART, "NO RECV\n\r", 9);
+      //   EcoUartTransmit(pIDevice1, "NO RECV\n\r", 9);
+      // }
     }
 
 Release:

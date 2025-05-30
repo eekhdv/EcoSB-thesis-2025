@@ -34,7 +34,7 @@
 /* Указатель на интерфейс работы с логами */
 static IEcoLog1* g_pILog = 0;
 
-enum eEcoLog1Level LogLevel = ECO_LOG_1_LEVEL_DEBUG || ECO_LOG_1_LEVEL_ERROR;
+enum eEcoLog1Level LogLevel = ECO_LOG_1_LEVEL_DEBUG | ECO_LOG_1_LEVEL_ERROR;
 
 
 int TestCaseReadCoils(IEcoModBus1* pIEcoModBus1, IEcoMemoryAllocator1* pIMem)
@@ -655,7 +655,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
     /* Проверка и создание системного интрефейса */
     if (pISys == 0) {
-        result = pIUnk->pVTbl->QueryInterface(pIUnk, &GID_IEcoSystem1, (void **)&pISys);
+-       result = pIUnk->pVTbl->QueryInterface(pIUnk, &GID_IEcoSystem1, (void **)&pISys);
         if (result != 0 && pISys == 0) {
         /* Освобождение системного интерфейса в случае ошибки */
             goto Release;
@@ -802,16 +802,13 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
         /* Освобождение интерфейсов в случае ошибки */
         goto Release;
     }
-    /*result = TestCaseEncapsulatedInterfaceTransport(pIEcoModBus1, pIMem);*/
+    /* result = TestCaseEncapsulatedInterfaceTransport(pIEcoModBus1, pIMem);*/
     if (result != 0) {
         g_pILog->pVTbl->ErrorFormat(g_pILog, "%d", __LINE__);
         /* Освобождение интерфейсов в случае ошибки */
         goto Release;
     }
     
-    /* Освлбождение блока памяти */
-    //pIMem->pVTbl->Free(pIMem, name);
-
 Release:
 
     /* Освобождение интерфейса для работы с интерфейсной шиной */

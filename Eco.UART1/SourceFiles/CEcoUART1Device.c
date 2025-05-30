@@ -17,7 +17,6 @@
  *
  */
 
-#include "IEcoGPIO1STM32Config.h"
 #include "IEcoSystem1.h"
 #include "IEcoInterfaceBus1.h"
 #include "CEcoUART1Device.h"
@@ -143,6 +142,8 @@ byte_t startBeep[17] = { 0x0f, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x94, 0x01, 0
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
+#elif defined(ECO_STM32) || defined(ECO_STM32F407)
+#include "IEcoGPIO1STM32Config.h"
 #endif
 
 CEcoUART1Device_025F3EF0 g_xB40E129B56624BD7B5F8339C025F3EF0UART1Device[3] = {0};
@@ -288,6 +289,7 @@ uint32_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Release(/* in */ struct IEcoUART
     return pCMe->m_cRef;
 }
 
+#ifdef ECO_STM32
 typedef struct EcoGpioConfig_ 
 {
     uint32_t OutputType   ;
@@ -321,6 +323,7 @@ void EcoGpio_Init(ECO_GPIO_CONFIG_DESCRIPTOR* xGPIO, EcoGpioConfig* config, uint
     xGPIO->Register.Map->MODER &= ~(GPIO_MODER_MODER0 << (logicalPinNumber * 2U));
     xGPIO->Register.Map->MODER |= ((gpioOuputType & GPIO_MODE) << (logicalPinNumber * 2U));
 }
+#endif
 
 /*
  *
@@ -471,40 +474,68 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Connect(/* in */ struct IEcoUART1
     struct termios tty;
     if (pCMe->m_UARTConfig->slaveFlag == 0) 
     {
-      pCMe->m_Fd = open("/dev/ptmx", O_RDWR | O_NOCTTY | O_NONBLOCK);
+      pCMe->m_Fd = open(pCMe->m_UARTConfig->devName, O_RDWR | O_NOCTTY /*| O_NONBLOCK*/);
       ioctl(pCMe->m_Fd, TIOCSBRK, &config->BaudRate); // Set baudrate
       ioctl(pCMe->m_Fd, TIOCSPTLCK, &(int){0}); // Unlock pt
       ioctl(pCMe->m_Fd, TIOCGPTN, &ptsNum); // get pts number
 
-      if (ioctl(pCMe->m_Fd, TCGETS, &tty) < 0) {
-          /* perror("ioctl TCGETS"); */
-          /* close(pCMe->m_Fd); */
-          /* return 1; */
+      if (pCMe->m_UARTConfig->devName[5] == 'p') /* if device starts with 'p' : "/dev/p" */
+      {
+        if (ioctl(pCMe->m_Fd, TCGETS, &tty) < 0) {
+            /* perror("ioctl TCGETS"); */
+            /* close(pCMe->m_Fd); */
+            /* TODO: return 1; */
+        }
+
+        tty.c_cflag &= ~PARENB;   // 8N1
+        tty.c_cflag &= ~CSTOPB;
+        tty.c_cflag &= ~CSIZE;
+        tty.c_cflag |= CS8;
+
+        tty.c_lflag &= ~ICANON;
+        tty.c_lflag &= ~ECHO;
+        tty.c_lflag &= ~ECHOE;
+        tty.c_lflag &= ~ECHONL;
       }
 
-      tty.c_cflag &= ~PARENB;   // 8N1
-      tty.c_cflag &= ~CSTOPB;
-      tty.c_cflag &= ~CSIZE;
-      tty.c_cflag |= CS8;
-
-      tty.c_lflag &= ~ICANON;
-      tty.c_lflag &= ~ECHO;
-      tty.c_lflag &= ~ECHOE;
-      tty.c_lflag &= ~ECHONL;
-
-      if (ioctl(pCMe->m_Fd, TCSETS, &tty) < 0) {
-          /* perror("ioctl TCSETS"); */
-          /* close(pCMe->m_Fd); */
-          /* return 1; */
-      }
-
-      pCMe->m_UARTConfig->devNum = ptsNum;
+       if (ioctl(pCMe->m_Fd, TCSETS, &tty) < 0) {
+           /* perror("ioctl TCSETS"); */
+           /* close(pCMe->m_Fd); */
+           /* TODO: return 1; */
+       }
     }
     else if (pCMe->m_UARTConfig->slaveFlag == 1)
     {
-      char_t devName[12];
-      snprintf(devName, 12, "/dev/pts/%d", pCMe->m_UARTConfig->devNum); // Set up pts name
-      pCMe->m_Fd = open(devName, O_RDWR | O_NOCTTY | O_NONBLOCK);
+      pCMe->m_Fd = open(pCMe->m_UARTConfig->devName, O_RDWR | O_NOCTTY /*| O_NONBLOCK*/);
+      if(tcgetattr(pCMe->m_Fd, &tty) != 0) {
+          printf("Error from tcgetattr\n");
+      }
+
+      tty.c_cflag &= ~PARENB; // Clear parity bit, disabling parity (most common)
+      tty.c_cflag &= ~CSTOPB; // Clear stop field, only one stop bit used in communication (most common)
+      tty.c_cflag |= CS8; // 8 bits per byte (most common)
+      tty.c_cflag &= ~CRTSCTS; // Disable RTS/CTS hardware flow control (most common)
+      tty.c_cflag |= CREAD | CLOCAL; // Turn on READ & ignore ctrl lines (CLOCAL = 1)
+      tty.c_lflag &= ~ICANON;
+      tty.c_lflag &= ~ECHO; // Disable echo
+      tty.c_lflag &= ~ECHOE; // Disable erasure
+      tty.c_lflag &= ~ECHONL; // Disable new-line echo
+      tty.c_lflag &= ~ISIG; // Disable interpretation of INTR, QUIT and SUSP
+      tty.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL); // Disable any special handling of received bytes
+      tty.c_oflag &= ~OPOST; // Prevent special interpretation of output bytes (e.g. newline chars)
+      tty.c_oflag &= ~ONLCR; // Prevent conversion of newline to carriage return/line feed
+      tty.c_cc[VTIME] = 10;   
+      tty.c_cc[VMIN] = 0;
+
+      cfsetispeed(&tty, B115200);
+      cfsetospeed(&tty, B115200);
+
+      printf("gou!\n");
+      // Save tty settings, also checking for error
+      if (tcsetattr(pCMe->m_Fd, TCSANOW, &tty) != 0) {
+          printf("Error from tcsetattr\n");
+      }
+					    
     }
 #elif ECO_STM32
     /********** Настройка MSP для UART4 ************/
@@ -719,7 +750,7 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Receive(/* in */ struct IEcoUART1
     DWORD NoBytesRead = 0;
     DWORD dwCommEvent;
 #elif ECO_LINUX
-    char_t TempChar = 0; //Temporary character used for reading
+    char_t TempChar; //Temporary character used for reading
     int16_t NoBytesRead = 0;
 #endif
 
@@ -756,8 +787,14 @@ int16_t ECOCALLMETHOD CEcoUART1Device_025F3EF0_Receive(/* in */ struct IEcoUART1
     while( (*((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->LSR)&0x01) == 0);
     *data = *((volatile uint32_t*)&pCMe->m_UARTConfig->Register.Map->Offset0x0000.RBR);
 #elif ECO_LINUX
-    NoBytesRead = read(pCMe->m_Fd, &TempChar, sizeof(TempChar));
-    *data = TempChar;
+    NoBytesRead = read(pCMe->m_Fd, data, 253);
+    // *data = TempChar;
+    // for (uint32_t i = 0; i < 256; i++)
+    // {
+    // 	printf("%d", TempChar[i]);
+    // }
+    // printf("\n");
+
 #elif ECO_STM32
 
     #define USART_SR_RXNE                 0x00000020UL                       /*!<Read Data Register Not Empty */

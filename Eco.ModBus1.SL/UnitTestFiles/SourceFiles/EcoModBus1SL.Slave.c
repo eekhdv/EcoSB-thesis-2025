@@ -134,7 +134,8 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
     /* Подключение к шине */
     printf("Connecting to the bus...\n");
-    result = pIEcoModBus1SLRTU->pVTbl->ConnectBus(pIEcoModBus1SLRTU, 1);
+    byte_t devName[] = "/dev/pts/2";
+    result = pIEcoModBus1SLRTU->pVTbl->ConnectBus(pIEcoModBus1SLRTU, 1, devName, sizeof(devName));
     if (result != ERR_ECO_SUCCESES) {
         /* Освобождение интерфейсов в случае ошибки */
         printf("Error connection to the BUS");
@@ -159,7 +160,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     }
 
     sleep(1);
-    printf("Receiving message...\n");
+    printf("\nReceiving message...\n");
     byte_t* recvData = 0;
     result = pIEcoModBus1SLRTU->pVTbl->RecvMessage(pIEcoModBus1SLRTU, &functionCode, &subCode, &recvData, &dataLength);
     if (result != ERR_ECO_SUCCESES) {

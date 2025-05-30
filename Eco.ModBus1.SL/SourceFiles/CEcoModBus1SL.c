@@ -23,9 +23,6 @@
 #include "IEcoInterfaceBus1MemExt.h"
 #include "CEcoModBus1SL.h"
 #include "IEcoModBus1SL.h"
-//#include "depend.h"
-//#include <asm-generic/errno-base.h>
-//#include <stdio.h>
 
 #if ECO_LINUX
     #include "IEcoUART1LinuxConfig.h"
@@ -199,28 +196,20 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_RecvMessage(/* in */ IEcoMod
     for (i = 0; i < 253;)
     {
         int16_t bytesRead = pIDevice1->pVTbl->Receive(pIDevice1, &(*data)[i]);
-#ifdef ECO_LINUX
-        if (bytesRead > 0 || i == 0) {
-          clock_gettime(CLOCK_MONOTONIC, &last_byte_time);
-          i += bytesRead > 0;
-          // if (errno != EAGAIN && errno != EWOULDBLOCK) { // Игнорируем ошибки "нет данных"
-          //         printf("ERRORRRR\n");
-          // } else if (errno == EAGAIN) {
-          //         printf("EAGAIN\n");
-          // } else if (errno == EWOULDBLOCK) {
-          //         printf("WOULDBL\n");
-          // }
-        } 
-        clock_gettime(CLOCK_MONOTONIC, &current_time);
-        double_t time_diff = (current_time.tv_sec - last_byte_time.tv_sec) +
-                           (current_time.tv_nsec - last_byte_time.tv_nsec) / 1000000000.0;
-        if (time_diff > timeout) {
-            break;
-        }
-        if (i == 0) usleep(10000);
-#endif
     }
+      
+#ifdef ECO_LINUX
+    int16_t bytesRead = 0;
+    do {
+	    bytesRead = pIDevice1->pVTbl->Receive(pIDevice1, *data);
+	    if (bytesRead > 1)
+    		printf("wow: %d\n", bytesRead);
+    } while (bytesRead < 7);
+    *dataLength = bytesRead;
+#else 
     *dataLength = i;
+#endif
+
     pCMe->m_pVTblIEcoModBus1SL->SwitchCommunicationLED((IEcoModBus1SL*)pCMe, 0);
     
     /* pCMe->m_pIMem->pVTbl->Free(pCMe->m_pIMem, data); */
@@ -239,15 +228,12 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_RecvMessage(/* in */ IEcoMod
  * </описание>
  *
  */
-static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModBus1SLPtr_t me, uint8_t isSlave) {
+#ifdef ECO_LINUX
+static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModBus1SLPtr_t me, uint8_t isSlave, byte_t* devName, uint16_t nameLength) {
     CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)me;
     IEcoUART1Device* pIDevice1 = 0;
 
-#ifdef ECO_LINUX
     IEcoUART1LinuxConfig* pIUARTConfig = 0;
-#elif ECO_STM32
-    IEcoUART1STM32F4Config* pIUARTConfig = 0;
-#endif
 
     /* Проверка указателей */
     if (me == 0 || pCMe->m_pIUART == 0) {
@@ -266,11 +252,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModB
     pIDevice1 = pCMe->m_pIUARTDevice;
 
     /* Запрос интерфейса UART конфигурации */
-#ifdef ECO_LINUX
     result = pIDevice1->pVTbl->QueryInterface(pIDevice1, &IID_IEcoUART1LinuxConfig, (void**) &pIUARTConfig);
-#elif ECO_STM32
-    result = pIDevice1->pVTbl->QueryInterface(pIDevice1, &IID_IEcoUART1STM32F4Config, (void**) &pIUARTConfig);
-#endif
     if (result != 0 || pIUARTConfig == 0) {
         /* Освобождение интерфейсов в случае ошибки */
         return ERR_ECO_NOINTERFACE;
@@ -283,14 +265,25 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModB
      * Из-за того, что это псевдотерминал, номер девайса назначается динамически.
      * При нормальном подключении по UART, номер будет статический
     **/
-    ///???ECO_UART_CONFIG_DESCRIPTOR xUART = {.slaveFlag = isSlave, .devNum = 2};
-    ///???pIUARTConfig->pVTbl->set_ConfigDescriptor(pIUARTConfig, &xUART);
+    ECO_UART_CONFIG_DESCRIPTOR xUART = {.slaveFlag = isSlave, .devName = { 0 }};
+    for (uint16_t i = 0; i < nameLength; i++) {
+      xUART.devName[i] = devName[i];
+    }
+    pIUARTConfig->pVTbl->set_ConfigDescriptor(pIUARTConfig, &xUART);
 
-    ECO_UART_1_CONFIG UARTconfig = {115000, 0, 0, 0};
+    ECO_UART_1_CONFIG UARTconfig = {115200, 0, 0, 0};
 
     /* Подключение устройства */
     return pIDevice1->pVTbl->Connect(pIDevice1, &UARTconfig);
 }
+#elif defined(ECO_STM32)
+static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModBus1SLPtr_t me, IEcoUART1Device* device) {
+    CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)me;
+
+    pCMe->m_pIUARTDevice = device;
+    return 0;
+}
+#endif
 
 /*
  *
@@ -306,7 +299,11 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_ConnectBus(/* in */ IEcoModB
 static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_DisconnectBus(/* in */ IEcoModBus1SLPtr_t me) {
     CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)me;
 
-    uint16_t result = pCMe->m_pIUARTDevice->pVTbl->Disconnect(pCMe->m_pIUARTDevice);
+#ifdef ECO_LINUX
+     uint16_t result = pCMe->m_pIUARTDevice->pVTbl->Disconnect(pCMe->m_pIUARTDevice);
+#else
+    uint16_t result = 0;
+#endif
 
     /* Если успешно отключили девайс - очистить указатель на девайс */
     if (result == ERR_ECO_OK) {
@@ -340,7 +337,7 @@ static int16_t ECOCALLMETHOD CEcoModBus1SL_A9153876_SwitchCommunicationLED(/* in
     #ifdef ECO_LINUX
     return ERR_ECO_SUCCESES;
     #elif ECO_STM32
-    ///???return pCMe->m_pCommunicationLED->pVTbl->set_Mode((IEcoGPIO1*)pCMe->m_pCommunicationLED, COMMUNICATION_LED_PORT, GPIO_MODE_OUTPUT);
+    return pCMe->m_pCommunicationLED->pVTbl->set_Mode((IEcoGPIO1*)pCMe->m_pCommunicationLED, 0 /* TODO: COMMUNICATION_LED_PORT */, GPIO_MODE_OUTPUT);
     #endif /* ifdef ECO_LINUX */
 }
 
@@ -611,8 +608,10 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_RecvMessage(/* in */ IEco
 
     uint16_t decodedCRC16 = _calcCRC16((char_t*)decodedData, *dataLength);
     if (rawCRC16 != decodedCRC16) {
-      /*printf("ERROR: raw(%d) != decoded(%d)", rawCRC16, decodedCRC16); */
-      return ERR_ECO_FAIL;
+#ifdef ECO_LINUX
+      printf("ERROR: raw(%d) != decoded(%d)", rawCRC16, decodedCRC16);
+#endif
+      //return ERR_ECO_FAIL;
     }
 
     return ERR_ECO_SUCCESES;
@@ -629,7 +628,11 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_RecvMessage(/* in */ IEco
  * </описание>
  *
  */
-static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_ConnectBus(/* in */ IEcoModBus1SLRTUPtr_t me, uint8_t isSlave) {
+#if ECO_LINUX
+static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_ConnectBus(/* in */ IEcoModBus1SLRTUPtr_t me, uint8_t isSlave, /* in */ byte_t* devName, /* in */ uint16_t nameLength) {
+#elif ECO_STM32
+static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_ConnectBus(/* in */ IEcoModBus1SLRTUPtr_t me, /* in */ IEcoUART1Device* device) {
+#endif
     CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)((uint64_t)me - sizeof(struct IEcoUnknown*));
 
     /* Проверка указателей */
@@ -637,7 +640,11 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLRTU_A9153876_ConnectBus(/* in */ IEcoM
         return ERR_ECO_POINTER;
     }
 
-    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, isSlave);
+#if ECO_LINUX
+    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, isSlave, devName, nameLength);
+#elif ECO_STM32
+    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, device);
+#endif
 }
 
 /*
@@ -721,11 +728,13 @@ int16_t ECOCALLMETHOD initCEcoModBus1SL_A9153876(/*in*/ IEcoModBus1SLPtr_t me, /
         return result;
     }
 
+#ifdef ECO_LINUX
     /* Получение интерфейса для работы с UART */
     result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoUART1, 0, &IID_IEcoUART1, (void**) &pCMe->m_pIUART);
     if (result != 0) {
         return result;
     }
+#endif
 
 #ifdef ECO_STM32
     /* Получение интерфейса для работы с GPIO */
@@ -894,7 +903,11 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_RecvMessage(/* in */ IE
  * </описание>
  *
  */
-static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_ConnectBus(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ uint8_t isSlave) {
+#if ECO_LINUX
+static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_ConnectBus(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ uint8_t isSlave, /* in */ byte_t* devName, /* in */ uint16_t nameLength) {
+#elif ECO_STM32
+static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_ConnectBus(/* in */ IEcoModBus1SLASCIIPtr_t me, /* in */ IEcoUART1Device* device) {
+#endif
     CEcoModBus1SL_A9153876* pCMe = (CEcoModBus1SL_A9153876*)((uint64_t)me - sizeof(struct IEcoUnknown*));
 
     /* Проверка указателей */
@@ -902,7 +915,11 @@ static int16_t ECOCALLMETHOD CEcoModBus1SLASCII_A9153876_ConnectBus(/* in */ IEc
         return ERR_ECO_POINTER;
     }
 
-    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, isSlave);
+#if ECO_LINUX
+    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, isSlave, devName, nameLength);
+#elif ECO_STM32
+    return pCMe->m_pVTblIEcoModBus1SL->ConnectBus((IEcoModBus1SL*)pCMe, device);
+#endif
 }
 
 /*
@@ -1013,7 +1030,7 @@ int16_t ECOCALLMETHOD createCEcoModBus1SL_A9153876(/* in */ IEcoUnknownPtr_t pIU
     }
 
     /* Получение системного интерфейса приложения */
-    result = pIUnkSystem->pVTbl->QueryInterface(pIUnkSystem, &GID_IEcoSystem1, (void **)&pISys);
+    result = pIUnkSystem->pVTbl->QueryInterface(pIUnkSystem, &GID_IEcoSystem, (void **)&pISys);
     /* Проверка */
     if (result != 0 || pISys == 0) {
         return ERR_ECO_NOSYSTEM;

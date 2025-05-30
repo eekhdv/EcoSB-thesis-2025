@@ -24,9 +24,11 @@
 
 #include "IEcoBase1.h"
 
+#define I_ECO_UART_MAX_LINUX_DEVICE_NAME_LENGTH 15
+
 typedef struct ECO_UART_CONFIG_DESCRIPTOR {
     uint8_t  slaveFlag; /* 1 if slave, 0 if master */
-    uint16_t devNum; /* The number of the pst */
+    byte_t   devName[I_ECO_UART_MAX_LINUX_DEVICE_NAME_LENGTH]; /* Имя девайса в /dev */
 } ECO_UART_CONFIG_DESCRIPTOR;
 
 /* IEcoUART1LinuxConfig IID = {057C9F95-D2D5-4489-A36C-CFC7561254C5} */

@@ -11,7 +11,7 @@ else
 	SLASH = /
 	SWALLOW_OUTPUT =
 	TOOLCHAIN = 
-	TOOL = 
+	TOOL = riscv32-unknown-elf-
 endif 
 
 ifeq ($(TARGET), 1)
@@ -64,7 +64,7 @@ OUT_DIR = ..$(SLASH)..$(SLASH)..$(SLASH)BuildFiles$(SLASH)Linux$(SLASH)$(ARCH_TA
 
  
 # C++ compiler flags (-g -O2 -Wall)
-CCFLAGS = $(CCFLAGS_TARGET) -DECO_LINUX -DUGUID_UTILITY
+CCFLAGS = $(CCFLAGS_TARGET) -DECO_LINUX -DUGUID_UTILITY -DECO_RISCV_64
  
 # compiler
 GNU = $(TOOLCHAIN)
